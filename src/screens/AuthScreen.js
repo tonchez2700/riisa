@@ -1,11 +1,34 @@
+import React, { useContext } from 'react'
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Alert, ScrollView } from 'react-native'
+import tw from 'tailwind-react-native-classnames'
+import InputForm from '../components/forms/InputForm'
+import ButtonFrom from '../components/forms/ButtonFrom'
+import { useFormik } from 'formik'
+import { AuthSchema } from '../config/schemas'
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg';
-import TextInputForm from '../components/Forms/TextInputForm';
+import { Context as AuthContext } from '../context/AuthContext';
+import SimpleNavBar from '../components/SimpleNavBar'
 
-// Vista de login, es la pantalla donde ingresas usuario y contraseña para ingresar 
 const AuthScreen = () => {
-    function SvgTop() {
+    const { state, signin, clearState } = useContext(AuthContext);
+    const {
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        values,
+        errors,
+        touched
+    } = useFormik({
+        validationSchema: AuthSchema,
+        onSubmit: values => signin(values),
+        initialValues: {
+            email: '',
+            password: ''
+        }
+    });
+
+    const renderContent = () => {
         return (
             <Svg
                 width={500}
@@ -31,8 +54,8 @@ const AuthScreen = () => {
                         y2={364.215}
                         gradientUnits="userSpaceOnUse"
                     >
-                        <Stop stopColor="#FFB677" />
-                        <Stop offset={1} stopColor="#FF3CBD" />
+                        <Stop stopColor="#133C60" />
+                        <Stop offset={1} stopColor="#133C60" />
                     </LinearGradient>
                     <LinearGradient
                         id="prefix__paint1_linear_103:6"
@@ -43,44 +66,68 @@ const AuthScreen = () => {
                         gradientUnits="userSpaceOnUse"
                     >
                         <Stop stopColor="#FFB677" />
-                        <Stop offset={1} stopColor="#FF3CBD" />
+                        <Stop offset={1} stopColor="#133C60" />
                     </LinearGradient>
                 </Defs>
             </Svg>
         )
     }
-    
     return (
-        <View>
-            <View style={styles.containerSVG}>
-                <SvgTop />
+        <View style={tw`p-5`}>
+            <View style={tw`h-full items-center`}>
+                <View style={styles.containerSVG}>
+                    {renderContent()}
+                </View>
+                <View style={styles.container}>
+                    <Text style={styles.title}>AAM Rondines</Text>
+                    <Text style={styles.subtitle}>Iniciar sesión</Text>
+
+                    <InputForm
+                        label='Correo Electrónico'
+                        name='email'
+                        autoCapitalize='none'
+                        keyboardType='email-address'
+                        handleChange={handleChange}
+                        handleBlur={handleBlur}
+                        errors={errors}
+                        values={values}
+                        touched={touched} />
+                    <InputForm
+                        label='Contraseña'
+                        name='password'
+                        autoCapitalize='none'
+                        secureTextEntry={true}
+                        password={true}
+                        handleChange={handleChange}
+                        handleBlur={handleBlur}
+                        errors={errors}
+                        values={values}
+                        touched={touched} />
+                    <ButtonFrom handleSubmit={handleSubmit} loading={state.fetchingData ? true : false} />
+
+                    <StatusBar style="auto" />
+                </View>
             </View>
-            <View style={styles.container}>
-                <Text style={styles.title}>AAM Rondines</Text>
-                <Text style={styles.subtitle}>Iniciar sesión</Text>
-                <TextInputForm
-                    name='username'
-                    placeholder='Correo electrónico'
-                    keyboardType='email-address'
-                    autoCapitalize='none'
-                //onChangeText={(value) => handleInputChange(value, 'email')} 
-                />
-                <TextInputForm
-                    name='password'
-                    placeholder='Contraseña'
-                    secureTextEntry={true}
-                //onChangeText={(value) => handleInputChange(value, 'password')} 
-                />
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.text}>Iniciar sesión</Text>
-                </TouchableOpacity>
-                <StatusBar style="auto" />
-            </View>
-        </View>
+            {
+                state.error === true
+                    ?
+                    Alert.alert(
+                        "Error de Autentificacion",
+                        state.message,
+                        [{
+                            text: "OK",
+                            onPress: clearState
+                        }]
+                    )
+                    :
+                    null
+            }
+        </View >
     )
 }
 
 export default AuthScreen
+
 
 const styles = StyleSheet.create({
     //Estilo del main
