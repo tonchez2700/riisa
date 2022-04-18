@@ -17,7 +17,7 @@ const NavBar = () => {
             rightContainerStyle={{ justifyContent: 'center' }}
             leftComponent={
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('CeateReportScreen')}>
+                    onPress={() => navigation.navigate('PatrolListScreen')}>
                         <Icon
                         name='home'
                         type='font-awesome'
@@ -26,7 +26,7 @@ const NavBar = () => {
             }
             rightComponent={
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('CeateReportScreen')}>
+                    onPress={() => navigation.navigate('PatrolListScreen')}>
                         <Icon
                         name='sign-out'
                         type='font-awesome'

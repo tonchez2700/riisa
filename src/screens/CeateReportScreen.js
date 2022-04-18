@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { ScrollView, StyleSheet, Alert, View, Text, Modal, Dimensions } from 'react-native'
-import { useNavigation, } from '@react-navigation/native';
+import { NavigationHelpersContext, useNavigation, } from '@react-navigation/native';
 import HeadTitleScreen from '../components/HeadTitleScreen.js'
 import { Input, Button } from 'react-native-elements'
 import tw from 'tailwind-react-native-classnames'
@@ -10,7 +10,6 @@ const { width } = Dimensions.get("window");
 const CeateReportScreen = (props) => {
 
     const navigation = useNavigation();
-    const { width } = Dimensions.get("window");
     const [flexWrapper, setFlexWrapper] = useState(true);
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -79,7 +78,9 @@ const CeateReportScreen = (props) => {
             <View style={tw`flex-row justify-between`}>
                 <Button
                     buttonStyle={{ backgroundColor: '#848484', marginBottom: 15 }}
-
+                    onPress={
+                        () => navigation.navigate('PointsListScreen')
+                    }
                     title="Rechazar" />
 
                 <Button

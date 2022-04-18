@@ -18,24 +18,31 @@ const PointsListScreen = () => {
         setModalVisible(!modalVisible);
     };
 
+    const multipleFunction = () =>{
+        toggleModalVisibility();
+        navigation.navigate('CeateReportScreen');
+    }
+
 
     return (
+
         <ScrollView
             contentContainerStyle={{ paddingBottom: 100 }}>
             <Text style={styles.title}>Listado de puntos</Text>
 
-            <TouchableOpacity
+            <Button
                 style={styles.btnIncident}
+                title= {"Reportar incidente"}
                 onPress={() => toggleModalVisibility()}>
                 <Text style={styles.btnText} >Reportar incidente</Text>
-            </TouchableOpacity>
+            </Button>
 
             <Modal
                 animationType="slide"
                 transparent
                 visible={modalVisible}
                 presentationStyle="overFullScreen"
-                onDismiss={toggleModalVisibility}>
+                onDismiss={() => toggleModalVisibility()}>
                 <View style={styles.viewWrapper}>
                     <View style={styles.modalView}>
                         <Text  style={styles.text}>¿Reportar incidente?</Text>
@@ -44,13 +51,13 @@ const PointsListScreen = () => {
                             <Button
                                 title="Cancelar"
                                 buttonStyle={{ backgroundColor: '#848484', marginBottom: 15 }}
-                                onPress={toggleModalVisibility} />
+                                onPress={() => toggleModalVisibility()} />
 
                             <Button
                                 title="Aceptar"
                                 buttonStyle={{ marginLeft: 100, backgroundColor: '#002443', marginBottom: 15 }}
                                  
-                                onPress= {() => navigation.navigate('CeateReportScreen')}/>
+                                onPress= {() => multipleFunction() }/>
                         </View>
                     </View>
                 </View>
