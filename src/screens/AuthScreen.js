@@ -2,8 +2,8 @@ import React, { useContext } from 'react'
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Alert, ScrollView } from 'react-native'
 import tw from 'tailwind-react-native-classnames'
-import InputForm from '../components/forms/InputForm'
-import ButtonFrom from '../components/forms/ButtonFrom'
+import InputForm from '../components/Forms/InputForm'
+import ButtonFrom from '../components/Forms/ButtonFrom'
 import { useFormik } from 'formik'
 import { AuthSchema } from '../config/schemas'
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg';

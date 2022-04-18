@@ -1,14 +1,24 @@
 import { Text, View, ScrollView, StyleSheet, TouchableOpacity, Alert, Modal, Dimensions, Picker } from 'react-native'
 import React, { Component, useState } from 'react'
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component'
-import { Input, Button, Icon } from 'react-native-elements';
-import { Dropdown } from 'react-native-element-dropdown';
 import tw from 'tailwind-react-native-classnames';
 import EntryList from './../components/EntryList'
+import { Input, Button, Icon } from 'react-native-elements';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get("window");
 
+
 const PointsListScreen = () => {
+
+    const navigation = useNavigation();
+
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const toggleModalVisibility = () => {
+        setModalVisible(!modalVisible);
+    };
+
+
     return (
         <ScrollView
             contentContainerStyle={{ paddingBottom: 100 }}>
@@ -16,15 +26,41 @@ const PointsListScreen = () => {
 
             <TouchableOpacity
                 style={styles.btnIncident}
-                onPress={() => navigation.navigate('CeateReportScreen')}>
-                <Text style= {styles.btnText} >Reportar incidente</Text>
+                onPress={() => toggleModalVisibility()}>
+                <Text style={styles.btnText} >Reportar incidente</Text>
             </TouchableOpacity>
+
+            <Modal
+                animationType="slide"
+                transparent
+                visible={modalVisible}
+                presentationStyle="overFullScreen"
+                onDismiss={toggleModalVisibility}>
+                <View style={styles.viewWrapper}>
+                    <View style={styles.modalView}>
+                        <Text  style={styles.text}>¿Reportar incidente?</Text>
+
+                        <View style={tw`flex-row justify-between`}>
+                            <Button
+                                title="Cancelar"
+                                buttonStyle={{ backgroundColor: '#848484', marginBottom: 15 }}
+                                onPress={toggleModalVisibility} />
+
+                            <Button
+                                title="Aceptar"
+                                buttonStyle={{ marginLeft: 100, backgroundColor: '#002443', marginBottom: 15 }}
+                                 
+                                onPress= {() => navigation.navigate('CeateReportScreen')}/>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
 
             <EntryList
                 data={state}
             />
 
-           
+
         </ScrollView>
     );
 
@@ -32,6 +68,7 @@ const PointsListScreen = () => {
 }
 
 export default PointsListScreen
+
 
 const state = [
     { name: 'Puerta principal' }
@@ -49,9 +86,15 @@ const styles = StyleSheet.create({
         fontSize: 30,
         marginBottom: 20,
         fontWeight: 'bold'
+    },  
+    text: {
+        textAlign: 'center',
+        color: '#133C60',
+        fontSize: 20,
+        fontWeight: 'bold'
     },
     btnIncident: {
-        marginBottom:20,
+        marginBottom: 20,
         height: 35,
         width: width - 60,
         backgroundColor: '#133C60',
@@ -61,5 +104,26 @@ const styles = StyleSheet.create({
     },
     btnText: {
         color: 'white'
-    }
+    },
+    viewWrapper: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.2)",
+    },
+    modalView: {
+        alignItems: "center",
+        justifyContent: "space-evenly",
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        elevation: 5,
+        transform: [{ translateX: -(width * 0.4) },
+        { translateY: -90 }],
+        height: 250,
+        width: width * 0.8,
+        backgroundColor: "#fff",
+        borderRadius: 15,
+        padding: 5
+    },
 })

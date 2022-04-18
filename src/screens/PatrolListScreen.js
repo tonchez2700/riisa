@@ -4,7 +4,6 @@ import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-ta
 import { Input, Button, Icon } from 'react-native-elements';
 import { Dropdown } from 'react-native-element-dropdown';
 import tw from 'tailwind-react-native-classnames';
-import PointsListScreen from './PointsListScreen';
 import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get("window");
@@ -14,7 +13,7 @@ const PatrolListScreen = () => {
     const navigation = useNavigation();
 
     const renderButton = (data, index) => {
-        console.log('jola')
+        
         return (
 
             <TouchableOpacity
