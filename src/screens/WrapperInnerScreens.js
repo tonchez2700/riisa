@@ -5,6 +5,9 @@ import tw from 'tailwind-react-native-classnames';
 import MenuFooter from '../components/MenuFooter';
 import NavBar from '../components/NavBar'
 import HomeScreen from './HomeScreen';
+import { Provider as PointsListProvider } from '../context/PointsListContext';
+import { Provider as PatrolsListProvider } from '../context/PatrolsListContext';
+import { Provider as IncidentProvider } from '../context/IncidentContext';
 import CeateReportScreen from './CeateReportScreen';
 import PatrolListScreen from './PatrolListScreen';
 import PointsListScreen from './PointsListScreen';
@@ -18,13 +21,18 @@ const WrapperInnerScreens = () => {
         <SafeAreaView style={{ flex: 1 }}>
             <NavBar />
             <View style={[tw`pl-8 pr-8`, { flex: 1 }]}>
-                <AppStack.Navigator screenOptions={{ headerShown: false }}>
-                <AppStack.Screen name="PatrolListScreen" component={PatrolListScreen} />
-                    <AppStack.Screen name="HomeScreen" component={HomeScreen} />
-                    <AppStack.Screen name="CeateReportScreen" component={CeateReportScreen} />
-                    <AppStack.Screen name="PointsListScreen" component={PointsListScreen} />
-
-                </AppStack.Navigator>
+                <PatrolsListProvider>
+                    <IncidentProvider>
+                        <PointsListProvider>
+                            <AppStack.Navigator screenOptions={{ headerShown: false }}>
+                                <AppStack.Screen name="PatrolListScreen" component={PatrolListScreen} />
+                                <AppStack.Screen name="HomeScreen" component={HomeScreen} />
+                                <AppStack.Screen name="CeateReportScreen" component={CeateReportScreen} />
+                                <AppStack.Screen name="PointsListScreen" component={PointsListScreen} />
+                            </AppStack.Navigator>
+                        </PointsListProvider>
+                    </IncidentProvider>
+                </PatrolsListProvider>
             </View>
         </SafeAreaView>
     )

@@ -1,5 +1,15 @@
 import * as Yup from 'yup';
 
+
+export const IncidentSchema = {
+    latitud: '',
+    longitud: '',
+    incidenteTipoId: '',
+    evidencias: '',
+    comentarioGuardia: '',
+    images: [],
+};
+
 export const AuthSchema = Yup.object().shape({
     email: Yup
         .string()

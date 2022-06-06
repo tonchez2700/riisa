@@ -31,8 +31,8 @@ export default Logo
 
 const styles = StyleSheet.create({
     xs: {
-        width: 100,
-        height: 35,
+        width: 40,
+        height: 40
     },
     sm: {
         width: 150,

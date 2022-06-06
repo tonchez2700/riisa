@@ -1,21 +1,39 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { ScrollView, StyleSheet, Alert, View, Text, Modal, Dimensions } from 'react-native'
 import { NavigationHelpersContext, useNavigation, } from '@react-navigation/native';
-import HeadTitleScreen from '../components/HeadTitleScreen.js'
 import { Input, Button } from 'react-native-elements'
+import { Dropdown } from 'react-native-element-dropdown';
+import { Context as IncidentContext } from '../context/IncidentContext.js';
+import { Context as PointsListContext } from '../context/PointsListContext.js';
+import { IncidentSchema } from './../config/schemas'
+import useHandleOnChangeTextInput from '../hooks/useHandleOnChangeTextInput'
+import HeadTitleScreen from '../components/HeadTitleScreen.js'
+import PhotoAttachmentArea from '../components/PhotoAttachmentArea'
 import tw from 'tailwind-react-native-classnames'
+import moment from 'moment'
+
+
 
 const { width } = Dimensions.get("window");
 
 const CeateReportScreen = (props) => {
 
+    const { state: statePoint, setPatrol } = useContext(PointsListContext)
+    const [inputState, handleInputChange] = useHandleOnChangeTextInput(IncidentSchema)
+    const { state, handleInput, store, setIncident, clearState } = useContext(IncidentContext)
+    const today = new Date();
+    const date = moment(today).format('DD-MM-YYYY')
+    const horas = moment(today).format('h:mm:ss a')
     const navigation = useNavigation();
     const [flexWrapper, setFlexWrapper] = useState(true);
-    const [modalVisible, setModalVisible] = useState(false);
 
-    const toggleModalVisibility = () => {
-        setModalVisible(!modalVisible);
-    };
+
+    useEffect(() => {
+
+        setIncident()
+
+    }, [])
+
     return (
         <ScrollView
             showsVerticalScrollIndicator={false}
@@ -24,18 +42,16 @@ const CeateReportScreen = (props) => {
             <Input
                 inputStyle={tw`text-center`}
                 label='Fecha'
-                value='02/02/2022'
+                value={date}
                 disabled={true}
-
                 labelStyle={{ color: '#133C60' }}
                 multiline={true}
             />
             <Input
                 inputStyle={tw`text-center`}
                 label='Hora'
-                value='2:00pm'
+                value={horas}
                 disabled={true}
-
                 labelStyle={{ color: '#133C60' }}
                 multiline={true}
             />
@@ -48,80 +64,71 @@ const CeateReportScreen = (props) => {
                 multiline={true}
             />
 
-            <Input
-                inputStyle={tw`text-center`}
-                label='Tipo de incidente'
-                disabled={true}
 
-                labelStyle={{ color: '#133C60' }}
-                multiline={true}
+            <View style={tw`flex-row ml-1`}>
+                <Text style={[tw`text-black text-base font-bold ml-2`, { color: '#133C60' }]}>Tipo de Incidente:</Text>
+                <Text style={{ color: 'red', fontWeight: 'bold', marginLeft: 5 }}>*</Text>
+            </View>
+            <Dropdown
+                maxHeight={300}
+                search
+                style={styles.dropdown}
+                searchPlaceholder="Buscar..."
+                placeholderStyle={{ color: 'gray' }}
+                selectedTextStyle={{ color: 'black', textAlign: 'center' }}
+                placeholder={'selecciona el incidente'}
+                valueField="value"
+                labelField="description"
+                value={inputState.incidenteTipoId}
+                data={state.incident}
+                onChange={item => {
+                    handleInputChange(item.value, 'incidenteTipoId')
+                }}
             />
-            <Input
-                inputStyle={tw`text-center`}
-                label='Fotografía'
-                disabled={true}
-                labelStyle={{ color: '#133C60' }}
-                multiline={true}
+            <View style={tw`flex-row ml-1`}>
+                <Text style={[tw`text-black text-base font-bold ml-2`, { color: '#133C60' }]}>Fotografía:</Text>
+                <Text style={{ color: 'red', fontWeight: 'bold', marginLeft: 5 }}>*</Text>
+            </View>
+            <PhotoAttachmentArea
+                onCameraStart={(isVisible) => {
+                    setFlexWrapper(isVisible)
+                }}
+                onTakePicture={(data) => {
+                    handleInputChange(data, 'images')
+                }}
             />
-            
+
             <Input
+                inputStyle={[{ padding: 10, paddingBottom: 10 }]}
                 label='Describa el incidente'
                 borderWidth={2}
-                padding={50}
-                disabled={true}
-                onChangeText={(value) => handleInputChange(value, 'reason')}
-                labelStyle={{ color: '#133C60' }}
+                placeholder={'Texto aquí . . .'}
+                borderRadius={2}
+                borderColor={'#002443'}
+                maxLength={512}
+                labelStyle={{ color: '#133C60', marginBottom: 10 }}
                 multiline={true}
+                value={inputState.comentarioGuardia}
+                onChangeText={(value) => handleInputChange(value, 'comentarioGuardia')}
+
+            />
+            <Button
+                buttonStyle={{ padding: 10, backgroundColor: '#002443', marginBottom: 15, marginTop: 10 }}
+                title="Otra Evidencia"
+            />
+            <Button
+                buttonStyle={{ padding: 10, backgroundColor: '#002443', marginBottom: 15, marginTop: 50 }}
+                title="Aceptar"
+                onPress={() => store(inputState, statePoint.patrolPoint.id)}
+            />
+
+            <Button
+                buttonStyle={{ backgroundColor: '#848484', marginBottom: 15 }}
+                onPress={() => { navigation.goBack(), clearState() }}
+                title="Rechazar"
             />
 
 
-            <View style={tw`flex-row justify-between`}>
-                <Button
-                    buttonStyle={{ backgroundColor: '#848484', marginBottom: 15 }}
-                    onPress={
-                        () => navigation.navigate('PointsListScreen')
-                    }
-                    title="Rechazar" />
-
-                <Button
-                    buttonStyle={{ padding: 10, backgroundColor: '#002443', marginBottom: 15 }}
-                    onPress={
-                        toggleModalVisibility
-                    }
-                    title="Aceptar" />
-
-                <Modal
-                    animationType="slide"
-                    transparent visible={modalVisible}
-                    presentationStyle="overFullScreen"
-                    onDismiss={toggleModalVisibility}>
-                    <View style={styles.viewWrapper}>
-                        <View style={styles.modalView}>
-                            <Input
-                                inputStyle={tw`text-center`}
-                                label='Gafete'
-                                labelStyle={{ color: '#133C60' }}
-                            />
-                            <Input
-                                inputStyle={tw`text-center`}
-                                label='Cono'
-                                labelStyle={{ color: '#133C60' }}
-                            />
-
-                            <View style={tw`flex-row justify-between`}>
-                                <Button
-                                    title="Cancelar"
-                                    buttonStyle={{ backgroundColor: '#848484', marginBottom: 15 }}
-                                    onPress={toggleModalVisibility} />
-
-                                <Button
-                                    title="Aceptar"
-                                    buttonStyle={{ marginLeft: 100, backgroundColor: '#002443', marginBottom: 15 }} />
-                            </View>
-                        </View>
-                    </View>
-                </Modal>
-            </View >
         </ScrollView >
     )
 }
@@ -155,5 +162,12 @@ const styles = StyleSheet.create({
         width: width * 0.8,
         backgroundColor: "#fff",
         borderRadius: 7,
+    },
+    dropdown: {
+        margin: 10,
+        textAlign: 'center',
+        marginBottom: 20,
+        borderBottomColor: 'gray',
+        borderBottomWidth: .6,
     },
 });

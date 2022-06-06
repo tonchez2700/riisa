@@ -2,6 +2,7 @@ import createDataContext from './createDataContext'
 import httpClient from '../services/httpClient'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as rootNavigation from '../helpers/rootNavigation';
+import moment from 'moment';
 
 const initialState = {
     error: false,
@@ -12,19 +13,19 @@ const initialState = {
 
 const loginReducer = (state = initialState, action) => {
 
-    switch(action.type){
+    switch (action.type) {
         case 'CLEAR_STATE':
             return initialState
         case 'FETCHING_DATA':
-            return { 
-                ...state, 
+            return {
+                ...state,
                 error: false,
                 message: null,
                 fetchingData: action.payload.fetchingData
             }
         case 'SIGNIN':
-            return { 
-                ...state, 
+            return {
+                ...state,
                 error: false,
                 message: null,
                 fetchingData: false,
@@ -33,16 +34,16 @@ const loginReducer = (state = initialState, action) => {
         case 'SIGNOUT':
             return { ...state, user: null, message: null }
         case 'SET_RESPONSE_ERROR':
-            return { 
-                ...state, 
+            return {
+                ...state,
                 error: true,
                 message: action.payload.message,
                 fetchingData: false,
                 user: null
             }
         case 'SET_REQUEST_ERROR':
-            return { 
-                ...state, 
+            return {
+                ...state,
                 error: true,
                 message: action.payload.message,
                 fetchingData: false,
@@ -56,17 +57,17 @@ const loginReducer = (state = initialState, action) => {
 
 const clearState = (dispatch) => {
     return () => {
-        dispatch({type: 'CLEAR_STATE' });
+        dispatch({ type: 'CLEAR_STATE' });
     }
 }
 
 const tryLocalSignin = (dispatch) => {
     return async () => {
         const user = JSON.parse(await AsyncStorage.getItem('user'))
-        if(user){
+        if (user) {
             dispatch({ type: 'SIGNIN', payload: { user } });
             rootNavigation.navigate('WrapperInnerScreens')
-        }else{
+        } else {
             rootNavigation.navigate('AuthScreen')
         }
     }
@@ -74,16 +75,16 @@ const tryLocalSignin = (dispatch) => {
 
 const signin = (dispatch) => {
     return async ({ email, password }) => {
-        dispatch({type: 'FETCHING_DATA', payload: { fetchingData: true } });
+        dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
         try {
             tryAuth(email, password, dispatch);
         } catch (error) {
-            dispatch({ 
-                type: 'SET_REQUEST_ERROR', 
-                payload: { 
-                    error: true, 
-                    message: 'Por el momento el servicio no está disponible, inténtelo mas tarde.' 
-                } 
+            dispatch({
+                type: 'SET_REQUEST_ERROR',
+                payload: {
+                    error: true,
+                    message: 'Por el momento el servicio no está disponible, inténtelo mas tarde.'
+                }
             });
         }
     }
@@ -99,32 +100,37 @@ const signout = (dispatch) => {
 
 const tryAuth = async (email, password, dispatch) => {
 
-    const response = await httpClient.post('/login', {username: email, password})
-    if(response.ObjetoSimple.Valido){
+    const data = {
+        email: email,
+        password: password
+    }
+    const response = await httpClient.post('/cuentas/login', data)
+    const today = new Date();
+    const expirationTime = new Date(response.expiracion)
+
+    if (expirationTime > today.getTime()) {
         const user = {
-            id: response.ObjetoSimple.Claims.id,
-            name: response.ObjetoSimple.Claims.name,
-            user: response.ObjetoSimple.Claims.user,
-            perfil_id: response.ObjetoSimple.Claims.perfil_id,
-            active: response.ObjetoSimple.Claims.active,
-            token: response.ObjetoSimple.JWT
+            expiracion: response.expiracion,
+            token: response.token
         }
         await AsyncStorage.setItem('user', JSON.stringify(user))
+        const user1 = JSON.parse(await AsyncStorage.getItem('user'));
+        (user1);
         dispatch({ type: 'SIGNIN', payload: { user } });
         rootNavigation.navigate('WrapperInnerScreens')
-    }else{
-        dispatch({ 
-            type: 'SET_RESPONSE_ERROR', 
-            payload: { 
-                error: true, 
-                message: 'Los accesos son incorrectos, favor de verificarlos.' 
-            } 
+    } else {
+        dispatch({
+            type: 'SET_RESPONSE_ERROR',
+            payload: {
+                error: true,
+                message: 'Los accesos son incorrectos, favor de verificarlos.'
+            }
         });
     }
 }
 
 export const { Context, Provider } = createDataContext(
-    loginReducer, 
+    loginReducer,
     { signin, signout, tryLocalSignin, clearState },
     initialState
 );

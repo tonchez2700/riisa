@@ -26,7 +26,7 @@ const NavBar = () => {
             }
             rightComponent={
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('PatrolListScreen')}>
+                    onPress={() => signout()}>
                         <Icon
                         name='sign-out'
                         type='font-awesome'

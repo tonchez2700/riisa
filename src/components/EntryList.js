@@ -1,68 +1,89 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Modal, Dimensions } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, Text, StyleSheet, Modal, Dimensions, TouchableOpacity } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
+import { Context as PointsListContext } from '../context/PointsListContext';
 import tw from 'tailwind-react-native-classnames';
+import moment from 'moment'
 
 const { width } = Dimensions.get("window");
 
-const EntryList = ({ data, deleteItem, updateLeavingTime }) => {
-
+const EntryList = ({ data }) => {
+    const { state, fetchingData, storeCheck, setPatrol } = useContext(PointsListContext)
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalData, setModalData] = useState(null);
+    const [modalID, setModalID] = useState(null);
+    const today = new Date();
+    const todayFormat = moment(today).format('DD-MM-YYYY , h:mm:ss a')
 
     const toggleModalVisibility = () => {
         setModalVisible(!modalVisible);
     };
 
     return (
-        <View style={tw`mt-1`}>
+        <View style={tw`mb-9 mt-9`}>
             {
                 data.map((item) => {
                     return (
                         <View key={item.id}>
-                            <View style={tw`m-1 p-2 border border-gray-400 rounded`}>
+                            {
+                                data[0].id == item.id
+                                    ?
+                                    <View style={tw`flex-row  pt-5 pb-5 items-center border-b border-t border-gray-200`}>
+                                        <View style={tw`flex-initial`}>
+                                        </View>
+                                        <View style={tw`flex-row`}>
+                                            <Text style={[tw`flex-initial w-64  font-bold`, { color: '#002443' }]}>{item.descripcion}</Text>
+                                            <TouchableOpacity
+                                                style={tw`flex-none mr-1`}>
+                                                <Icon
+                                                    name='location-on'
+                                                    type='material'
+                                                    color='#002443' />
+                                            </TouchableOpacity>
+                                            <TouchableOpacity
+                                                style={tw`flex-none`}
+                                                onPress={() => {
+                                                    toggleModalVisibility()
+                                                    setModalData(item.descripcion)
+                                                    setModalID(item.id)
+                                                }}>
+                                                <Icon
+                                                    name='circle'
+                                                    type='material'
+                                                    color='#D6A51C' />
+                                            </TouchableOpacity>
+                                        </View>
 
-                                <View style={tw`flex-row justify-between`}>
-                                    <View style={[tw`flex-row`, { marginTop: 10 }]}>
-                                        <Text style={[tw`text-black text-base font-bold`, { color: '#ee8920' }]}>{item.name}</Text>
+
                                     </View>
-                                    <View style={[tw`flex-row`,]}>
-                                        <View>
-                                            <Button
-                                                buttonStyle={[{ backgroundColor: '#FFFFFF00' }]}
-                                                icon={
-                                                    <Icon
-                                                        name="map-marker"
-                                                        type='font-awesome'
-                                                        size={25} color="#133C60"
-                                                        margin={2}
-                                                    />
-                                                }
-                                            />
+                                    :
+                                    <View style={tw`flex-row  pt-5 pb-5 items-center border-b border-t border-gray-200`}>
+                                        <View style={tw`flex-initial`}>
                                         </View>
-                                        <View>
-                                            <Button
-                                                buttonStyle={[{ backgroundColor: '#FFFFFF00' }]}
-                                                onPress={() => toggleModalVisibility()}
-                                                icon={
-                                                    <Icon
-                                                        name="circle"
-                                                        type='font-awesome'
-                                                        size={25} color="orange"
-                                                        margin={2}
-                                                    />
-                                                }
-                                            />
+                                        <View style={tw`flex-row`}>
+                                            <Text style={[tw`flex-initial w-64  font-bold`, { color: '#002443' }]}>{item.descripcion}</Text>
+                                            <Icon
+                                                style={tw`flex-none`}
+                                                name='location-on'
+                                                type='material'
+                                                color='#002443' />
+                                            <Icon
+                                                style={tw`flex-none`}
+                                                name='circle'
+                                                type='material'
+                                                color='green' />
+
                                         </View>
+
+
                                     </View>
-                                </View>
-                            </View>
+                            }
                         </View>
 
 
                     )
                 })
             }
-
             <Modal
                 animationType="slide"
                 transparent
@@ -71,42 +92,45 @@ const EntryList = ({ data, deleteItem, updateLeavingTime }) => {
                 onDismiss={() => toggleModalVisibility()}>
                 <View style={styles.viewWrapper}>
                     <View style={styles.modalView}>
-                        <Text style={styles.text}>Check-In</Text>
+                        <Text style={[tw`mr-2 font-bold text-lg justify-center`, { color: '#002443' }]}>Check-In</Text>
                         <View >
-                            <View style={tw`flex-row justify-between`}>
-                                <Text style={styles.textModal}>Punto:</Text>
-                                <Text>Puerta principal </Text>
+                            <View style={tw`flex-row `}>
+                                <Text style={[tw`mr-2 font-bold`, { color: '#002443' }]}>Punto:</Text>
+                                <Text>{modalData}</Text>
                             </View>
-                            <View style={tw`flex-row justify-between`}>
-                                <Text style={styles.textModal}>Fecha y Hora:</Text>
-                                <Text>Fecha y Hora </Text>
+                            <View style={tw`flex-row  `}>
+                                <Text style={[tw`mr-2 font-bold`, { color: '#002443' }]}>Fecha y Hora:</Text>
+                                <Text>{todayFormat}</Text>
                             </View>
-                            <View style={tw`flex-row justify-between`}>
-                                <Text style={styles.textModal}>Ubicación:</Text>
-                                <Text>2131546 </Text>
+                            <View style={tw`flex-row `}>
+                                <Text style={[tw`mr-2 font-bold`, { color: '#002443' }]}>Ubicación:</Text>
+                                <Text>3245454545, 54545454 </Text>
                             </View>
-
                         </View>
 
-
-
-                        <View style={tw`flex-row justify-between`}>
-                            <Button
-                                title="Cancelar"
-                                buttonStyle={{ backgroundColor: '#848484', marginBottom: 15 }}
-                                onPress={() => toggleModalVisibility()} />
-
+                        <View style={tw`flex-row justify-center  mt-5`}>
                             <Button
                                 title="Aceptar"
-                                buttonStyle={{ marginLeft: 100, backgroundColor: '#002443', marginBottom: 15 }}
-
+                                buttonStyle={{ backgroundColor: '#002443', marginBottom: 15 }}
+                                onPress={() => {
+                                    storeCheck(modalID)
+                                    setPatrol(state.patrolPoint.id)
+                                }} />
+                            <Button
+                                title="Cancelar"
+                                buttonStyle={{ marginLeft: 50, backgroundColor: '#848484', marginBottom: 15 }}
                                 onPress={() => toggleModalVisibility()} />
+
+
                         </View>
                     </View>
                 </View>
             </Modal>
         </View>
+
+
     )
+
 }
 
 export default EntryList
@@ -119,17 +143,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         backgroundColor: "#fff",
     },
-    text: {
-        textAlign: 'center',
-        color: '#133C60',
-        fontSize: 20,
-        fontWeight: 'bold'
-    },
-    textModal: {
-        color: '#133C60',
-        fontWeight: 'bold',
-        marginRight:50
-    },
     viewWrapper: {
         flex: 1,
         alignItems: "center",
@@ -138,7 +151,7 @@ const styles = StyleSheet.create({
     },
     modalView: {
         alignItems: "center",
-        justifyContent: "space-evenly",
+        justifyContent: "center",
         position: "absolute",
         top: "50%",
         left: "50%",
@@ -148,7 +161,6 @@ const styles = StyleSheet.create({
         height: 250,
         width: width * 0.8,
         backgroundColor: "#fff",
-        borderRadius: 15,
-        padding: 5
+        borderRadius: 7,
     },
 });

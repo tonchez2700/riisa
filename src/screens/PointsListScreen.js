@@ -1,72 +1,104 @@
-import { Text, View, ScrollView, StyleSheet, TouchableOpacity, Alert, Modal, Dimensions, Picker } from 'react-native'
-import React, { Component, useState } from 'react'
-import tw from 'tailwind-react-native-classnames';
-import EntryList from './../components/EntryList'
+import { Text, View, ScrollView, StyleSheet, TouchableOpacity, Alert, Modal, Dimensions, ActivityIndicator } from 'react-native'
+import React, { useContext, useState, useEffect } from 'react'
+import { Context as PointsListContext } from '../context/PointsListContext';
+import { Context as PatrolsListContext } from '../context/PatrolsListContext';
 import { Input, Button, Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
+import tw from 'tailwind-react-native-classnames';
+import HeadTitleScreen from '../components/HeadTitleScreen';
+import EntryList from './../components/EntryList'
+import ModalIncident from '../components/Modal/ModalIncident';
+import ModalCancel from '../components/Modal/ModalCancel';
+import ModalCheck from '../components/Modal/ModalCheck';
+import moment from 'moment'
 
 const { width } = Dimensions.get("window");
 
 
-const PointsListScreen = () => {
+const PointsListScreen = (data) => {
 
     const navigation = useNavigation();
+    const { state, setRonda, setPatrol } = useContext(PointsListContext);
+    const [clockState, setClockState] = useState();
+    const { state: statePatrol, } = useContext(PatrolsListContext);
+    const { route: { params: { id, nombre } } } = data;
 
-    const [modalVisible, setModalVisible] = useState(false);
+    const full_initial_date = new Date(state.patrolPoint.fechaHoraInicio);
+    const initial_date = moment(full_initial_date).format('DD-MM-YYYY');
 
-    const toggleModalVisibility = () => {
-        setModalVisible(!modalVisible);
-    };
 
-    const multipleFunction = () =>{
-        toggleModalVisibility();
-        navigation.navigate('CeateReportScreen');
-    }
+    useEffect(() => {
+        setInterval(() => {
+            const today = new Date();
+            setClockState(moment(today).format('h:mm:ss a'))
+        }, 1000);
+    }, []);
+
+
+    useEffect(() => {
+
+        if (state.patrolPoint != 'El Rondin 2, no existe') {
+            setPatrol(statePatrol.patrol[0].id)
+            setRonda(state.patrolPoint.id);
+        }
+    }, [state.patrolPoint.id]);
 
 
     return (
 
         <ScrollView
             contentContainerStyle={{ paddingBottom: 100 }}>
-            <Text style={styles.title}>Listado de puntos</Text>
+
+
+            <HeadTitleScreen title='Listado de rondines' />
+
+            <View style={tw` flex-col items-center`}>
+                <View style={tw`flex-row `}>
+                    <Text style={[tw`flex-1 text-black font-bold text-lg`]}>ID: </Text>
+                    <Text style={[tw`flex-1 text-black text-lg`]}> {state.patrolPoint.id}</Text>
+                </View>
+                <View style={tw`flex-row `}>
+                    <Text style={[tw` flex-1 text-black font-bold text-lg `]}>Fecha de inicio: </Text>
+                    <Text style={[tw` flex-1 text-black text-lg`]}> {initial_date}</Text>
+                </View>
+                <View style={tw`flex-row `}>
+                    <Text style={[tw`flex-1 text-black font-bold text-lg `]}>Rondin: </Text>
+                    <Text style={[tw`flex-1 text-black text-lg`]}> {state.patrolPoint.rondinNombre}</Text>
+                </View>
+                <View style={tw`flex-row `}>
+                    <Text style={[tw`flex-1 text-black font-bold text-lg `]}>Tiempo Acumulado: </Text>
+                    <Text style={[tw`flex-1 text-black text-lg`]}> {clockState}</Text>
+                </View>
+
+            </View>
+            {
+
+                !state.fetchingData
+                    ?
+                    !state.error
+                        ?
+                        <EntryList
+                            data={state.point}
+                        />
+                        :
+                        <View style={tw`flex-1 p-5 justify-center items-center`}>
+                            <Text style={tw`text-center text-lg mb-3`}>
+                                {state.message}
+                            </Text>
+                        </View>
+                    :
+                    <ActivityIndicator size="large" color="#118EA6" style={tw`mt-5`} />
+            }
+
+
+            <ModalIncident />
+            <ModalCancel />
 
             <Button
-                style={styles.btnIncident}
-                title= {"Reportar incidente"}
-                onPress={() => toggleModalVisibility()}>
-                <Text style={styles.btnText} >Reportar incidente</Text>
+                buttonStyle={{ backgroundColor: '#A2A2A2', marginBottom: 10 }}
+                title={"Regresar"}
+                onPress={() => navigation.goBack()}>
             </Button>
-
-            <Modal
-                animationType="slide"
-                transparent
-                visible={modalVisible}
-                presentationStyle="overFullScreen"
-                onDismiss={() => toggleModalVisibility()}>
-                <View style={styles.viewWrapper}>
-                    <View style={styles.modalView}>
-                        <Text  style={styles.text}>¿Reportar incidente?</Text>
-
-                        <View style={tw`flex-row justify-between`}>
-                            <Button
-                                title="Cancelar"
-                                buttonStyle={{ backgroundColor: '#848484', marginBottom: 15 }}
-                                onPress={() => toggleModalVisibility()} />
-
-                            <Button
-                                title="Aceptar"
-                                buttonStyle={{ marginLeft: 100, backgroundColor: '#002443', marginBottom: 15 }}
-                                 
-                                onPress= {() => multipleFunction() }/>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
-
-            <EntryList
-                data={state}
-            />
-
 
         </ScrollView>
     );
@@ -77,40 +109,11 @@ const PointsListScreen = () => {
 export default PointsListScreen
 
 
-const state = [
-    { name: 'Puerta principal' }
-]
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 30,
         backgroundColor: '#fff'
-    },
-    title: {
-        textAlign: 'center',
-        color: '#ffad00',
-        fontSize: 30,
-        marginBottom: 20,
-        fontWeight: 'bold'
-    },  
-    text: {
-        textAlign: 'center',
-        color: '#133C60',
-        fontSize: 20,
-        fontWeight: 'bold'
-    },
-    btnIncident: {
-        marginBottom: 20,
-        height: 35,
-        width: width - 60,
-        backgroundColor: '#133C60',
-        alignContent: 'center',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    btnText: {
-        color: 'white'
     },
     viewWrapper: {
         flex: 1,

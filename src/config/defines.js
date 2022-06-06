@@ -1,4 +1,4 @@
-export const apiUrlBase = 'http://apivisitas.aam.esgy.com.mx/api'
+export const apiUrlBase = 'https://aam-rmc-apps-development.azurewebsites.net/api-rondines'
 
 /**
  * Allowed agendas
