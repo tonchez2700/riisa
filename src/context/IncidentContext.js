@@ -16,7 +16,7 @@ const initialState = {
     incidenteTipoId: [],
     typeIncident: '',
     images: [],
-    patrol: [],
+    rondines: [],
     fetchingData: false
 }
 
@@ -94,7 +94,6 @@ const store = (dispatch) => {
     return async (params, id) => {
         try {
             dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
-
             const user = JSON.parse(await AsyncStorage.getItem('user'))
             const token = user.token
             const data = prepareData(params, id)
@@ -105,32 +104,20 @@ const store = (dispatch) => {
                     'Authorization': `Bearer ${token}`,
                 }
             )
-            console.log(response);
-            console.log(response);
+            
         } catch (error) {
-
+            Alert.alert(
+                "Error",
+                "error al crear incidente",
+                [{
+                    text: "Aceptar",
+                }]
+            )
         }
     }
 }
 
-const handleResponseBehaviour = (dispatch) => {
-    if (response.Exito) {
-        dispatch({ type: 'FETCHING_DATA1', fetchingData: true })
-        dispatch({
-            type: 'SET_SUCCESS_RESPONSE',
-            payload: { error: false, message: null }
-        })
-        rootNavigation.navigate('FreeVisitorListScreen')
-    } else {
-        dispatch({
-            type: 'SET_ERROR',
-            payload: {
-                error: true,
-                message: response.Mensaje
-            }
-        })
-    }
-}
+
 
 const handleInputChange = (dispatch, state) => {
     return async (value, fieldName) => {
@@ -143,14 +130,18 @@ const handleInputChange = (dispatch, state) => {
 }
 
 const prepareData = (data, id) => {
-    let result = {
 
+    let result = {
+        latitud: 26,
+        longitud: -100,
         IncidenteTipoId: data.incidenteTipoId,
-        Evidencias: `data:image/jpeg;base64,${data.images[0].source}`,
+        Evidencias: [`data:image/jpeg;base64,${data.images[0].source}`],
         ComentarioGuardia: data.comentarioGuardia,
+        RondaId: id,
 
 
     }
+
     return result
 }
 

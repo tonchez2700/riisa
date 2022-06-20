@@ -9,7 +9,7 @@ import tw from 'tailwind-react-native-classnames';
 
 const PatrolList = ({ data }) => {
 
-    const { state: statePatrol, } = useContext(PatrolsListContext)
+    const { state: statePatrol, setRonda } = useContext(PatrolsListContext)
     const { state, setPatrol } = useContext(PointsListContext)
     const navigation = useNavigation();
 
@@ -23,22 +23,27 @@ const PatrolList = ({ data }) => {
             </View>
             {
                 data.map((item) => {
-
+                
                     return (
                         <View
                             key={item.id}
-                            style={[tw`flex-row bg-gray-200`, { backgroundColor: "#E2F0FF", color: "white" }]} >
+                            style={[tw`flex-row bg-gray-200`, {
+                                borderColor: 'gray',
+                                borderTopWidth: 0.2,
+                                backgroundColor: "#E2F0FF",
+                                color: "white"
+                            }]} >
                             <View style={tw`flex-row  `}>
-                                <Text style={[tw`flex-auto w-64 text-lg text-center p-2`, { color: "black" }]}>{item.nombre}</Text>
+                                <Text style={[tw`flex-auto w-64 text-lg text-center p-2`, {
+                                    borderColor: 'gray',
+                                    borderRightWidth: 0.2,
+                                    color: "black"
+                                }]}>{item.nombre}</Text>
                                 <TouchableOpacity
                                     style={tw`p-2`}
-                                    onPress={() =>
-                                        navigation.navigate({
-                                            name: 'PointsListScreen',
-                                            params: item
-                                        }, setPatrol(item.id))
-                                    }>
+                                    onPress={() =>  setRonda(item.id) }>
                                     <Icon
+                                        style={{paddingLeft: 22}}
                                         size={35}
                                         name='directions-run'
                                         type='material'

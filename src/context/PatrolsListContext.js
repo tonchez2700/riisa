@@ -9,9 +9,8 @@ const initialState = {
     error: false,
     message: null,
     name: '',
-    cone: '',
-    badge: '',
-    patrol: [],
+    rondines: [],
+    ronda: '',
     fetchingData: false
 }
 
@@ -27,13 +26,21 @@ const PatrolsListRedcer = (state = initialState, action) => {
                 message: null,
                 fetchingData: action.payload.fetchingData
             }
-        case 'SET_PATROL':
+        case 'SET_RONDINES':
             return {
                 ...state,
                 fetchingData: false,
                 error: false,
                 message: "",
-                patrol: action.payload.response
+                rondines: action.payload.rondines
+            }
+        case 'SET_RONDA':
+            return {
+                ...state,
+                fetchingData: false,
+                error: false,
+                message: "",
+                ronda: action.payload.ronda
             }
         case 'SET_ERROR':
             return {
@@ -56,21 +63,65 @@ const clearState = (dispatch) => {
 
 const fetchingData = (dispatch) => {
     return async () => {
-        try {
-            dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
-            const user = JSON.parse(await AsyncStorage.getItem('user'));
-            const token = user.token
-            const response = await httpClient.get(`rondas/obtenerRondines`,
+
+        dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
+        const user = JSON.parse(await AsyncStorage.getItem('user'));
+        const token = user.token
+        let date = moment(new Date()).format('DD-MM-YYYY , h:mm:ss a')
+        let expiration = moment(user.expiracion).format('DD-MM-YYYY , h:mm:ss a')
+        if (expiration < date) {
+
+            Alert.alert(
+                "Tiempo Agotado",
+                "Tiempo se sesion acabado.",
+                [{
+                    text: "Aceptar",
+                    onPress: () => rootNavigation.navigate('AuthScreen')
+                }]
+            )
+        } else {
+
+            const rondines = await httpClient.get(`rondas/obtenerRondines`,
                 {
                     'Authorization': `Bearer ${token}`,
                 }
             );
-            (user);
             dispatch({
-                type: 'SET_PATROL',
-                payload: { response }
+                type: 'SET_RONDINES',
+                payload: { rondines }
             })
+        }
+    }
+}
 
+
+
+const setRonda = (dispatch) => {
+    return async (id) => {
+        try {
+            dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
+            const user = JSON.parse(await AsyncStorage.getItem('user'));
+            const token = user.token
+            const ronda = await httpClient.get(`rondas/crearRonda/${id}`,
+                {
+                    'Authorization': `Bearer ${token}`,
+                });
+            if (ronda == `El Rondin ${id}, no existe`) {
+                Alert.alert(
+                    "Error",
+                    `${ronda}`,
+                    [{
+                        text: "Aceptar",
+                        onPress: () => rootNavigation.navigate('PatrolListScreen')
+                    }]
+                )
+            } else {
+                dispatch({
+                    type: 'SET_RONDA',
+                    payload: { ronda }
+                })
+                rootNavigation.navigate('PointsListScreen')
+            }
         } catch {
             Alert.alert(
                 "Error",
@@ -89,6 +140,7 @@ export const { Context, Provider } = createDataContext(
     PatrolsListRedcer,
     {
         clearState,
+        setRonda,
         fetchingData,
     },
     initialState

@@ -12,7 +12,7 @@ const MenuFooter = () => {
         <View style={tw`flex-row pl-6 pr-6 border-gray-200 border-t bg-white`}>
             <TouchableOpacity 
                 style={tw`flex-row flex-grow p-4`} 
-                onPress={() => navigation.navigate('QRScannerScreen')}>
+                onPress={() => navigation.navigate('locationPermisionScreen')}>
                 <Icon
                     name='camera'
                     type='font-awesome'

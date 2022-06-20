@@ -83,6 +83,7 @@ const PhotoAttachmentArea = ({ onTakePicture, onCameraStart }) => {
         })
         const params = { quality: 0.7, base64: true }
         const photo = await cameraRef.current.takePictureAsync(params)
+
         if(photo.base64){
             dispatch({ 
                 type: 'SET_PHOTO_DATA', 

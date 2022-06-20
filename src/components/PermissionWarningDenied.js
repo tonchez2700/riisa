@@ -9,8 +9,8 @@ const PermissionWarningDenied = (props) => {
             <Text style={tw`text-lg text-center mb-8`}>{props.message}</Text>
             <Button
             buttonStyle={{ backgroundColor: '#133C60' }}
-                title="Permitir uso de camara"
-                onPress={props.requestBarcodeScannerPermissions}
+                title="Permitir localización"
+                onPress={props.requestForegroundPermissions}
                 
             />
         </View>

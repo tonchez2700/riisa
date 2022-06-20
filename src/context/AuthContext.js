@@ -107,7 +107,6 @@ const tryAuth = async (email, password, dispatch) => {
     const response = await httpClient.post('/cuentas/login', data)
     const today = new Date();
     const expirationTime = new Date(response.expiracion)
-
     if (expirationTime > today.getTime()) {
         const user = {
             expiracion: response.expiracion,

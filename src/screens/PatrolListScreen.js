@@ -18,12 +18,11 @@ const PatrolListScreen = () => {
         fetchingData()
 
     }, [])
-
     return (
         <ScrollView style={styles.container}>
             <HeadTitleScreen title='Listado de rondines' />
             <PatrolList
-                data={state.patrol} />
+                data={state.rondines} />
 
         </ScrollView>
     )

@@ -1,30 +1,31 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,memo } from 'react';
 import { View, Text, StyleSheet, Modal, Dimensions, TouchableOpacity } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
+import { Context as LocationContext } from '../context/LocationContext.js';
 import { Context as PointsListContext } from '../context/PointsListContext';
 import tw from 'tailwind-react-native-classnames';
 import moment from 'moment'
 
 const { width } = Dimensions.get("window");
 
-const EntryList = ({ data }) => {
-    const { state, fetchingData, storeCheck, setPatrol } = useContext(PointsListContext)
+const EntryList = memo(({ data, onPress }) => {
+
+    const { state, clearStateList, storeCheck, setPointsList } = useContext(PointsListContext)
+    const { state: stateLocation } = useContext(LocationContext)
     const [modalVisible, setModalVisible] = useState(false);
     const [modalData, setModalData] = useState(null);
     const [modalID, setModalID] = useState(null);
     const today = new Date();
     const todayFormat = moment(today).format('DD-MM-YYYY , h:mm:ss a')
-
     const toggleModalVisibility = () => {
         setModalVisible(!modalVisible);
     };
-
     return (
         <View style={tw`mb-9 mt-9`}>
             {
                 data.map((item) => {
                     return (
-                        <View key={item.id}>
+                        <View>
                             {
                                 data[0].id == item.id
                                     ?
@@ -46,6 +47,7 @@ const EntryList = ({ data }) => {
                                                     toggleModalVisibility()
                                                     setModalData(item.descripcion)
                                                     setModalID(item.id)
+
                                                 }}>
                                                 <Icon
                                                     name='circle'
@@ -104,7 +106,7 @@ const EntryList = ({ data }) => {
                             </View>
                             <View style={tw`flex-row `}>
                                 <Text style={[tw`mr-2 font-bold`, { color: '#002443' }]}>Ubicación:</Text>
-                                <Text>3245454545, 54545454 </Text>
+                                <Text>{`${stateLocation.location?.latitude}, ${stateLocation.location?.longitude}`} </Text>
                             </View>
                         </View>
 
@@ -113,8 +115,12 @@ const EntryList = ({ data }) => {
                                 title="Aceptar"
                                 buttonStyle={{ backgroundColor: '#002443', marginBottom: 15 }}
                                 onPress={() => {
-                                    storeCheck(modalID)
-                                    setPatrol(state.patrolPoint.id)
+
+                                    console.log(state.point),
+                                        storeCheck(modalID),
+                                        clearStateList(),
+                                        console.log(state.point),
+                                        setRonda(state.patrolPoint.id);
                                 }} />
                             <Button
                                 title="Cancelar"
@@ -128,10 +134,8 @@ const EntryList = ({ data }) => {
             </Modal>
         </View>
 
-
     )
-
-}
+})
 
 export default EntryList
 

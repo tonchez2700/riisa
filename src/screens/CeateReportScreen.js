@@ -3,8 +3,10 @@ import { ScrollView, StyleSheet, Alert, View, Text, Modal, Dimensions } from 're
 import { NavigationHelpersContext, useNavigation, } from '@react-navigation/native';
 import { Input, Button } from 'react-native-elements'
 import { Dropdown } from 'react-native-element-dropdown';
+import { Context as LocationContext } from '../context/LocationContext.js';
 import { Context as IncidentContext } from '../context/IncidentContext.js';
 import { Context as PointsListContext } from '../context/PointsListContext.js';
+import PermissionWarningDenied from '../components/PermissionWarningDenied.js';
 import { IncidentSchema } from './../config/schemas'
 import useHandleOnChangeTextInput from '../hooks/useHandleOnChangeTextInput'
 import HeadTitleScreen from '../components/HeadTitleScreen.js'
@@ -18,7 +20,8 @@ const { width } = Dimensions.get("window");
 
 const CeateReportScreen = (props) => {
 
-    const { state: statePoint, setPatrol } = useContext(PointsListContext)
+    const { state: statePoint } = useContext(PointsListContext)
+    const { state: stateLocation, requestForegroundPermissions } = useContext(LocationContext)
     const [inputState, handleInputChange] = useHandleOnChangeTextInput(IncidentSchema)
     const { state, handleInput, store, setIncident, clearState } = useContext(IncidentContext)
     const today = new Date();
@@ -31,105 +34,112 @@ const CeateReportScreen = (props) => {
     useEffect(() => {
 
         setIncident()
-
+        requestForegroundPermissions()
     }, [])
-
+    
     return (
-        <ScrollView
-            showsVerticalScrollIndicator={false}
-            padding={5}>
-            <HeadTitleScreen title='Visitante' />
-            <Input
-                inputStyle={tw`text-center`}
-                label='Fecha'
-                value={date}
-                disabled={true}
-                labelStyle={{ color: '#133C60' }}
-                multiline={true}
-            />
-            <Input
-                inputStyle={tw`text-center`}
-                label='Hora'
-                value={horas}
-                disabled={true}
-                labelStyle={{ color: '#133C60' }}
-                multiline={true}
-            />
-            <Input
-                inputStyle={tw`text-center`}
-                label='Ubicación'
-                disabled={true}
-                value='25.672092, -100.309392'
-                labelStyle={{ color: '#133C60' }}
-                multiline={true}
-            />
+        <View style={styles.container}>
+            {!stateLocation.hasPermission ?
+
+                <PermissionWarningDenied
+                    message={stateLocation.message}
+                    requestForegroundPermissions={requestForegroundPermissions} />
+                :
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    padding={5}>
+                    <HeadTitleScreen title='Visitante' />
+
+                    <Input
+                        inputStyle={tw`text-center`}
+                        label='Fecha'
+                        value={date}
+                        disabled={true}
+                        labelStyle={{ color: '#133C60' }}
+                        multiline={true}
+                    />
+                    <Input
+                        inputStyle={tw`text-center`}
+                        label='Hora'
+                        value={horas}
+                        disabled={true}
+                        labelStyle={{ color: '#133C60' }}
+                        multiline={true}
+                    />
+                    <Input
+                        inputStyle={tw`text-center`}
+                        label='Ubicación'
+                        value={`${stateLocation.location?.latitude}, ${stateLocation.location?.longitude} `}
+                        disabled={true}
+                        labelStyle={{ color: '#133C60' }}
+                        multiline={true}
+                    />
 
 
-            <View style={tw`flex-row ml-1`}>
-                <Text style={[tw`text-black text-base font-bold ml-2`, { color: '#133C60' }]}>Tipo de Incidente:</Text>
-                <Text style={{ color: 'red', fontWeight: 'bold', marginLeft: 5 }}>*</Text>
-            </View>
-            <Dropdown
-                maxHeight={300}
-                search
-                style={styles.dropdown}
-                searchPlaceholder="Buscar..."
-                placeholderStyle={{ color: 'gray' }}
-                selectedTextStyle={{ color: 'black', textAlign: 'center' }}
-                placeholder={'selecciona el incidente'}
-                valueField="value"
-                labelField="description"
-                value={inputState.incidenteTipoId}
-                data={state.incident}
-                onChange={item => {
-                    handleInputChange(item.value, 'incidenteTipoId')
-                }}
-            />
-            <View style={tw`flex-row ml-1`}>
-                <Text style={[tw`text-black text-base font-bold ml-2`, { color: '#133C60' }]}>Fotografía:</Text>
-                <Text style={{ color: 'red', fontWeight: 'bold', marginLeft: 5 }}>*</Text>
-            </View>
-            <PhotoAttachmentArea
-                onCameraStart={(isVisible) => {
-                    setFlexWrapper(isVisible)
-                }}
-                onTakePicture={(data) => {
-                    handleInputChange(data, 'images')
-                }}
-            />
+                    <View style={tw`flex-row ml-1`}>
+                        <Text style={[tw`text-black text-base font-bold ml-2`, { color: '#133C60' }]}>Tipo de Incidente:</Text>
+                        <Text style={{ color: 'red', fontWeight: 'bold', marginLeft: 5 }}>*</Text>
+                    </View>
+                    <Dropdown
+                        maxHeight={300}
+                        search
+                        style={styles.dropdown}
+                        searchPlaceholder="Buscar..."
+                        placeholderStyle={{ color: 'gray' }}
+                        selectedTextStyle={{ color: 'black', textAlign: 'center' }}
+                        placeholder={'selecciona el incidente'}
+                        valueField="value"
+                        labelField="description"
+                        value={inputState.incidenteTipoId}
+                        data={state.incident}
+                        onChange={item => {
+                            handleInputChange(item.value, 'incidenteTipoId')
+                        }}
+                    />
+                    <View style={tw`flex-row ml-1`}>
+                        <Text style={[tw`text-black text-base font-bold ml-2`, { color: '#133C60' }]}>Fotografía:</Text>
+                        <Text style={{ color: 'red', fontWeight: 'bold', marginLeft: 5 }}>*</Text>
+                    </View>
+                    <PhotoAttachmentArea
+                        onCameraStart={(isVisible) => {
+                            setFlexWrapper(isVisible)
+                        }}
+                        onTakePicture={(data) => {
+                            handleInputChange(data, 'images')
+                        }}
+                    />
 
-            <Input
-                inputStyle={[{ padding: 10, paddingBottom: 10 }]}
-                label='Describa el incidente'
-                borderWidth={2}
-                placeholder={'Texto aquí . . .'}
-                borderRadius={2}
-                borderColor={'#002443'}
-                maxLength={512}
-                labelStyle={{ color: '#133C60', marginBottom: 10 }}
-                multiline={true}
-                value={inputState.comentarioGuardia}
-                onChangeText={(value) => handleInputChange(value, 'comentarioGuardia')}
+                    <Input
+                        inputStyle={[{ padding: 10, paddingBottom: 10 }]}
+                        label='Describa el incidente'
+                        borderWidth={2}
+                        placeholder={'Texto aquí . . .'}
+                        borderRadius={2}
+                        borderColor={'#002443'}
+                        maxLength={512}
+                        labelStyle={{ color: '#133C60', marginBottom: 10 }}
+                        multiline={true}
+                        value={inputState.comentarioGuardia}
+                        onChangeText={(value) => handleInputChange(value, 'comentarioGuardia')}
+                    />
+                    <Button
+                        buttonStyle={{ padding: 10, backgroundColor: '#002443', marginBottom: 15, marginTop: 10 }}
+                        title="Otra Evidencia"
+                    />
+                    <Button
+                        buttonStyle={{ padding: 10, backgroundColor: '#002443', marginBottom: 15, marginTop: 50 }}
+                        title="Aceptar"
+                        onPress={() => store(inputState, statePoint.patrolPoint.id)}
+                    />
 
-            />
-            <Button
-                buttonStyle={{ padding: 10, backgroundColor: '#002443', marginBottom: 15, marginTop: 10 }}
-                title="Otra Evidencia"
-            />
-            <Button
-                buttonStyle={{ padding: 10, backgroundColor: '#002443', marginBottom: 15, marginTop: 50 }}
-                title="Aceptar"
-                onPress={() => store(inputState, statePoint.patrolPoint.id)}
-            />
-
-            <Button
-                buttonStyle={{ backgroundColor: '#848484', marginBottom: 15 }}
-                onPress={() => { navigation.goBack(), clearState() }}
-                title="Rechazar"
-            />
-
-
-        </ScrollView >
+                    <Button
+                        buttonStyle={{ backgroundColor: '#848484', marginBottom: 15 }}
+                        onPress={() => { navigation.goBack(), clearState() }}
+                        title="Rechazar"
+                    />
+                </ScrollView>
+            }
+        </View>
     )
 }
 

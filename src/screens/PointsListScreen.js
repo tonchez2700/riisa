@@ -1,9 +1,15 @@
-import { Text, View, ScrollView, StyleSheet, TouchableOpacity, Alert, Modal, Dimensions, ActivityIndicator } from 'react-native'
+import {
+    Text, View, ScrollView, StyleSheet,
+    TouchableOpacity, Alert, Modal, Dimensions,
+    ActivityIndicator, FlatList
+} from 'react-native'
 import React, { useContext, useState, useEffect } from 'react'
 import { Context as PointsListContext } from '../context/PointsListContext';
 import { Context as PatrolsListContext } from '../context/PatrolsListContext';
 import { Input, Button, Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
+import { Context as LocationContext } from '../context/LocationContext.js';
+import PermissionWarningDenied from '../components/PermissionWarningDenied.js';
 import tw from 'tailwind-react-native-classnames';
 import HeadTitleScreen from '../components/HeadTitleScreen';
 import EntryList from './../components/EntryList'
@@ -15,95 +21,211 @@ import moment from 'moment'
 const { width } = Dimensions.get("window");
 
 
-const PointsListScreen = (data) => {
+const PointsListScreen = () => {
+
 
     const navigation = useNavigation();
-    const { state, setRonda, setPatrol } = useContext(PointsListContext);
+    const { state: stateLocation, requestForegroundPermissions } = useContext(LocationContext)
+    const { state, setPointsList, clearStateList, storeCheck } = useContext(PointsListContext);
     const [clockState, setClockState] = useState();
-    const { state: statePatrol, } = useContext(PatrolsListContext);
-    const { route: { params: { id, nombre } } } = data;
+    const { state: stateRonda, } = useContext(PatrolsListContext);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalData, setModalData] = useState(null);
+    const [modalID, setModalID] = useState(null);
+    const today = new Date();
+    const todayFormat = moment(today).format('DD-MM-YYYY , h:mm:ss a')
 
-    const full_initial_date = new Date(state.patrolPoint.fechaHoraInicio);
+    const toggleModalVisibility = () => {
+        setModalVisible(!modalVisible);
+    };
+
+
+    const full_initial_date = new Date(stateRonda.ronda?.fechaHoraInicio);
     const initial_date = moment(full_initial_date).format('DD-MM-YYYY');
 
-
     useEffect(() => {
-        setInterval(() => {
-            const today = new Date();
-            setClockState(moment(today).format('h:mm:ss a'))
-        }, 1000);
+
+        requestForegroundPermissions()
+
+    }, [])
+    useEffect(() => {
+        clearStateList()
+        setPointsList(stateRonda.ronda.id);
+
     }, []);
-
-
-    useEffect(() => {
-
-        if (state.patrolPoint != 'El Rondin 2, no existe') {
-            setPatrol(statePatrol.patrol[0].id)
-            setRonda(state.patrolPoint.id);
-        }
-    }, [state.patrolPoint.id]);
+    // useEffect(() => {
+    //     setInterval(() => {
+    //         const today = new Date();
+    //         setClockState(moment(today).format('h:mm:ss a'))
+    //     }, 1000);
+    // }, []);
 
 
     return (
 
-        <ScrollView
-            contentContainerStyle={{ paddingBottom: 100 }}>
+        <View style={styles.container}>
+            {!stateLocation.hasPermission ?
+
+                <PermissionWarningDenied
+                    message={stateLocation.message}
+                    requestForegroundPermissions={requestForegroundPermissions} />
+                :
+                <ScrollView
+                    contentContainerStyle={{ paddingBottom: 100 }}>
 
 
-            <HeadTitleScreen title='Listado de rondines' />
+                    <HeadTitleScreen title='Listado de rondines' />
 
-            <View style={tw` flex-col items-center`}>
-                <View style={tw`flex-row `}>
-                    <Text style={[tw`flex-1 text-black font-bold text-lg`]}>ID: </Text>
-                    <Text style={[tw`flex-1 text-black text-lg`]}> {state.patrolPoint.id}</Text>
-                </View>
-                <View style={tw`flex-row `}>
-                    <Text style={[tw` flex-1 text-black font-bold text-lg `]}>Fecha de inicio: </Text>
-                    <Text style={[tw` flex-1 text-black text-lg`]}> {initial_date}</Text>
-                </View>
-                <View style={tw`flex-row `}>
-                    <Text style={[tw`flex-1 text-black font-bold text-lg `]}>Rondin: </Text>
-                    <Text style={[tw`flex-1 text-black text-lg`]}> {state.patrolPoint.rondinNombre}</Text>
-                </View>
-                <View style={tw`flex-row `}>
-                    <Text style={[tw`flex-1 text-black font-bold text-lg `]}>Tiempo Acumulado: </Text>
-                    <Text style={[tw`flex-1 text-black text-lg`]}> {clockState}</Text>
-                </View>
-
-            </View>
-            {
-
-                !state.fetchingData
-                    ?
-                    !state.error
-                        ?
-                        <EntryList
-                            data={state.point}
-                        />
-                        :
-                        <View style={tw`flex-1 p-5 justify-center items-center`}>
-                            <Text style={tw`text-center text-lg mb-3`}>
-                                {state.message}
-                            </Text>
+                    <View style={tw` flex-col items-center`}>
+                        <View style={tw`flex-row `}>
+                            <Text style={[tw`flex-1 text-black font-bold text-lg`]}>ID: </Text>
+                            <Text style={[tw`flex-1 text-black text-lg`]}> {stateRonda.ronda?.id}</Text>
                         </View>
-                    :
-                    <ActivityIndicator size="large" color="#118EA6" style={tw`mt-5`} />
+                        <View style={tw`flex-row `}>
+                            <Text style={[tw` flex-1 text-black font-bold text-lg `]}>Fecha de inicio: </Text>
+                            <Text style={[tw` flex-1 text-black text-lg`]}> {initial_date}</Text>
+                        </View>
+                        <View style={tw`flex-row `}>
+                            <Text style={[tw`flex-1 text-black font-bold text-lg `]}>Rondin: </Text>
+                            <Text style={[tw`flex-1 text-black text-lg`]}> {stateRonda.ronda.rondinNombre}</Text>
+                        </View>
+                        <View style={tw`flex-row `}>
+                            <Text style={[tw`flex-1 text-black font-bold text-lg `]}>Tiempo Acumulado: </Text>
+                            <Text style={[tw`flex-1 text-black text-lg`]}> {initial_date}</Text>
+                        </View>
+
+                    </View>
+                    {
+                        !state.fetchingData
+                            ?
+                            <FlatList
+                                data={state.point}
+                                updateCellsBatchingPeriod={50}
+                                keyExtractor={item => `${item.id}`}
+                                onEndReachedThreshold={0.5}
+                                scrollEnabled={true}
+                                renderItem={({ item }) => {
+                                    return (
+                                        <View>
+                                            {
+                                                state.point[0].id == item.id
+                                                    ?
+                                                    <View style={tw`flex-row  pt-5 pb-5 items-center border-b border-t border-gray-200`}>
+                                                        <View style={tw`flex-initial`}>
+                                                        </View>
+                                                        <View style={tw`flex-row`}>
+                                                            <Text style={[tw`flex-initial w-64  font-bold`, { color: '#002443' }]}>{item.descripcion}</Text>
+                                                            <TouchableOpacity
+                                                                style={tw`flex-none mr-1`}>
+                                                                <Icon
+                                                                    name='location-on'
+                                                                    type='material'
+                                                                    color='#002443' />
+                                                            </TouchableOpacity>
+                                                            <TouchableOpacity
+                                                                style={tw`flex-none`}
+                                                                onPress={() => {
+                                                                    toggleModalVisibility()
+                                                                    setModalData(item.descripcion)
+                                                                    setModalID(item.id)
+
+                                                                }}>
+                                                                <Icon
+                                                                    name='circle'
+                                                                    type='material'
+                                                                    color='#D6A51C' />
+                                                            </TouchableOpacity>
+                                                        </View>
+
+
+                                                    </View>
+                                                    :
+                                                    <View style={tw`flex-row  pt-5 pb-5 items-center border-b border-t border-gray-200`}>
+                                                        <View style={tw`flex-initial`}>
+                                                        </View>
+                                                        <View style={tw`flex-row`}>
+                                                            <Text style={[tw`flex-initial w-64  font-bold`, { color: '#002443' }]}>{item.descripcion}</Text>
+                                                            <Icon
+                                                                style={tw`flex-none`}
+                                                                name='location-on'
+                                                                type='material'
+                                                                color='#002443' />
+                                                            <Icon
+                                                                style={tw`flex-none`}
+                                                                name='circle'
+                                                                type='material'
+                                                                color='green' />
+
+                                                        </View>
+
+
+                                                    </View>
+                                            }
+                                        </View>
+                                    )
+                                }}
+                            />
+                            :
+                            <ActivityIndicator size="large" color="#118EA6" style={tw`mt-5`} />
+                    }
+                    <Modal
+                        animationType="slide"
+                        transparent
+                        visible={modalVisible}
+                        presentationStyle="overFullScreen"
+                        onDismiss={() => toggleModalVisibility()}>
+                        <View style={styles.viewWrapper}>
+                            <View style={styles.modalView}>
+                                <Text style={[tw`mr-2 font-bold text-lg justify-center`, { color: '#002443' }]}>Check-In</Text>
+                                <View >
+                                    <View style={tw`flex-row `}>
+                                        <Text style={[tw`mr-2 font-bold`, { color: '#002443' }]}>Punto:</Text>
+                                        <Text>{modalData}</Text>
+                                    </View>
+                                    <View style={tw`flex-row  `}>
+                                        <Text style={[tw`mr-2 font-bold`, { color: '#002443' }]}>Fecha y Hora:</Text>
+                                        <Text>{todayFormat}</Text>
+                                    </View>
+                                    <View style={tw`flex-row `}>
+                                        <Text style={[tw`mr-2 font-bold`, { color: '#002443' }]}>Ubicación:</Text>
+                                        <Text>{`${stateLocation.location?.latitude}, ${stateLocation.location?.longitude}`} </Text>
+                                    </View>
+                                </View>
+
+                                <View style={tw`flex-row justify-center  mt-5`}>
+                                    <Button
+                                        title="Aceptar"
+                                        buttonStyle={{ backgroundColor: '#002443', marginBottom: 15 }}
+                                        onPress={() => {
+
+                                            storeCheck(modalID),
+                                                clearStateList(),
+                                                setPointsList(stateRonda.ronda.id),
+                                                toggleModalVisibility()
+                                        }} />
+                                    <Button
+                                        title="Cancelar"
+                                        buttonStyle={{ marginLeft: 50, backgroundColor: '#848484', marginBottom: 15 }}
+                                        onPress={() => toggleModalVisibility()} />
+
+
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
+                    <ModalIncident />
+                    <ModalCancel />
+
+                    <Button
+                        buttonStyle={{ backgroundColor: '#A2A2A2', marginBottom: 10 }}
+                        title={"Regresar"}
+                        onPress={() => navigation.goBack()}>
+                    </Button>
+
+                </ScrollView>
             }
-
-
-            <ModalIncident />
-            <ModalCancel />
-
-            <Button
-                buttonStyle={{ backgroundColor: '#A2A2A2', marginBottom: 10 }}
-                title={"Regresar"}
-                onPress={() => navigation.goBack()}>
-            </Button>
-
-        </ScrollView>
-    );
-
-
+        </View>
+    )
 }
 
 export default PointsListScreen

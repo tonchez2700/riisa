@@ -19,10 +19,16 @@ const PointsListRedcer = (state = initialState, action) => {
     switch (action.type) {
         case 'CLEAR_STATE':
             return { ...initialState }
+        case 'CLEAR_STATE1':
+            return {
+                ...state,
+                error: false,
+                message: null,
+                point: [],
+            }
         case 'FETCHING_DATA':
             return {
                 ...state,
-                fetchingData: action.payload.fetchingData,
                 error: false,
                 message: null,
                 fetchingData: action.payload.fetchingData
@@ -62,67 +68,39 @@ const clearState = (dispatch) => {
     }
 }
 
-const setPatrol = (dispatch) => {
-    return async (id) => {
-        try {
-            dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
-            const user = JSON.parse(await AsyncStorage.getItem('user'));
-            const token = user.token
-            const ronda = await httpClient.get(`rondas/crearRonda/${id}`,
-                {
-                    'Authorization': `Bearer ${token}`,
-                });
-            dispatch({
-                type: 'SET_PATROL_POINTS',
-                payload: { ronda }
-            })
-        } catch {
-            Alert.alert(
-                "Error",
-                "No se encontro ningun rondin.",
-                [{
-                    text: "Aceptar",
-                }]
-            )
-        }
+const clearStateList = (dispatch) => {
+    return () => {
+        dispatch({ type: 'CLEAR_STATE1' });
     }
 }
 
-const setRonda = (dispatch) => {
-    return async (id) => {
-        try {
-            dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
-            const user = JSON.parse(await AsyncStorage.getItem('user'));
-            const token = user.token
-            const response = await httpClient.get(`rondas/obtenerSiguientePunto/${id}`,
-                {
-                    'Authorization': `Bearer ${token}`,
-                }
-            );
-            if (response) {
-                dispatch({
-                    type: 'SET_POINTS',
-                    payload: { response }
-                })
-            } else {
-                dispatch({
-                    type: 'SET_REQUEST_ERROR',
-                    payload: {
-                        error: true,
-                        message: 'No se encontraron invitaciones anteriores.'
-                    }
-                });
-            }
-        } catch (error) {
-            dispatch({
-                type: 'SET_REQUEST_ERROR',
-                payload: {
-                    error: true,
-                    message: 'Por el momento el servicio no está disponible, inténtelo mas tarde.'
-                }
-            });
-        }
 
+const setPointsList = (dispatch) => {
+    return async (id) => {
+
+        const user = JSON.parse(await AsyncStorage.getItem('user'));
+        const token = user.token
+        const response = await httpClient.get(`rondas/obtenerSiguientePunto/${id}`,
+            {
+                'Authorization': `Bearer ${token}`,
+            }
+        )
+        if (response != '' || response == null) {
+            dispatch({
+                type: 'SET_POINTS',
+                payload: { response }
+            })
+        } else {
+            Alert.alert(
+                "Completo ",
+                "Ronda completada .",
+
+                [{
+                    text: "Aceptar",
+                    onPress: () => rootNavigation.navigate('PatrolListScreen')
+                }]
+            )
+        }
 
     }
 }
@@ -130,30 +108,33 @@ const setRonda = (dispatch) => {
 
 const storeCheck = (dispatch) => {
     return async (id) => {
-        try {
 
-            const data = prepareData()
-            dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
-            const user = JSON.parse(await AsyncStorage.getItem('user'));
-            const token = user.token
-            const response = await httpClient.put(`rondas/checkinPunto/${id}`,
-                data,
-                {
-                    'Authorization': `Bearer ${token}`,
-                }
-            );
-            (response);
-        } catch (error) {
+        const data = prepareData()
+        const user = JSON.parse(await AsyncStorage.getItem('user'));
+        const token = user.token
+        const response = await httpClient.put(`rondas/checkinPunto/${id}`,
+            data,
+            {
+                'Authorization': `Bearer ${token}`,
+            }
+        );
+        if (response.status == 404) {
             Alert.alert(
-                "Error",
-                "No se pudo dar check-in",
+                "ERROR",
+                "Hubo un error no es posible dar check-in .",
+                [{
+                    text: "Aceptar",
+                }]
+            )
+        } else {
+            Alert.alert(
+                "Correcto",
+                "Se dio Check-in Correctamente .",
                 [{
                     text: "Aceptar",
                 }]
             )
         }
-
-
     }
 }
 
@@ -172,8 +153,8 @@ export const { Context, Provider } = createDataContext(
     PointsListRedcer,
     {
         clearState,
-        setPatrol,
-        setRonda,
+        clearStateList,
+        setPointsList,
         storeCheck,
     },
     initialState
