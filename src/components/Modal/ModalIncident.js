@@ -22,7 +22,7 @@ const ModalIncident = () => {
     return (
         <View>
             <Button
-                buttonStyle={{ backgroundColor: '#002443', marginBottom: 10 }}
+                buttonStyle={{ backgroundColor: '#002443', marginBottom: 10 , marginTop: 50 }}
                 title={"Reportar incidente"}
                 onPress={() => toggleModalVisibility()}>
             </Button>

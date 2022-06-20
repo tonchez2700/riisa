@@ -70,10 +70,9 @@ const PointsListScreen = () => {
                     message={stateLocation.message}
                     requestForegroundPermissions={requestForegroundPermissions} />
                 :
-                <ScrollView
-                    contentContainerStyle={{ paddingBottom: 100 }}>
 
 
+                <View Style={{ paddingBottom: 100 }}>
                     <HeadTitleScreen title='Listado de rondines' />
 
                     <View style={tw` flex-col items-center`}>
@@ -89,7 +88,7 @@ const PointsListScreen = () => {
                             <Text style={[tw`flex-1 text-black font-bold text-lg `]}>Rondin: </Text>
                             <Text style={[tw`flex-1 text-black text-lg`]}> {stateRonda.ronda.rondinNombre}</Text>
                         </View>
-                        <View style={tw`flex-row `}>
+                        <View style={tw`flex-row mb-5`}>
                             <Text style={[tw`flex-1 text-black font-bold text-lg `]}>Tiempo Acumulado: </Text>
                             <Text style={[tw`flex-1 text-black text-lg`]}> {initial_date}</Text>
                         </View>
@@ -221,8 +220,7 @@ const PointsListScreen = () => {
                         title={"Regresar"}
                         onPress={() => navigation.goBack()}>
                     </Button>
-
-                </ScrollView>
+                </View>
             }
         </View>
     )
