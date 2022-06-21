@@ -5,7 +5,7 @@ import { Input, Button } from 'react-native-elements'
 import { Dropdown } from 'react-native-element-dropdown';
 import { Context as LocationContext } from '../context/LocationContext.js';
 import { Context as IncidentContext } from '../context/IncidentContext.js';
-import { Context as PointsListContext } from '../context/PointsListContext.js';
+import { Context as PatrolsListContext } from '../context/PatrolsListContext';
 import PermissionWarningDenied from '../components/PermissionWarningDenied.js';
 import { IncidentSchema } from './../config/schemas'
 import useHandleOnChangeTextInput from '../hooks/useHandleOnChangeTextInput'
@@ -20,7 +20,7 @@ const { width } = Dimensions.get("window");
 
 const CeateReportScreen = (props) => {
 
-    const { state: statePoint } = useContext(PointsListContext)
+    const { state: statePoint } = useContext(PatrolsListContext)
     const { state: stateLocation, requestForegroundPermissions } = useContext(LocationContext)
     const [inputState, handleInputChange] = useHandleOnChangeTextInput(IncidentSchema)
     const { state, handleInput, store, setIncident, clearState } = useContext(IncidentContext)
@@ -122,14 +122,11 @@ const CeateReportScreen = (props) => {
                         value={inputState.comentarioGuardia}
                         onChangeText={(value) => handleInputChange(value, 'comentarioGuardia')}
                     />
-                    <Button
-                        buttonStyle={{ padding: 10, backgroundColor: '#002443', marginBottom: 15, marginTop: 10 }}
-                        title="Otra Evidencia"
-                    />
+             
                     <Button
                         buttonStyle={{ padding: 10, backgroundColor: '#002443', marginBottom: 15, marginTop: 50 }}
                         title="Aceptar"
-                        onPress={() => store(inputState, statePoint.patrolPoint.id)}
+                        onPress={() => store(inputState, statePoint.ronda.id,stateLocation.location?.latitude,stateLocation.location?.longitude)}
                     />
 
                     <Button

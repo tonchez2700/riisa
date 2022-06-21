@@ -12,7 +12,6 @@ import { Context as LocationContext } from '../context/LocationContext.js';
 import PermissionWarningDenied from '../components/PermissionWarningDenied.js';
 import tw from 'tailwind-react-native-classnames';
 import HeadTitleScreen from '../components/HeadTitleScreen';
-import EntryList from './../components/EntryList'
 import ModalIncident from '../components/Modal/ModalIncident';
 import ModalCancel from '../components/Modal/ModalCancel';
 import ModalCheck from '../components/Modal/ModalCheck';
@@ -52,7 +51,7 @@ const PointsListScreen = () => {
         clearStateList()
         setPointsList(stateRonda.ronda.id);
 
-    }, []);
+    }, [stateRonda.ronda]);
     // useEffect(() => {
     //     setInterval(() => {
     //         const today = new Date();
@@ -197,7 +196,7 @@ const PointsListScreen = () => {
                                         buttonStyle={{ backgroundColor: '#002443', marginBottom: 15 }}
                                         onPress={() => {
 
-                                            storeCheck(modalID),
+                                            storeCheck(modalID, stateLocation.location.latitude, stateLocation.location.longitude),
                                                 clearStateList(),
                                                 setPointsList(stateRonda.ronda.id),
                                                 toggleModalVisibility()

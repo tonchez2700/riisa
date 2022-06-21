@@ -9,6 +9,7 @@ const initialState = {
     error: false,
     message: null,
     name: '',
+    comentario: '',
     patrolPoint: '',
     point: [],
     fetchingData: false
@@ -32,6 +33,13 @@ const PointsListRedcer = (state = initialState, action) => {
                 error: false,
                 message: null,
                 fetchingData: action.payload.fetchingData
+            }
+        case 'SET_DATA':
+            let fieldName = action.payload.fieldName
+            return {
+                ...state,
+                [fieldName]: action.payload.value,
+
             }
         case 'SET_PATROL_POINTS':
             return {
@@ -85,6 +93,7 @@ const setPointsList = (dispatch) => {
                 'Authorization': `Bearer ${token}`,
             }
         )
+        console.log(response);
         if (response != '' || response == null) {
             dispatch({
                 type: 'SET_POINTS',
@@ -107,9 +116,9 @@ const setPointsList = (dispatch) => {
 
 
 const storeCheck = (dispatch) => {
-    return async (id) => {
+    return async (id,latitud,longitud) => {
 
-        const data = prepareData()
+        const data = prepareData(latitud,longitud)
         const user = JSON.parse(await AsyncStorage.getItem('user'));
         const token = user.token
         const response = await httpClient.put(`rondas/checkinPunto/${id}`,
@@ -138,11 +147,73 @@ const storeCheck = (dispatch) => {
     }
 }
 
-const prepareData = () => {
+const RondaDelete = (dispatch) => {
+    return async (id, comentario) => {
+        console.log(id, comentario);
+        const user = JSON.parse(await AsyncStorage.getItem('user'));
+        const token = user.token
+        const data = DeleteData(comentario)
+        if (!data.error) {
+            Alert.alert(
+                "Completado",
+                "Ronda cancelada",
+                [{
+                    text: "Aceptar",
+                    onPress: () =>  rootNavigation.navigate('PatrolListScreen')
+                }]
+            )
+            await httpClient.put(`rondas/cancelarRonda/${id}`,
+                data.data,
+                {
+                    'Authorization': `Bearer ${token}`,
+                }
+            )
+           
+        } else {
+            dispatch({
+                type: 'SET_ERROR',
+                payload: data
+            })
+            Alert.alert(
+                "Error",
+                data.message,
+                [{
+                    text: "Aceptar",
+                }]
+            )
+        }
+
+    }
+}
+const DeleteData = (comentario) => {
+    let ErrorData = { error: false }
+    if (comentario == "")
+        return { ...ErrorData, error: true, message: 'Falta comentario' }
+    let result = {
+        error: false,
+        data: {
+            Comentario: comentario,
+        }
+
+    }
+    return result
+}
+
+
+const handleInputChange = (dispatch, state) => {
+    return async (value, fieldName) => {
+
+        dispatch({
+            type: 'SET_DATA',
+            payload: { value, fieldName }
+        })
+    }
+}
+const prepareData = (latitud,longitud) => {
 
     let data = {
-        latitud: 56565,
-        longitud: -100.334885,
+        latitud: latitud,
+        longitud: longitud,
         fechaHoraCheckIn: new Date(),
 
     }
@@ -154,6 +225,8 @@ export const { Context, Provider } = createDataContext(
     {
         clearState,
         clearStateList,
+        RondaDelete,
+        handleInputChange,
         setPointsList,
         storeCheck,
     },

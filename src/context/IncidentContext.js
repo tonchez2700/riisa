@@ -9,8 +9,6 @@ const initialState = {
     error: false,
     message: null,
     name: '',
-    cone: '',
-    badge: '',
     incident: [],
     commentIncident: '',
     incidenteTipoId: [],
@@ -75,6 +73,7 @@ const setIncident = (dispatch) => {
                 'Authorization': `Bearer ${token}`,
             }
         );
+        console.log(response);
         const suggestions = response
             .filter(item => item.descripcion.toLowerCase())
             .map(item => ({
@@ -91,24 +90,36 @@ const setIncident = (dispatch) => {
 }
 
 const store = (dispatch) => {
-    return async (params, id) => {
-        try {
-            dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
-            const user = JSON.parse(await AsyncStorage.getItem('user'))
-            const token = user.token
-            const data = prepareData(params, id)
+    return async (params, id, latitude, longitude) => {
+
+        const user = JSON.parse(await AsyncStorage.getItem('user'))
+        const token = user.token
+        const data = prepareData(params, id, latitude, longitude)
+        if (!data.error) {
+
+            Alert.alert(
+                "Error",
+                "Incidente creado correctamente",
+                [{
+                    text: "Aceptar",
+                    onPress: () => rootNavigation.goBack()
+                }]
+            )
             const response = await httpClient.post(
                 'incidentes/crearIncidente',
-                data,
+                data.data,
                 {
                     'Authorization': `Bearer ${token}`,
                 }
             )
-            
-        } catch (error) {
+        } else {
+            dispatch({
+                type: 'SET_ERROR',
+                payload: data
+            })
             Alert.alert(
                 "Error",
-                "error al crear incidente",
+                data.message,
                 [{
                     text: "Aceptar",
                 }]
@@ -129,16 +140,25 @@ const handleInputChange = (dispatch, state) => {
     }
 }
 
-const prepareData = (data, id) => {
+const prepareData = (data, id, latitude, longitude) => {
+    let ErrorData = { error: false }
+    if (data.incidenteTipoId == "")
+        return { ...ErrorData, error: true, message: 'Tipo de incidente es requerido.' }
+    if (data.images == "")
+        return { ...ErrorData, error: true, message: 'Una fotografía de la incidencia es requerida.' }
+    if (data.comentarioGuardia == "")
+        return { ...ErrorData, error: true, message: 'Comentario de guardia es requerido.' }
 
     let result = {
-        latitud: 26,
-        longitud: -100,
-        IncidenteTipoId: data.incidenteTipoId,
-        Evidencias: [`data:image/jpeg;base64,${data.images[0].source}`],
-        ComentarioGuardia: data.comentarioGuardia,
-        RondaId: id,
-
+        error: false,
+        data: {
+            latitud: latitude,
+            longitud: longitude,
+            IncidenteTipoId: data.incidenteTipoId,
+            Evidencias: [`data:image/jpeg;base64,${data.images[0].source}`],
+            ComentarioGuardia: data.comentarioGuardia,
+            RondaId: id,
+        }
 
     }
 
