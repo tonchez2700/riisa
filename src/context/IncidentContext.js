@@ -97,7 +97,7 @@ const store = (dispatch) => {
         if (!data.error) {
 
             Alert.alert(
-                "Error",
+                "Completado",
                 "Incidente creado correctamente",
                 [{
                     text: "Aceptar",

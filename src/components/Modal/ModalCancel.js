@@ -13,7 +13,7 @@ const ModalCancel = () => {
 
 
     const navigation = useNavigation();
-    const { state, RondaDelete, handleInputChange } = useContext(PointsListContext);
+    const { state, RondaDelete, handleInputChange, clearState } = useContext(PointsListContext);
     const { state: stateRonda, } = useContext(PatrolsListContext);
     const [modalVisible, setModalVisible] = useState(false);
     const toggleModalVisibility = () => {
@@ -23,6 +23,11 @@ const ModalCancel = () => {
         toggleModalVisibility();
     }
 
+    useEffect(() => {
+
+        clearState()
+
+    }, [])
     return (
         <View>
             <Button

@@ -25,7 +25,7 @@ const PointsListScreen = () => {
 
     const navigation = useNavigation();
     const { state: stateLocation, requestForegroundPermissions } = useContext(LocationContext)
-    const { state, setPointsList, clearStateList, storeCheck } = useContext(PointsListContext);
+    const { state, setPointsList, clearStateList, clearState, storeCheck } = useContext(PointsListContext);
     const [clockState, setClockState] = useState();
     const { state: stateRonda, } = useContext(PatrolsListContext);
     const [modalVisible, setModalVisible] = useState(false);
@@ -39,11 +39,8 @@ const PointsListScreen = () => {
     const toggleModalVisibility = () => {
         setModalVisible(!modalVisible);
     };
-
-
     const full_initial_date = new Date(stateRonda.ronda?.fechaHoraInicio);
     const initial_date = moment(full_initial_date).format('DD-MM-YYYY');
-
     useEffect(() => {
 
         requestForegroundPermissions()
@@ -62,7 +59,6 @@ const PointsListScreen = () => {
     //     }, 1000);
     // }, []);
 
-    console.log(state.fetchingData);
     return (
 
         <View style={styles.container}>
