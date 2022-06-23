@@ -73,7 +73,6 @@ const setIncident = (dispatch) => {
                 'Authorization': `Bearer ${token}`,
             }
         );
-        console.log(response);
         const suggestions = response
             .filter(item => item.descripcion.toLowerCase())
             .map(item => ({

@@ -1,7 +1,7 @@
 import {
     Text, View, ScrollView, StyleSheet,
     TouchableOpacity, Alert, Modal, Dimensions,
-    ActivityIndicator, FlatList
+    ActivityIndicator, FlatList, LogBox
 } from 'react-native'
 import React, { useContext, useState, useEffect } from 'react'
 import { Context as PointsListContext } from '../context/PointsListContext';
@@ -31,6 +31,8 @@ const PointsListScreen = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalData, setModalData] = useState(null);
     const [modalID, setModalID] = useState(null);
+    const [modalLatitud, setModalLatitud] = useState(null);
+    const [modalLongitud, setModalLongitud] = useState(null);
     const today = new Date();
     const todayFormat = moment(today).format('DD-MM-YYYY , h:mm:ss a')
 
@@ -46,12 +48,13 @@ const PointsListScreen = () => {
 
         requestForegroundPermissions()
 
-    }, [])
+    }, [stateLocation.location])
     useEffect(() => {
-        clearStateList()
-        setPointsList(stateRonda.ronda.id);
 
-    }, [stateRonda.ronda]);
+        if (state.statusFetchingData != false) {
+            setPointsList(stateRonda.ronda.id);
+        }
+    }, [stateLocation.location]);
     // useEffect(() => {
     //     setInterval(() => {
     //         const today = new Date();
@@ -59,7 +62,7 @@ const PointsListScreen = () => {
     //     }, 1000);
     // }, []);
 
-
+    console.log(state.fetchingData);
     return (
 
         <View style={styles.container}>
@@ -126,7 +129,8 @@ const PointsListScreen = () => {
                                                                     toggleModalVisibility()
                                                                     setModalData(item.descripcion)
                                                                     setModalID(item.id)
-
+                                                                    setModalLatitud(item.latitud)
+                                                                    setModalLongitud(item.longitud)
                                                                 }}>
                                                                 <Icon
                                                                     name='circle'
@@ -195,10 +199,18 @@ const PointsListScreen = () => {
                                         title="Aceptar"
                                         buttonStyle={{ backgroundColor: '#002443', marginBottom: 15 }}
                                         onPress={() => {
+                                            stateLocation.location.latitude == null
+                                                ?
+                                                Alert.alert(
+                                                    "Error",
+                                                    "Esperar a que se cargue la localización",
+                                                    [{
+                                                        text: "OK",
 
-                                            storeCheck(modalID, stateLocation.location.latitude, stateLocation.location.longitude),
-                                                clearStateList(),
-                                                setPointsList(stateRonda.ronda.id),
+                                                    }]
+                                                )
+                                                :
+                                                storeCheck(modalID, stateLocation.location.latitude, stateLocation.location.longitude, modalLatitud, modalLongitud),
                                                 toggleModalVisibility()
                                         }} />
                                     <Button

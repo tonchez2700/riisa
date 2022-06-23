@@ -2,6 +2,7 @@ import createDataContext from './createDataContext'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import httpClient from '../services/httpClient'
+import { isPointWithinRadius, getPreciseDistance } from 'geolib';
 import * as rootNavigation from '../helpers/rootNavigation';
 import { Alert } from 'react-native';
 
@@ -12,6 +13,7 @@ const initialState = {
     comentario: '',
     patrolPoint: '',
     point: [],
+    statusFetchingData: true,
     fetchingData: false
 }
 
@@ -57,6 +59,13 @@ const PointsListRedcer = (state = initialState, action) => {
                 message: "",
                 point: action.payload.response
             }
+        case 'SET_STATUS':
+            return {
+                ...state,
+                fetchingData: false,
+                error: false,
+                statusFetchingData: action.payload
+            }
         case 'SET_ERROR':
             return {
                 ...initialState,
@@ -85,7 +94,7 @@ const clearStateList = (dispatch) => {
 
 const setPointsList = (dispatch) => {
     return async (id) => {
-
+        
         const user = JSON.parse(await AsyncStorage.getItem('user'));
         const token = user.token
         const response = await httpClient.get(`rondas/obtenerSiguientePunto/${id}`,
@@ -93,20 +102,24 @@ const setPointsList = (dispatch) => {
                 'Authorization': `Bearer ${token}`,
             }
         )
-        console.log(response);
         if (response != '' || response == null) {
             dispatch({
                 type: 'SET_POINTS',
                 payload: { response }
             })
         } else {
+
+            dispatch({
+                type: 'SET_STATUS',
+                payload: true
+            })
+            rootNavigation.navigate('PatrolListScreen')
             Alert.alert(
                 "Completo ",
                 "Ronda completada .",
 
                 [{
                     text: "Aceptar",
-                    onPress: () => rootNavigation.navigate('PatrolListScreen')
                 }]
             )
         }
@@ -116,29 +129,52 @@ const setPointsList = (dispatch) => {
 
 
 const storeCheck = (dispatch) => {
-    return async (id,latitud,longitud) => {
+    return async (id, latitud, longitud, modalLatitud, modalLongitud) => {
+        console.log(latitud, longitud, modalLatitud, modalLongitud);
+        const data = prepareData(latitud, longitud)
+        const verification = isPointWithinRadius(
+            { latitude: modalLatitud, longitude: modalLongitud },
+            { latitude: latitud, longitude: longitud },
+            15
 
-        const data = prepareData(latitud,longitud)
-        const user = JSON.parse(await AsyncStorage.getItem('user'));
-        const token = user.token
-        const response = await httpClient.put(`rondas/checkinPunto/${id}`,
-            data,
-            {
-                'Authorization': `Bearer ${token}`,
-            }
         );
-        if (response.status == 404) {
-            Alert.alert(
-                "ERROR",
-                "Hubo un error no es posible dar check-in .",
-                [{
-                    text: "Aceptar",
-                }]
-            )
+
+        const sa = getPreciseDistance(
+            { latitude: latitud, longitude: longitud },
+            { latitude: modalLatitud, longitude: modalLongitud }
+        );
+
+        console.log(verification, sa);
+        if (verification == true) {
+            const user = JSON.parse(await AsyncStorage.getItem('user'));
+            const token = user.token
+            const response = await httpClient.put(`rondas/checkinPunto/${id}`,
+                data,
+                {
+                    'Authorization': `Bearer ${token}`,
+                }
+            );
+            if (response.status == 404) {
+                Alert.alert(
+                    "ERROR",
+                    "Hubo un error no es posible dar check-in .",
+                    [{
+                        text: "Aceptar",
+                    }]
+                )
+            } else {
+                Alert.alert(
+                    "Correcto",
+                    "Se dio Check-in Correctamente .",
+                    [{
+                        text: "Aceptar",
+                    }]
+                )
+            }
         } else {
             Alert.alert(
-                "Correcto",
-                "Se dio Check-in Correctamente .",
+                "No se pudo dar check-in.",
+                "Por favor acercarse más al punto .",
                 [{
                     text: "Aceptar",
                 }]
@@ -149,7 +185,6 @@ const storeCheck = (dispatch) => {
 
 const RondaDelete = (dispatch) => {
     return async (id, comentario) => {
-        console.log(id, comentario);
         const user = JSON.parse(await AsyncStorage.getItem('user'));
         const token = user.token
         const data = DeleteData(comentario)
@@ -159,7 +194,7 @@ const RondaDelete = (dispatch) => {
                 "Ronda cancelada",
                 [{
                     text: "Aceptar",
-                    onPress: () =>  rootNavigation.navigate('PatrolListScreen')
+                    onPress: () => rootNavigation.navigate('PatrolListScreen')
                 }]
             )
             await httpClient.put(`rondas/cancelarRonda/${id}`,
@@ -168,7 +203,7 @@ const RondaDelete = (dispatch) => {
                     'Authorization': `Bearer ${token}`,
                 }
             )
-           
+
         } else {
             dispatch({
                 type: 'SET_ERROR',
@@ -209,7 +244,7 @@ const handleInputChange = (dispatch, state) => {
         })
     }
 }
-const prepareData = (latitud,longitud) => {
+const prepareData = (latitud, longitud) => {
 
     let data = {
         latitud: latitud,
