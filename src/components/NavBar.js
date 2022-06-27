@@ -3,6 +3,7 @@ import { TouchableOpacity } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { Context as AuthContext} from '../context/AuthContext';
+import Images from '@assets/images';
 import Logo from './Logo';
 
 const NavBar = () => {
@@ -11,6 +12,7 @@ const NavBar = () => {
     return (
         <Header
             backgroundColor="#133C60" 
+            backgroundImage={Images.navBAr_Background}
             centerComponent={ <Logo size='xs' /> }
             barStyle="default"
             leftContainerStyle={{ justifyContent: 'center' }}

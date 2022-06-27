@@ -9,7 +9,7 @@ const HomeScreen = () => {
     return (
         <ScrollView 
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ alignItems: 'center' }}>
+            contentContainerStyle={{ alignItems: 'center', backgroundColor: '#F5F5F5' }}>
             <Text>Bienvenido a Centrika App</Text>
         </ScrollView>
     )

@@ -1,6 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
-import { Input } from 'react-native-elements'
+import { Input, Icon } from 'react-native-elements'
 
 const InputForm = ({ name, label, ...otherProps }) => {
     const { errors, values, touched, handleChange, handleBlur } = otherProps
@@ -15,16 +15,15 @@ const InputForm = ({ name, label, ...otherProps }) => {
                     onChangeText={handleChange(name)}
                     onBlur={handleBlur(name)}
                     value={values[name]}
-                    label={label}
                     errorMessage={errorMessage}
-                    color='#133C60' 
+                    color='#133C60'
                     labelStyle={{ color: '#133C60' }}
                     {...otherProps}
                 />
-                
+
             </View>
         </View>
     )
-}       
+}
 
 export default InputForm
