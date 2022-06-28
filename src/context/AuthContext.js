@@ -1,3 +1,5 @@
+
+
 import createDataContext from './createDataContext'
 import httpClient from '../services/httpClient'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -104,17 +106,16 @@ const tryAuth = async (email, password, dispatch) => {
         email: email,
         password: password
     }
-    const response = await httpClient.post('/cuentas/login', data)
+    const response = await httpClient.post('/users/login', data)
     const today = new Date();
-    const expirationTime = new Date(response.expiracion)
-    if (expirationTime > today.getTime()) {
+    const expirationTime = new Date(response.result.expiracion)
+    
+    if (response.succeeded) {
         const user = {
-            expiracion: response.expiracion,
-            token: response.token
+            expiracion: response.result.expire,
+            token: response.result.jwtToken,
         }
         await AsyncStorage.setItem('user', JSON.stringify(user))
-        const user1 = JSON.parse(await AsyncStorage.getItem('user'));
-        (user1);
         dispatch({ type: 'SIGNIN', payload: { user } });
         rootNavigation.navigate('WrapperInnerScreens')
     } else {
