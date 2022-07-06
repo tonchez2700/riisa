@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
+import { useNavigation } from '@react-navigation/native';
 import tw from 'tailwind-react-native-classnames';
 import moment from 'moment';
 
@@ -8,11 +9,11 @@ import moment from 'moment';
  * Item general de la lista de invitados que recibe la data y una función
  */
 const InvitedListItem = memo(({ data, onPress }) => {
+    const navigation = useNavigation();
 
     return (
 
         <View style={tw`mt-2`}>
-
             {
                 data ?
                     data.map((item) => {
@@ -51,7 +52,7 @@ const InvitedListItem = memo(({ data, onPress }) => {
                                         titleStyle={styles.primaryTitleButton}
                                         title="i"
                                         disabled={!data ? true : false}
-                                        onPress={() => onPress(data)}
+                                        onPress={() => navigation.navigate('StatusScreen')}
                                     />
                                 </View>
                             </View>
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
         width: 30,
         height: 30,
         borderBottomLeftRadius: 25,
-        borderTopRightRadius : 25,
+        borderTopRightRadius: 25,
         borderTopStartRadius: 25,
         backgroundColor: 'red',
     },
