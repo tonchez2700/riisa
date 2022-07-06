@@ -15,10 +15,10 @@ const AppStack = createNativeStackNavigator();
 
 const WrapperInnerScreens = () => {
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <ImageBackground source={Images.background} resizeMode="cover" style={tw`flex-1`}>
+        <SafeAreaView style={{ width: '100%', height: '100%' }}>
+            <ImageBackground source={Images.background} resizeMode="cover" style={[tw`flex-1`]}>
                 <NavBar />
-                <View style={[tw`pl-8 pr-8`, { flex: 1 }]}>
+                <View style={{ width: '100%', height: '80%', backgroundColor: 'transparent' }}>
 
                     <AppStack.Navigator screenOptions={{ headerShown: false }}>
                         <AppStack.Screen name="HomeScreen" component={HomeScreen} />

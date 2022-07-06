@@ -17,13 +17,17 @@ const { width } = Dimensions.get("window");
 
 const StatusScreen = (props) => {
     return (
-        <ScrollView source={Images.background} resizeMode="cover" style={tw`flex-1`}>
-            <View style={[tw`flex-row mt-5 justify-between`]}>
-                <Text style={[tw`text-xl font-bold `, { color: '#23233C' }]} color>Dashboard</Text>
-                <Icon type='font-awesome' name='user' size={25} color='#002443' style={{ marginRight: 1 }} />
-            </View>
-            <Text style={[tw`text-xl font-bold `, { color: '#23233C' }]} color>-------------------------------------------</Text>
-        </ScrollView>
+        <ImageBackground source={Images.background} resizeMode="cover" style={[tw`flex-1`, { backgroundColor: "#F5F5F5" }]}>
+            <ScrollView resizeMode="cover" style={[tw`flex-1`]}>
+                <View style={tw`m-5`}>
+                    <View style={[tw`flex-row mt-5 justify-between`]}>
+                        <Text style={[tw`text-xl font-bold `, { color: '#23233C' }]} color>Dashboard</Text>
+                        <Icon type='font-awesome' name='user' size={25} color='#002443' style={{ marginRight: 1 }} />
+                    </View>
+                    <Text style={[tw`text-xl font-bold `, { color: '#23233C' }]} color>----------------------------------------------</Text>
+                </View>
+            </ScrollView>
+        </ImageBackground>
     )
 }
 
