@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
-import { StyleSheet, Text, View, Alert, ScrollView, ImageBackground } from 'react-native'
+import { StyleSheet, Text, View, Alert, ScrollView, Dimensions, ImageBackground, KeyboardAvoidingView } from 'react-native'
 import tw from 'tailwind-react-native-classnames'
 import Images from '@assets/images';
 import InputForm from '../components/Forms/InputForm'
-import { Icon } from 'react-native-elements'
+import { Icon, Input } from 'react-native-elements'
 import ButtonFrom from '../components/Forms/ButtonFrom'
 import { useFormik } from 'formik'
 import { AuthSchema } from '../config/schemas'
@@ -29,9 +29,15 @@ const AuthScreen = () => {
     });
 
     return (
-        <ImageBackground source={Images.background} resizeMode="cover" style={tw`flex-1 items-end flex-row`}>
-            <View style={tw`h-full items-center`}>
 
+        <ImageBackground source={Images.background} resizeMode="cover" style={[tw`flex-1 items-end flex-row`, {
+            backgroundColor: '#F5F5F5', position: 'absolute',
+            left: 0,
+            top: 0,
+            width: Dimensions.get('window').width,
+            height: Dimensions.get('window').height,
+        }]}>
+            <View style={tw`h-full items-center`}>
                 <ScrollView contentContainerStyle={tw`items-center`}>
 
                     <SimpleNavBar />
@@ -42,6 +48,7 @@ const AuthScreen = () => {
                             name='email'
                             leftIcon={<Icon type='font-awesome' name='envelope' size={25} color='black' style={{ marginRight: 15 }} />}
                             autoCapitalize='none'
+                            inputContainerStyle={styles.input}
                             keyboardType='email-address'
                             handleChange={handleChange}
                             handleBlur={handleBlur}
@@ -53,6 +60,7 @@ const AuthScreen = () => {
                             name='password'
                             leftIcon={<Icon type='font-awesome' name='lock' size={25} color='black' style={{ marginRight: 26 }} />}
                             autoCapitalize='none'
+                            inputContainerStyle={styles.input}
                             secureTextEntry={true}
                             password={true}
                             handleChange={handleChange}
@@ -60,6 +68,9 @@ const AuthScreen = () => {
                             errors={errors}
                             values={values}
                             touched={touched} />
+                        <View style={tw`items-end`}>
+                            <Text style={[tw`text-xs mb-10 font-bold `, { color: '#707070' }]}>¿Olvidaste tu contraseña?</Text>
+                        </View>
                         <ButtonFrom handleSubmit={handleSubmit} loading={state.fetchingData ? true : false} />
                     </View>
                     {
@@ -78,9 +89,10 @@ const AuthScreen = () => {
                     }
 
                 </ScrollView>
-
             </View>
-        </ImageBackground>
+        </ImageBackground >
+
+
     )
 }
 
@@ -88,9 +100,16 @@ export default AuthScreen
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'red',
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+    },
+    input: {
+        backgroundColor: 'white',
+        padding: 9,
+        borderBottomColor: 'gray',
+        paddingLeft: 20,
+        borderRadius: 5,
+        elevation: 5,
+        backgroundColor: 'white',
+        borderBottomColor: 'white'
     }
+
 })

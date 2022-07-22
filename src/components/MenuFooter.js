@@ -9,9 +9,9 @@ const MenuFooter = () => {
     const navigation = useNavigation();
 
     return (
-        <View style={tw`flex-row pl-6  items-center justify-between`}>
+        <View style={[tw`flex-row pl-6  items-center justify-between`,{width: "100%"}]}>
             <TouchableOpacity
-                style={tw`flex-row p-4`}
+                style={tw`flex-row p-2`}
                 onPress={() => navigation.navigate('locationPermisionScreen')}>
                 <Icon
                     size={30}
@@ -20,7 +20,7 @@ const MenuFooter = () => {
                     color='#002443' />
             </TouchableOpacity>
             <TouchableOpacity
-                style={tw`flex-row p-4 `}
+                style={tw`flex-row p-2 `}
                 onPress={() => navigation.navigate('ScheduleListScreen')}>
                 <Icon
                     size={35}
@@ -29,7 +29,7 @@ const MenuFooter = () => {
                     color='#002443' />
             </TouchableOpacity>
             <TouchableOpacity
-                style={tw`flex-row p-4 mr-10 `}
+                style={tw`flex-row p-2 mr-10 `}
                 onPress={() => navigation.navigate('ScheduleListScreen')}>
                 <Icon
                     size={30}

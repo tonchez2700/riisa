@@ -1,6 +1,8 @@
 import React from 'react'
 import { SafeAreaView, View, Text, ImageBackground } from 'react-native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Provider as StatusFormProvider } from '../context/StatusFormContext';
+import { Provider as AdvanceProvider } from '../context/AdvanceContext';
 import tw from 'tailwind-react-native-classnames';
 import Images from '@assets/images';
 import StatusScreen from './StatusScreen';
@@ -15,16 +17,18 @@ const AppStack = createNativeStackNavigator();
 
 const WrapperInnerScreens = () => {
     return (
-        <SafeAreaView style={{ width: '100%', height: '100%' }}>
+        <SafeAreaView style={{ flex: 1 }}>
             <ImageBackground source={Images.background} resizeMode="cover" style={[tw`flex-1`]}>
                 <NavBar />
-                <View style={{ width: '100%', height: '80%', backgroundColor: 'transparent' }}>
-
-                    <AppStack.Navigator screenOptions={{ headerShown: false }}>
-                        <AppStack.Screen name="HomeScreen" component={HomeScreen} />
-                        <AppStack.Screen name="StatusScreen" component={StatusScreen} />
-                    </AppStack.Navigator>
-
+                <View style={[tw`mb-3`, { flex: 1 }]}>
+                    <AdvanceProvider>
+                        <StatusFormProvider>
+                            <AppStack.Navigator screenOptions={{ headerShown: false }}>
+                                <AppStack.Screen name="HomeScreen" component={HomeScreen} />
+                                <AppStack.Screen name="StatusScreen" component={StatusScreen} />
+                            </AppStack.Navigator>
+                        </StatusFormProvider>
+                    </AdvanceProvider>
                 </View>
                 <MenuFooter />
             </ImageBackground>

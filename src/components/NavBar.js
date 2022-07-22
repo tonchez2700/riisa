@@ -11,15 +11,13 @@ const NavBar = () => {
     const navigation = useNavigation();
     return (
         <Header
-            backgroundColor="#133C60" 
-            backgroundImage={Images.navBAr_Background}
-            centerComponent={ <Logo size='xs' /> }
+            backgroundColor="#002443" 
             barStyle="default"
             leftContainerStyle={{ justifyContent: 'center' }}
             rightContainerStyle={{ justifyContent: 'center' }}
             leftComponent={
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('PatrolListScreen')}>
+                    onPress={() => navigation.navigate('HomeScreen')}>
                         <Icon
                         name='home'
                         type='font-awesome'

@@ -8,7 +8,8 @@ const SimpleNavBar = () => {
         <Header
             backgroundColor="#133C60" 
             backgroundImage={Images.navBAr_Background}
-            centerComponent={ <Logo size='xs' /> }
+            centerContainerStyle={{margin: 40}}
+            centerComponent={ <Logo size='sm' /> }
             barStyle="default"/>
     )
 }

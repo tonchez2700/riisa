@@ -1,17 +1,18 @@
-import React, { useEffect } from 'react';
-import { StyleSheet, View, ScrollView, Text, ImageBackground, FlatList, Platform, UIManager } from 'react-native';
-import { Icon } from 'react-native-elements'
-import InvitedListItem from '../components/Cards/InvitedListItem';
-import Images from '@assets/images';
+import React, { useEffect, useContext } from 'react';
+import { StyleSheet, View, ScrollView, Text, ImageBackground, FlatList, Platform, UIManager, Alert } from 'react-native';
+import { Button, Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
-import tw from 'tailwind-react-native-classnames'
 import { AccordionItem } from 'react-native-accordion-list-view';
-
+import InvitedListItem from '../components/Cards/InvitedListItem';
+import { Context as AdvanceContext } from './../context/AdvanceContext'
+import Images from '@assets/images';
+import tw from 'tailwind-react-native-classnames'
 
 
 const HomeScreen = () => {
-    const navigation = useNavigation();
 
+    const navigation = useNavigation();
+    const { state, loadAdvance, getAdvanceById } = useContext(AdvanceContext);
     useEffect(() => {
         if (Platform.OS === 'android') {
             if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -20,18 +21,21 @@ const HomeScreen = () => {
         }
     }, []);
 
-
-    return (
-        <ImageBackground source={Images.background} resizeMode="cover" style={tw`flex-1`}>
-            <View style={tw`m-5`}>
-                <View style={[tw`flex-row mt-5 justify-between`]}>
+    useEffect(() => {
+        loadAdvance()
+    }, []);
+    console.log(state.listAdvance);
+    const getContent = () => {
+        return (
+            <View>
+                <View style={[tw`flex-row  justify-between`, styles.sheet]}>
                     <Text style={[tw`text-xl font-bold `, { color: '#23233C' }]} color>Dashboard</Text>
                     <Icon type='font-awesome' name='user' size={25} color='#002443' style={{ marginRight: 1 }} />
                 </View>
-                <Text style={[tw`text-xl font-bold `, { color: '#23233C' }]} color>----------------------------------------------</Text>
                 <FlatList
-                    data={data}
+                    data={state.listAdvance}
                     initialNumToRender={3}
+                    extraData={() => loadAdvance()}
                     maxToRenderPerBatch={15}
                     updateCellsBatchingPeriod={50}
                     keyExtractor={item => `${item.id}`}
@@ -41,8 +45,8 @@ const HomeScreen = () => {
                         return (
 
                             <AccordionItem
-                                key={item.id}
-                                containerStyle={tw`p-4 border border-gray-400 rounded`}
+                                isRTL={true}
+                                containerStyle={[tw`p-2 border border-gray-400 rounded`, { elevation: 5 }]}
                                 customTitle={() =>
                                     <View style={[tw`flex-row`]}>
                                         <Icon type='font-awesome-5' name='money-bill' size={30} color='#002443' style={{ marginLeft: 10 }} />
@@ -51,12 +55,9 @@ const HomeScreen = () => {
                                 }
                                 customBody={() =>
                                     <InvitedListItem
-                                        key={item}
+                                        key={item.id}
                                         data={item}
-                                        onPress={(data) => {
-                                            const currentDate = new Date();
-                                            const timestamp = currentDate.getTime();
-                                        }}
+
                                     />}
                                 animationDuration={400}
                             />
@@ -65,32 +66,40 @@ const HomeScreen = () => {
                     }}
                 />
             </View>
-        </ImageBackground>
-    )
+        )
+    }
+    return (
+        <View style={tw`m-5`}>
+            {
+                !state.error
+                    ?
+                    getContent()
+                    :
+
+                    <View style={tw`justify-center items-center`}>
+                        <Text style={tw`text-center text-lg `}>
+                            {state.message}
+                        </Text>
+                        <Button
+                            containerStyle={{ marginTop: 50, width: 100, height: 40 }}
+                            buttonStyle={[{ backgroundColor: 'red' }]}
+                            title="Actualizar"
+                            onPress={() => console.log(state.error)}
+                        />
+                    </View>
+            }
+        </View>)
 }
-const data =
-
-    [
-        info = [
-            {
-                id: '1',
-                compania: 'peres',
-                tipo: 'planta',
-                cuenta: 'que cuenta',
-                concepto: 'sandia'
-            },
-        ],
-        info = [
-            {
-                id: '2',
-                compania: 'Alonso',
-                tipo: 'Fuego',
-                cuenta: 'Pelota',
-                concepto: 'Melon'
-            },
-        ]]
-
 
 export default HomeScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+
+    sheet: {
+        borderRadius: 1,
+        borderBottomWidth: 3,
+        paddingBottom: 10,
+        marginBottom: 15,
+        borderStyle: 'dashed',
+    },
+})

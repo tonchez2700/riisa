@@ -35,8 +35,8 @@ const styles = StyleSheet.create({
         height: 40
     },
     sm: {
-        width: 150,
-        height: 53,
+        width: 56,
+        height: 56,
     },
     md: {
         width: 250,
