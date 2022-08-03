@@ -12,7 +12,7 @@ const MenuFooter = () => {
         <View style={[tw`flex-row pl-6  items-center justify-between`,{width: "100%"}]}>
             <TouchableOpacity
                 style={tw`flex-row p-2`}
-                onPress={() => navigation.navigate('locationPermisionScreen')}>
+                onPress={() => navigation.navigate('HomeScreen')}>
                 <Icon
                     size={30}
                     name='bars'
@@ -21,7 +21,7 @@ const MenuFooter = () => {
             </TouchableOpacity>
             <TouchableOpacity
                 style={tw`flex-row p-2 `}
-                onPress={() => navigation.navigate('ScheduleListScreen')}>
+                onPress={() => navigation.navigate('HomeScreen')}>
                 <Icon
                     size={35}
                     name='house'
@@ -30,7 +30,7 @@ const MenuFooter = () => {
             </TouchableOpacity>
             <TouchableOpacity
                 style={tw`flex-row p-2 mr-10 `}
-                onPress={() => navigation.navigate('ScheduleListScreen')}>
+                onPress={() => navigation.navigate('HomeScreen')}>
                 <Icon
                     size={30}
                     name='caret-left'

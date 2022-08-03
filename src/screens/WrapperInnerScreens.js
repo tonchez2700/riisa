@@ -3,6 +3,7 @@ import { SafeAreaView, View, Text, ImageBackground } from 'react-native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider as StatusFormProvider } from '../context/StatusFormContext';
 import { Provider as AdvanceProvider } from '../context/AdvanceContext';
+import LayoffPersonalScreen from './LayoffPersonalScreen';
 import tw from 'tailwind-react-native-classnames';
 import Images from '@assets/images';
 import StatusScreen from './StatusScreen';
@@ -26,6 +27,7 @@ const WrapperInnerScreens = () => {
                             <AppStack.Navigator screenOptions={{ headerShown: false }}>
                                 <AppStack.Screen name="HomeScreen" component={HomeScreen} />
                                 <AppStack.Screen name="StatusScreen" component={StatusScreen} />
+                                <AppStack.Screen name="LayoffPersonalScreen" component={LayoffPersonalScreen} />
                             </AppStack.Navigator>
                         </StatusFormProvider>
                     </AdvanceProvider>

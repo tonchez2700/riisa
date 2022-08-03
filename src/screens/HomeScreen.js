@@ -4,15 +4,18 @@ import { Button, Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { AccordionItem } from 'react-native-accordion-list-view';
 import InvitedListItem from '../components/Cards/InvitedListItem';
-import { Context as AdvanceContext } from './../context/AdvanceContext'
+import { Context as AdvanceContext } from './../context/AdvanceContext';
+import ModalIncident from '../components/Modal/ModalIncident';
+import SelectDropdown from 'react-native-select-dropdown';
 import Images from '@assets/images';
-import tw from 'tailwind-react-native-classnames'
+import tw from 'tailwind-react-native-classnames';
 
 
 const HomeScreen = () => {
 
     const navigation = useNavigation();
     const { state, loadAdvance, getAdvanceById } = useContext(AdvanceContext);
+
     useEffect(() => {
         if (Platform.OS === 'android') {
             if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -24,13 +27,18 @@ const HomeScreen = () => {
     useEffect(() => {
         loadAdvance()
     }, []);
-    console.log(state.listAdvance);
+
+    const countries = ["Egypt", "Canada", "Australia", "Ireland"]
+
     const getContent = () => {
         return (
             <View>
                 <View style={[tw`flex-row  justify-between`, styles.sheet]}>
                     <Text style={[tw`text-xl font-bold `, { color: '#23233C' }]} color>Dashboard</Text>
-                    <Icon type='font-awesome' name='user' size={25} color='#002443' style={{ marginRight: 1 }} />
+                    <View style={tw` flex-row`}>
+                        <Icon type='font-awesome' name='user' size={25} color='#002443' style={{ marginRight: 10 }} />
+                        <ModalIncident />
+                    </View>
                 </View>
                 <FlatList
                     data={state.listAdvance}

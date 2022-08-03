@@ -9,6 +9,7 @@ const StepStatus = () => {
 
     const navigation = useNavigation();
     
+    const labels = ["Creacion"," Aprovacion","Final"]
    const customStyles = {
         stepIndicatorSize: 25,
         currentStepIndicatorSize: 30,
@@ -38,6 +39,7 @@ const StepStatus = () => {
             customStyles={customStyles}
             stepCount={3}
             currentPosition={2}
+            labels={labels}
         />
     )
 }

@@ -15,15 +15,6 @@ const NavBar = () => {
             barStyle="default"
             leftContainerStyle={{ justifyContent: 'center' }}
             rightContainerStyle={{ justifyContent: 'center' }}
-            leftComponent={
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('HomeScreen')}>
-                        <Icon
-                        name='home'
-                        type='font-awesome'
-                        color='white' />
-                </TouchableOpacity> 
-            }
             rightComponent={
                 <TouchableOpacity
                     onPress={() => signout()}>

@@ -21,34 +21,60 @@ const ModalIncident = () => {
 
     return (
         <View>
-            <Button
-                buttonStyle={{ backgroundColor: '#002443', marginBottom: 10 , marginTop: 50 }}
-                title={"Reportar incidente"}
-                onPress={() => toggleModalVisibility()}>
-            </Button>
+            <TouchableOpacity
+                onPress={toggleModalVisibility}>
+                <Icon type='font-awesome' name='th-large' size={25} color='#002443'  />
+            </TouchableOpacity>
 
             <Modal
-                animationType="slide"
-                transparent
-                visible={modalVisible}
+                animationType="none"
+                transparent visible={modalVisible}
                 presentationStyle="overFullScreen"
-                onDismiss={() => toggleModalVisibility()}>
+                onDismiss={toggleModalVisibility}>
                 <View style={styles.viewWrapper}>
-                    <View style={styles.modalView}>
-                        <Text style={tw`font-bold text-xl`}>¿Reportar incidente?</Text>
+                    <Button
+                        title="Cancelar"
+                        buttonStyle={{ backgroundColor: '#848484', marginBottom: 15 }}
+                        onPress={() => toggleModalVisibility()}
+                    />
+                    <View style={[styles.modalView]}>
 
-                        <View style={tw`flex-row justify-between`}>
+                        <View style={[tw`m-2 `]}>
                             <Button
-                                title="Cancelar"
-                                buttonStyle={{ backgroundColor: '#848484', marginBottom: 15 }}
-                                onPress={() => toggleModalVisibility()} />
-
-                            <Button
-                                title="Aceptar"
-                                buttonStyle={{ marginLeft: 50, backgroundColor: '#002443', marginBottom: 15 }}
-
-                                onPress={() => multipleFunction()} />
+                                buttonStyle={styles.primaryButton}
+                                title="A"
+                                onPress={() => navigation.navigate('StatusScreen')}
+                            />
+                            <Text style={[tw`font-bold `, { color: '#23233C' }]}>Personal</Text>
                         </View>
+                        <View style={[tw`m-2`]}>
+                            <Button
+                                buttonStyle={styles.primaryButton}
+                                titleStyle={styles.primaryTitleButton}
+                                title="B"
+                                onPress={() => navigation.navigate('StatusScreen')}
+                            />
+                            <Text style={[tw`font-bold `, { color: '#23233C' }]}>Personal</Text>
+                        </View>
+                        <View style={[tw`m-2`]}>
+                            <Button
+                                buttonStyle={styles.primaryButton}
+                                titleStyle={styles.primaryTitleButton}
+                                title="C"
+                                onPress={() => navigation.navigate('StatusScreen')}
+                            />
+                            <Text style={[tw`font-bold `, { color: '#23233C' }]}>Personal</Text>
+                        </View>
+                        {/* <View style={[tw`m-2`]}>
+                            <Button
+                                buttonStyle={styles.primaryButton}
+                                titleStyle={styles.primaryTitleButton}
+                                title="D"
+                                onPress={() => navigation.navigate('StatusScreen')}
+                            />
+                            <Text style={[tw`font-bold `, { color: '#23233C' }]}>Personal</Text>
+                        </View> */}
+
                     </View>
                 </View>
             </Modal>
@@ -61,10 +87,11 @@ export default ModalIncident
 
 
 const styles = StyleSheet.create({
-    container: {
+    screen: {
         flex: 1,
-        paddingTop: 30,
-        backgroundColor: '#fff'
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#fff",
     },
     viewWrapper: {
         flex: 1,
@@ -73,18 +100,31 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(0, 0, 0, 0.2)",
     },
     modalView: {
+        flexWrap: 'wrap',
+        flexDirection: 'row',
         alignItems: "center",
-        justifyContent: "space-evenly",
+        justifyContent: "center",
         position: "absolute",
-        top: "50%",
+        top: "10%",
         left: "50%",
         elevation: 5,
         transform: [{ translateX: -(width * 0.4) },
         { translateY: -90 }],
-        height: 250,
+        height: 200,
         width: width * 0.8,
         backgroundColor: "#fff",
         borderRadius: 15,
-        padding: 5
+        paddingTop: 50,
+        padding: 10
+    },
+
+    primaryButton: {
+        width: 50,
+        height: 50,
+        borderBottomLeftRadius: 25,
+        borderBottomRightRadius: 25,
+        borderTopRightRadius: 25,
+        borderTopStartRadius: 25,
+        backgroundColor: '#23233C',
     },
 })

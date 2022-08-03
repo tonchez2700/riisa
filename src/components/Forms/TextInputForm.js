@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import tw from 'tailwind-react-native-classnames';
 import { Input, Icon } from 'react-native-elements';
 
-const TextInputForm = ({ data, type, ...otherProps }) => {
+const TextInputForm = ({ data, type,  }) => {
 
 
     return (

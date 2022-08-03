@@ -6,7 +6,6 @@ import {
     Modal, Dimensions,
     Image
 } from 'react-native';
-import * as OpenAnything from 'react-native-openanything';
 import { Context as AdvanceContext } from '../context/AdvanceContext';
 import ModalCan from '../components/Modal/ModalCan';
 import ModalAccept from '../components/Modal/ModalAccept';
@@ -15,21 +14,19 @@ import Images from '@assets/images';
 import StepStatus from '../components/StepStatus';
 import TextInputForm from '../components/Forms/TextInputForm';
 import { useNavigation, } from '@react-navigation/native';
-import { Input, Button, Icon } from 'react-native-elements'
+import { Input, Switch, Icon } from 'react-native-elements'
 import tw from 'tailwind-react-native-classnames'
 import moment from 'moment'
 import { Context } from '../context/AdvanceContext';
 
 const { width } = Dimensions.get("window");
 
-const StatusScreen = ({ route }) => {
+const LayoffPersonalScreen = ({ route }) => {
 
     const [modalVisible, setModalVisible] = useState(false);
     const { params } = route
     const { state, loadAdvance, getAdvanceById } = useContext(AdvanceContext);
     const initial_date = moment(params.createdAt).format('DD-MM-YYYY')
-
-    console.log(params.advFiles[0].genFileUrlAddress);
 
 
     return (
@@ -118,13 +115,44 @@ const StatusScreen = ({ route }) => {
                     <View style={tw` items-center`}>
                         <Text style={[tw`text-xl font-bold m-5`, { color: '#23233C' }]}>Archivos</Text>
                     </View>
-                    <TouchableOpacity
-                        onPress={() => { OpenAnything.Pdf(`${params.advFiles[0].genFileUrlAddress}`) }}>
-                        <View style={tw`flex-row m-3 items-center`}>
-                            <Text style={[tw`text-xl font-bold mr-5`, { color: '#23233C' }]}>{params.advFiles[0].genFileName}...</Text>
-                            <Icon type='font-awesome' name='file' size={25} color='#002443' />
-                        </View>
-                    </TouchableOpacity>
+                    <Text style={[tw`text-xl font-bold m-5`, { color: '#23233C' }]}>Lorem-Ipsum-Dolor.doc</Text>
+
+                </View>
+                <View style={[tw`border-gray-400 px-6  m-4 items-center`, { borderWidth: 1, elevation: 10, padding: 5, backgroundColor: 'white', borderRadius: 8 }]}>
+                    <View style={tw` items-center`}>
+                        <Text style={[tw`text-xl font-bold m-5`, { color: '#23233C' }]}>Check-List Jefe Directo</Text>
+                    </View>
+                    <View style={tw` flex-row items-center`}>
+                        <Switch
+                            onValueChange={(value) => setChecked(value)}
+                        />
+                        <Text style={[tw`text-base`, { color: '#002443', }]}> Llaves </Text>
+                    </View>
+                    <View style={tw` flex-row items-center`}>
+                        <Switch
+                            onValueChange={(value) => setChecked(value)}
+                        />
+                        <Text style={[tw`text-base`, { color: '#002443', }]}> Usuario y contraseña </Text>
+                    </View>
+                    <View style={tw` flex-row items-center`}>
+                        <Switch
+                            onValueChange={(value) => setChecked(value)}
+                        />
+                        <Text style={[tw`text-base`, { color: '#002443', }]}> Manuales y documentos </Text>
+                    </View>
+                    <View style={tw` flex-row items-center `}>
+                        <Switch
+                            onValueChange={(value) => setChecked(value)}
+                        />
+                        <Text style={[tw`text-base`, { color: '#002443', }]}> Mapa archivos PC </Text>
+                    </View>
+                    <View style={tw` flex-row items-center`}>
+                        <Switch
+                            onValueChange={(value) => setChecked(value)}
+                        />
+                        <Text style={[tw`text-base`, { color: '#002443', }]}> Herramientas de puesto </Text>
+                    </View>
+
                 </View>
 
                 {
@@ -174,7 +202,7 @@ const StatusScreen = ({ route }) => {
     )
 }
 
-export default StatusScreen
+export default LayoffPersonalScreen
 
 const styles = StyleSheet.create({
 });

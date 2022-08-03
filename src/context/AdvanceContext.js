@@ -115,7 +115,58 @@ const getAdvanceById = (dispatch) => {
                         result: response
                     }
                 });
-                rootNavigation.navigate('StatusScreen', response.result)
+                rootNavigation.navigate('LayoffPersonalScreen', response.result)
+            } else {
+                dispatch({
+                    type: 'SET_REQUEST_ERROR',
+                    payload: {
+                        error: true,
+                        message: 'Por el momento el servicio no está disponible, inténtelo mas tarde.'
+                    }
+                });
+            }
+        } catch (error) {
+            dispatch({
+                type: 'SET_REQUEST_ERROR',
+                payload: {
+                    error: true,
+                    message: 'Por el momento el servicio no está disponible, inténtelo mas tarde.'
+                }
+            });
+        }
+    }
+
+}
+
+const authorizationAdvance = (dispatch) => {
+    return async (id,dataFrom) => {
+        try {
+            dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
+            const data = {
+                tokenId: id,
+                sourceProccesStatus: dataFrom.sourceProcessStatusId,
+                targetProcessStatus: dataFrom.targetProcessStatusId
+            }
+            console.log(data);
+            const user = JSON.parse(await AsyncStorage.getItem('user'));
+            const token = user.token
+            const response = await httpClient.post(
+                'advances/AuthorizeAdvAdvance',
+                data,
+                {
+                    'Authorization': `Bearer ${token}`,
+                }
+
+            )
+            console.log(response);
+            if (response.status != 400) {
+                dispatch({
+                    type: 'SET_DATA',
+                    payload: {
+                        result: response
+                    }
+                });
+                rootNavigation.navigate('HomeScreen')
             } else {
                 dispatch({
                     type: 'SET_REQUEST_ERROR',
@@ -144,6 +195,7 @@ export const { Context, Provider } = createDataContext(
         clearState,
         loadAdvance,
         getAdvanceById,
+        authorizationAdvance
 
     },
     initialState

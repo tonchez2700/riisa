@@ -25,7 +25,7 @@ const InvitedListItem = (data) => {
                                     <Text style={[tw`text-black font-bold`, { color: '#23233C' }]}>Concepto:</Text>
                                 </View>
                                 <View style={tw`flex-col pl-5`}>
-                                    <Text style={[tw`text-black font-bold`, { color: 'black' }]}>{data.datagenCompanyName}</Text>
+                                    <Text style={[tw`text-black font-bold`, { color: 'black' }]}>{data.data.genCompanyName}</Text>
                                     <Text style={[tw`text-black font-bold`, { color: 'black' }]}>{data.data.advCategoryName}</Text>
                                     <Text style={[tw`text-black font-bold`, { color: 'black' }]}>{data.data.advTypeName}</Text>
                                     <Text style={[tw`text-black font-bold`, { color: 'black' }]}>{data.data.advTypeLedgerAccount}</Text>

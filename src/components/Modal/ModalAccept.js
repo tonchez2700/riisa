@@ -1,40 +1,35 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, } from 'react-native'
-import { Context as PointsListContext } from '../../context/PointsListContext';
-import { Context as PatrolsListContext } from '../../context/PatrolsListContext';
 import { Input, Button, Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
+import { Context as AdvanceContext } from '../../context/AdvanceContext';
 import tw from 'tailwind-react-native-classnames'
 
 
 const { width } = Dimensions.get("window");
 
-const ModalCancel = () => {
-
+const ModalAccept = (data) => {
 
     const navigation = useNavigation();
-    const { state, RondaDelete, handleInputChange, clearState } = useContext(PointsListContext);
-    const { state: stateRonda, } = useContext(PatrolsListContext);
     const [modalVisible, setModalVisible] = useState(false);
+    const { state, authorizationAdvance } = useContext(AdvanceContext);
+
     const toggleModalVisibility = () => {
         setModalVisible(!modalVisible);
     };
+
     const multipleFunction = () => {
         toggleModalVisibility();
     }
 
-    useEffect(() => {
-
-        clearState()
-
-    }, [])
     return (
         <View>
             <Button
-                buttonStyle={{ backgroundColor: '#B80A0A', marginBottom: 10 }}
-                title={"Cancelar Ronda"}
-                onPress={() => toggleModalVisibility()}>
-            </Button>
+                titleStyle={tw`text-lg font-bold `}
+                buttonStyle={[styles.button, { backgroundColor: '#002443' }]}
+                title="Autorizar"
+                onPress={() => toggleModalVisibility()}
+            />
 
             <Modal
                 animationType="slide"
@@ -44,29 +39,21 @@ const ModalCancel = () => {
                 onDismiss={() => toggleModalVisibility()}>
                 <View style={styles.viewWrapper}>
                     <View style={styles.modalView}>
-                        <Text style={tw`font-bold text-xl`}>Cancelar Ronda</Text>
-                        <Input
-                            label='Motivo de visita:'
-                            borderWidth={2}
-                            padding={40}
-                            value={state.comentario}
-                            onChangeText={(value) => handleInputChange(value, 'comentario')}
-                            labelStyle={{ color: '#133C60' }}
-                            multiline={true}
-                        />
+                        <Text style={tw`font-bold text-xl text-center`}>¿Estas seguro que quieres "AUTORIZAR"?</Text>
                         <View style={tw`flex-row justify-between`}>
                             <Button
                                 title="Cancelar"
                                 buttonStyle={{ backgroundColor: '#848484', marginBottom: 15 }}
-                                onPress={() => toggleModalVisibility()} />
-
+                                onPress={() => toggleModalVisibility()}
+                            />
                             <Button
                                 title="Aceptar"
                                 buttonStyle={{ marginLeft: 50, backgroundColor: '#002443', marginBottom: 15 }}
                                 onPress={() => {
-                                    RondaDelete(stateRonda.ronda.id, state.comentario)
-                                    multipleFunction()
-                                }} />
+                                    authorizationAdvance(data.data.tokenId, data.data.processActions[0])
+                                    toggleModalVisibility()
+                                }}
+                            />
                         </View>
                     </View>
                 </View>
@@ -76,10 +63,18 @@ const ModalCancel = () => {
     )
 }
 
-export default ModalCancel
+export default ModalAccept
 
 
 const styles = StyleSheet.create({
+    button: {
+        marginTop: 20,
+        borderRadius: 23
+
+    },
+    titleT: {
+        textAlign: 'center'
+    },
     container: {
         flex: 1,
         paddingTop: 30,
