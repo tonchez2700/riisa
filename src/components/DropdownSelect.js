@@ -8,10 +8,10 @@ import { View } from 'react-native-web';
 
 const { width } = Dimensions.get('window');
 
-const DropdownSelect = ({ data, type }) => {
+const DropdownSelect = ({ data, type, fun }) => {
 
     const navigation = useNavigation();
-
+    //console.log(fun);
     return (
 
         <SelectDropdown
@@ -19,7 +19,8 @@ const DropdownSelect = ({ data, type }) => {
             // defaultValueByIndex={1}
             // defaultValue={'Egypt'}
             onSelect={(selectedItem, index) => {
-                console.log(selectedItem, index);
+                fun(selectedItem)
+                //console.log(selectedItem, index);
             }}
             defaultButtonText={type}
             buttonTextAfterSelection={(selectedItem, index) => {
@@ -58,8 +59,8 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderColor: '#444',
     },
-    dropdown1BtnTxtStyle: {color: '#444', textAlign: 'left'},
-    dropdown1DropdownStyle: {backgroundColor: '#EFEFEF'},
-    dropdown1RowStyle: {backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5'},
-    dropdown1RowTxtStyle: {color: '#444', textAlign: 'left'},
+    dropdown1BtnTxtStyle: { color: '#444', textAlign: 'left' },
+    dropdown1DropdownStyle: { backgroundColor: '#EFEFEF' },
+    dropdown1RowStyle: { backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5' },
+    dropdown1RowTxtStyle: { color: '#444', textAlign: 'left' },
 });

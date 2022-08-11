@@ -55,6 +55,7 @@ const ModalDiplo = (data) => {
                             <DropdownSelect
                                 data={camp}
                                 type={'Selecciona la Campaña'}
+                                fun={(item) => console.log(item)}
                             />
                             <Text style={[tw` text-sm my-1 font-bold`, { color: '#133C60' }]}>Selecciona el Programa Educativo</Text>
                             <DropdownSelect

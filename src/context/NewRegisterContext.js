@@ -10,12 +10,12 @@ const initialState = {
     error: false,
     message: "",
     fetchingData: false,
-    listAdvance: [],
+    dataStudent: [],
     data: '',
 
 }
 
-const AdvanceReducer = (state = initialState, action) => {
+const NewRegisterReducer = (state = initialState, action) => {
 
     switch (action.type) {
         case 'CLEAR_STATE':
@@ -190,7 +190,7 @@ const authorizationAdvance = (dispatch) => {
 }
 
 export const { Context, Provider } = createDataContext(
-    AdvanceReducer,
+    NewRegisterReducer,
     {
         clearState,
         loadAdvance,

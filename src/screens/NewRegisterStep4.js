@@ -35,14 +35,17 @@ const NewRegisterStep4 = () => {
                 showsVerticalScrollIndicator={false}>
 
                 <HeadTitleScreen title='Nuevo Registro' />
-                <View style={tw`mb-7`}>
+                <View style={tw`mb-4`}>
                     <StepStatus />
                 </View>
-                <View>
-                    <Text style={[tw` text-xs`, { color: 'gray' }]}>Nombre: <Text style={[tw` text-sm font-medium`, { color: 'black' }]}>Miguel Zuniga</Text></Text>
-                    <Text style={[tw` text-xs`, { color: 'gray' }]}>Email: <Text style={[tw` text-sm font-medium`, { color: 'black' }]}>miguel@zunit.mx</Text></Text>
-                    <Text style={[tw` text-xs`, { color: 'gray' }]}>Telefono: <Text style={[tw` text-sm font-medium`, { color: 'black' }]}>8121213828</Text></Text>
-                    <Text style={[tw` text-xs`, { color: 'gray' }]}>Monto Total: <Text style={[tw` text-sm font-medium`, { color: 'black' }]}>$812.00</Text></Text>
+                <Text style={[tw`text-lg`]}>Datos generales</Text>
+                <View  style={[tw`my-2`]}>
+                    <Text style={[tw` text-xs`, { color: 'gray' }]}>Nombre: <Text style={[tw` text-xs font-medium`, { color: 'black' }]}>Miguel Zuniga</Text></Text>
+                    <Text style={[tw` text-xs`, { color: 'gray' }]}>Email: <Text style={[tw` text-xs font-medium`, { color: 'black' }]}>miguel@zunit.mx</Text></Text>
+                    <Text style={[tw` text-xs`, { color: 'gray' }]}>Telefono: <Text style={[tw` text-xs font-medium`, { color: 'black' }]}>8121213828</Text></Text>
+                    <Text style={[tw` text-xs`, { color: 'gray' }]}>Campaña: <Text style={[tw` text-xs font-medium`, { color: 'black' }]}>12</Text></Text>
+                    <Text style={[tw` text-xs`, { color: 'gray' }]}>Cuidad: <Text style={[tw` text-xs font-medium`, { color: 'black' }]}>Monterrey</Text></Text>
+                    <Text style={[tw` text-xs`, { color: 'gray' }]}>Fecha de nacimiento: <Text style={[tw` text-xs font-medium`, { color: 'black' }]}>12\12\2012</Text></Text>
                 </View>
 
                 <Text style={[tw`text-xl my-2 py-4`,{borderColor: '#2D5DA0', borderTopWidth : 1.5}]}>Programas Educativos</Text>
@@ -66,7 +69,7 @@ const NewRegisterStep4 = () => {
                     /><Button
                         titleStyle={tw`text-base font-bold `}
                         buttonStyle={[tw`mr-2 w-32 rounded-full  `, { backgroundColor: '#2D5DA0' }]}
-                        title="Siguiente"
+                        title="Confirmar"
                     //onPress={() => navigation.navigate('NewRegisterStep2')}
                     />
 
