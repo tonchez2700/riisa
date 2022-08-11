@@ -1,113 +1,39 @@
-import React, { useEffect, useContext } from 'react';
-import { StyleSheet, View, ScrollView, Text, ImageBackground, FlatList, Platform, UIManager, Alert } from 'react-native';
-import { Button, Icon } from 'react-native-elements';
+import React, { useState, useEffect } from 'react'
+import { StyleSheet, View, ScrollView, Text } from 'react-native';
+import tw from 'tailwind-react-native-classnames'
+import HeadTitleScreen from '../components/Forms/HeadTitleScreen';
+import MenuItem from '../components/MenuItem';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import { AccordionItem } from 'react-native-accordion-list-view';
-import InvitedListItem from '../components/Cards/InvitedListItem';
-import { Context as AdvanceContext } from './../context/AdvanceContext';
-import ModalIncident from '../components/Modal/ModalIncident';
-import SelectDropdown from 'react-native-select-dropdown';
-import Images from '@assets/images';
-import tw from 'tailwind-react-native-classnames';
-
 
 const HomeScreen = () => {
-
+    const [user, setUser] = useState({})
     const navigation = useNavigation();
-    const { state, loadAdvance, getAdvanceById } = useContext(AdvanceContext);
 
-    useEffect(() => {
-        if (Platform.OS === 'android') {
-            if (UIManager.setLayoutAnimationEnabledExperimental) {
-                UIManager.setLayoutAnimationEnabledExperimental(true);
-            }
-        }
-    }, []);
 
-    useEffect(() => {
-        loadAdvance()
-    }, []);
-
-    const countries = ["Egypt", "Canada", "Australia", "Ireland"]
-
-    const getContent = () => {
-        return (
-            <View>
-                <View style={[tw`flex-row  justify-between`, styles.sheet]}>
-                    <Text style={[tw`text-xl font-bold `, { color: '#23233C' }]} color>Dashboard</Text>
-                    <View style={tw` flex-row`}>
-                        <Icon type='font-awesome' name='user' size={25} color='#002443' style={{ marginRight: 10 }} />
-                        <ModalIncident />
-                    </View>
-                </View>
-                <FlatList
-                    data={state.listAdvance}
-                    initialNumToRender={3}
-                    extraData={() => loadAdvance()}
-                    maxToRenderPerBatch={15}
-                    updateCellsBatchingPeriod={50}
-                    keyExtractor={item => `${item.id}`}
-                    onEndReachedThreshold={0.5}
-                    onEndReached={() => console.log('load more')}
-                    renderItem={({ item }) => {
-                        return (
-
-                            <AccordionItem
-                                isRTL={true}
-                                containerStyle={[tw`p-2 border border-gray-400 rounded`, { elevation: 5 }]}
-                                customTitle={() =>
-                                    <View style={[tw`flex-row`]}>
-                                        <Icon type='font-awesome-5' name='money-bill' size={30} color='#002443' style={{ marginLeft: 10 }} />
-                                        <Text style={[tw` ml-3 text-lg font-bold `, { color: '#23233C' }]} color>Autorización de anticipo</Text>
-                                    </View>
-                                }
-                                customBody={() =>
-                                    <InvitedListItem
-                                        key={item.id}
-                                        data={item}
-
-                                    />}
-                                animationDuration={400}
-                            />
-                        )
-
-                    }}
-                />
-            </View>
-        )
-    }
     return (
-        <View style={tw`m-5`}>
-            {
-                !state.error
-                    ?
-                    getContent()
-                    :
-
-                    <View style={tw`justify-center items-center`}>
-                        <Text style={tw`text-center text-lg `}>
-                            {state.message}
-                        </Text>
-                        <Button
-                            containerStyle={{ marginTop: 50, width: 100, height: 40 }}
-                            buttonStyle={[{ backgroundColor: 'red' }]}
-                            title="Actualizar"
-                            onPress={() => console.log(state.error)}
-                        />
-                    </View>
-            }
-        </View>)
+        <View style={tw`h-full`}>
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ alignItems: 'center' }}>
+                <HeadTitleScreen title='Registro de Estudiantes' />
+                <MenuItem
+                    title='Registrar Estudiante'
+                    icon='user-plus'
+                    color='#34C38F'
+                    fontFamily='font-awesome-5'
+                    navigateScreen='NewRegister' />
+                <MenuItem
+                    title='Lista de Registro'
+                    icon='list'
+                    color='#F1B44C'
+                    fontFamily='font-awesome-5'
+                    navigateScreen='VisitorCreateScreen' />
+            </ScrollView>
+        </View>
+    )
 }
 
 export default HomeScreen
 
-const styles = StyleSheet.create({
-
-    sheet: {
-        borderRadius: 1,
-        borderBottomWidth: 3,
-        paddingBottom: 10,
-        marginBottom: 15,
-        borderStyle: 'dashed',
-    },
-})
+const styles = StyleSheet.create({})

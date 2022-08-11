@@ -4,13 +4,14 @@ import { useNavigation } from '@react-navigation/native';
 import tw from 'tailwind-react-native-classnames'
 import StepIndicator from 'react-native-step-indicator';
 import { Icon } from 'react-native-elements'
+import { View } from 'react-native-web';
 
 const StepStatus = () => {
 
     const navigation = useNavigation();
-    
-    const labels = ["Creacion"," Aprovacion","Final"]
-   const customStyles = {
+
+    const labels = ["Creacion", " Aprovacion", "Final"]
+    const customStyles = {
         stepIndicatorSize: 25,
         currentStepIndicatorSize: 30,
         separatorStrokeWidth: 2,
@@ -33,14 +34,15 @@ const StepStatus = () => {
         labelSize: 13,
         currentStepLabelColor: '#012442'
     }
-  
+
     return (
-        <StepIndicator
-            customStyles={customStyles}
-            stepCount={3}
-            currentPosition={2}
-            labels={labels}
-        />
+        
+            <StepIndicator
+                customStyles={customStyles}
+                stepCount={4}
+                currentPosition={0}
+            />
+        
     )
 }
 
