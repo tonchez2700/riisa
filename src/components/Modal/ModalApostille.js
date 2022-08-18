@@ -39,7 +39,7 @@ const ModalApostille = () => {
                     size: 15,
                     color: '#133C60',
                 }}
-                title="Beneficio"
+                title="Apostille"
                 onPress={() => toggleModalVisibility()}
             />
             <Modal

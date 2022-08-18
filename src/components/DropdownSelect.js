@@ -16,8 +16,7 @@ const DropdownSelect = ({ data, type, fun }) => {
 
         <SelectDropdown
             data={data}
-            // defaultValueByIndex={1}
-            // defaultValue={'Egypt'}
+            defaultValueByIndex={2}
             onSelect={(selectedItem, index) => {
                 fun(selectedItem)
                 //console.log(selectedItem, index);

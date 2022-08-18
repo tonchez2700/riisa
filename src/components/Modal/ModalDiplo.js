@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, } from 'react-native'
+import { Context as NewRegisterStep2Context } from '../../context/NewRegisterStep2Context';
 import { Input, Button, Icon } from 'react-native-elements';
 import DropdownSelect from '../DropdownSelect';
 import { useNavigation } from '@react-navigation/native';
@@ -16,6 +17,8 @@ const ModalDiplo = (data) => {
         'campana 3',
     ];
     const navigation = useNavigation();
+    const { state, handleInputChange, handleInputItems } = useContext(NewRegisterStep2Context);
+
     const [modalVisible, setModalVisible] = useState(false);
 
     const toggleModalVisibility = () => {
@@ -55,12 +58,13 @@ const ModalDiplo = (data) => {
                             <DropdownSelect
                                 data={camp}
                                 type={'Selecciona la Campaña'}
-                                fun={(item) => console.log(item)}
+                                fun={(item) => handleInputChange(item, 'campaign')}
                             />
                             <Text style={[tw` text-sm my-1 font-bold`, { color: '#133C60' }]}>Selecciona el Programa Educativo</Text>
                             <DropdownSelect
                                 data={camp}
                                 type={'Selecciona el Programa Educativo'}
+                                fun={(item) => handleInputChange(item, 'educationalProgram')}
                             />
                         </View>
                         <View style={tw`flex-row justify-between`}>
@@ -73,6 +77,7 @@ const ModalDiplo = (data) => {
                                 title="Aceptar"
                                 buttonStyle={{ marginLeft: 50, backgroundColor: '#002443', marginBottom: 15 }}
                                 onPress={() => {
+                                    handleInputItems(state.dataProgram)
                                     toggleModalVisibility()
                                 }}
                             />

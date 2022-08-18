@@ -12,13 +12,11 @@ const DateRange = ({ onChangeDate, onChangeTime }) => {
         handleOnChangePicker(selectedDate, state.mode)
     }
 
-    // useEffect(() => {
-    //     onChangeDate(state.date)
-    // }, [state.date]);
+    useEffect(() => {
+        onChangeDate(state.date)
+    }, [state.date]);
 
-    // useEffect(() => {
-    //     onChangeTime(state.time)
-    // }, [state.time]);
+
 
     return (
         <View>

@@ -1,8 +1,8 @@
 import React from 'react'
 import { SafeAreaView, View, Text, ImageBackground } from 'react-native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-//import { Provider as StatusFormProvider } from '../context/StatusFormContext';
-//import { Provider as AdvanceProvider } from '../context/AdvanceContext'
+import { Provider as NewRegisterProvider } from '../context/NewRegisterContext';
+import { Provider as NewRegisterStep2Provider } from '../context/NewRegisterStep2Context';
 import NewRegisterStep4 from './NewRegisterStep4';
 import NewRegisterStep3 from './NewRegisterStep3';
 import NewRegisterStep2 from './NewRegisterStep2';
@@ -20,13 +20,17 @@ const WrapperInnerScreens = () => {
         <SafeAreaView style={{ flex: 1 }}>
             <NavBar />
             <View style={[tw`pl-8 pr-8`, { flex: 1 }]}>
-                <AppStack.Navigator screenOptions={{ headerShown: false }}>
-                    <AppStack.Screen name="HomeScreen" component={HomeScreen} />
-                    <AppStack.Screen name="NewRegister" component={NewRegister} />
-                    <AppStack.Screen name="NewRegisterStep2" component={NewRegisterStep2} />
-                    <AppStack.Screen name="NewRegisterStep3" component={NewRegisterStep3} />
-                    <AppStack.Screen name="NewRegisterStep4" component={NewRegisterStep4} />
-                </AppStack.Navigator>
+                <NewRegisterProvider>
+                    <NewRegisterStep2Provider>
+                        <AppStack.Navigator screenOptions={{ headerShown: false }}>
+                            <AppStack.Screen name="HomeScreen" component={HomeScreen} />
+                            <AppStack.Screen name="NewRegister" component={NewRegister} />
+                            <AppStack.Screen name="NewRegisterStep2" component={NewRegisterStep2} />
+                            <AppStack.Screen name="NewRegisterStep3" component={NewRegisterStep3} />
+                            <AppStack.Screen name="NewRegisterStep4" component={NewRegisterStep4} />
+                        </AppStack.Navigator>
+                    </NewRegisterStep2Provider>
+                </NewRegisterProvider>
             </View>
         </SafeAreaView>
     )

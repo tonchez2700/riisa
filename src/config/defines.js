@@ -1,4 +1,4 @@
-export const apiUrlBase = 'https://aam-novo-procesos-development.azurewebsites.net/api'
+export const apiUrlBase = 'http://development.portal.feelink.zunit.mx/api'
 
 /**
  * Allowed agendas

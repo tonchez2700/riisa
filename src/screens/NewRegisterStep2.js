@@ -2,7 +2,8 @@ import React, { useContext, useState, useEffect } from 'react'
 import { ScrollView, StyleSheet, Alert, View, Text, ActivityIndicator } from 'react-native'
 import { useNavigation, } from '@react-navigation/native';
 import { Input, Button } from 'react-native-elements'
-import DateRange from '../components/DateRange';
+import { Context as NewRegisterStep2Context } from '../context/NewRegisterStep2Context';
+import EntryList from '../components/EntryList';
 import StepStatus from '../components/StepStatus';
 import ModalApostille from '../components/Modal/ModalApostille';
 import ModalDiplo from '../components/Modal/ModalDiplo';
@@ -12,24 +13,14 @@ import DropdownSelect from '../components/DropdownSelect';
 import tw from 'tailwind-react-native-classnames'
 import moment from 'moment'
 
-const NewRegisterStep2 = () => {
+const NewRegisterStep2 = ({route}) => {
 
     const navigation = useNavigation();
-    const countries = [
-        'Egypt',
-        'Canada',
-        'Australia',
-        'Ireland',
-        'Brazil',
-        'England',
-        'Dubai',
-        'France',
-        'Germany',
-        'Saudi Arabia',
-        'Argentina',
-        'India',
-    ];
 
+    const { state, handleInputChange } = useContext(NewRegisterStep2Context);
+    const { params } = route
+    console.log(params);
+    const [remoteDataSet, setRemoteDataSet] = useState(null)
 
     const getContent = () => {
         return (
@@ -41,9 +32,9 @@ const NewRegisterStep2 = () => {
                     <StepStatus />
                 </View>
                 <View>
-                    <Text style={[tw` text-sm`, { color: 'gray' }]}>Nombre: <Text style={[tw` text-sm`, { color: 'black' }]}>Miguel Zuniga</Text></Text>
-                    <Text style={[tw` text-sm`, { color: 'gray' }]}>Email: <Text style={[tw` text-sm`, { color: 'black' }]}>miguel@zunit.mx</Text></Text>
-                    <Text style={[tw` text-sm`, { color: 'gray' }]}>Telefono: <Text style={[tw` text-sm`, { color: 'black' }]}>8121213828</Text></Text>
+                    <Text style={[tw` text-sm`, { color: 'gray' }]}>Nombre: <Text style={[tw` text-sm`, { color: 'black' }]}>{params.name} {params.paternal_surname} {params.maternal_surname}</Text></Text>
+                    <Text style={[tw` text-sm`, { color: 'gray' }]}>Email: <Text style={[tw` text-sm`, { color: 'black' }]}>{params.email}</Text></Text>
+                    <Text style={[tw` text-sm`, { color: 'gray' }]}>Telefono: <Text style={[tw` text-sm`, { color: 'black' }]}>{params.phone}</Text></Text>
                 </View>
                 <Text style={tw`text-xl my-5`}>Programa Educativo</Text>
                 <Text style={[tw` text-sm font-bold`, { color: '#133C60' }]}>Items</Text>
@@ -53,10 +44,14 @@ const NewRegisterStep2 = () => {
                     <ModalProg />
                     <ModalApostille />
                 </View>
-                <View style={tw`flex-row items-start my-8`}>
+                <View style={tw`flex-row items-start mt-8`}>
                     <Text style={[tw` text-sm w-9/12 text-white pl-2`, styles.itemsT]}>Items:</Text>
                     <Text style={[tw` text-sm w-60 text-white pl-2`, styles.itemsT]}>Monto</Text>
                 </View>
+
+                <EntryList
+                    data={state.data} />
+
                 <View style={tw`flex-row my-10 justify-around items-center `}>
                     <Button
                         titleStyle={tw`text-base font-bold`}
