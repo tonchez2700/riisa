@@ -15,8 +15,11 @@ import moment from 'moment'
 const NewRegister = () => {
 
     const navigation = useNavigation();
-    const { state, handleInputChange, getStudentbyEmail } = useContext(NewRegisterContext);
-    console.log(state.dataFrom);
+    const { state, handleInputChange, getStudentbyEmail, getCatalog, store } = useContext(NewRegisterContext);
+
+    useEffect(() => {
+        getCatalog()
+    }, []);
     const getContent = () => {
         return (
             <ScrollView
@@ -76,16 +79,16 @@ const NewRegister = () => {
                 />
                 <Text style={[tw` text-base mb-1 font-bold`, { color: '#133C60' }]}>Cuidad</Text>
                 <DropD
-                    data={state.countries}
+                    data={state.cities}
                     type={'Cuidad'}
                     value={state.dataFrom?.city}
-                    fun={(item) => handleInputChange(item, 'city')}
+                    fun={(item) =>
+                        handleInputChange(item, 'city')}
                 />
                 <Text style={[tw` text-base my-5 font-bold`, { color: '#133C60' }]}>Fecha de nacimiento</Text>
                 <DateRange
                     titleDate="Fecha de nacimiento"
                     onChangeDate={(date) => {
-                        console.log(date);
                         handleInputChange(date, 'birthdate')
                     }}
                 />
@@ -105,7 +108,7 @@ const NewRegister = () => {
                 />
                 <Text style={[tw` text-base my-2 font-bold`, { color: '#133C60' }]}>Medio de Origen</Text>
                 <DropD
-                    data={state.genders}
+                    data={state.media_origins}
                     type={'Medio de Origen'}
                     value={state.dataFrom?.media_origin}
                     fun={(item) => handleInputChange(item, 'media_origin')}
@@ -115,12 +118,16 @@ const NewRegister = () => {
                         titleStyle={tw`text-base font-bold  `}
                         buttonStyle={[tw` mr-2 w-32 rounded-full `, { backgroundColor: '#868686' }]}
                         title="Cancelar"
-                    //onPress={() => toggleModalVisibility()}
+                        onPress={() => {
+                            console.log(state.dataFrom)
+                            console.log(state.gender);
+                        }
+                        }
                     /><Button
                         titleStyle={tw`text-base font-bold `}
                         buttonStyle={[tw`mr-2 w-32 rounded-full  `, { backgroundColor: '#2D5DA0' }]}
                         title="Siguiente"
-                        onPress={() => navigation.navigate('NewRegisterStep2',state.dataFrom )}
+                        onPress={() => store(state.dataFrom)}
                     />
                 </View>
             </ScrollView>

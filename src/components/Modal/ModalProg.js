@@ -1,37 +1,32 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, } from 'react-native'
+import { Context as NewRegisterStep2Context } from '../../context/NewRegisterStep2Context';
 import { Input, Button, Icon } from 'react-native-elements';
-import { useNavigation } from '@react-navigation/native';
 import DropdownSelect from '../DropdownSelect';
+import { useNavigation } from '@react-navigation/native';
 import tw from 'tailwind-react-native-classnames'
 
 
 const { width } = Dimensions.get("window");
 
-const ModalProg = () => {
-
-    const camp = [
-        'campana 1',
-        'campana 2',
-        'campana 3',
-    ];
+const ModalProg = (data) => {
 
     const navigation = useNavigation();
+    const { state, clearState, handleInputChangeCamp, handleInputChangeProg, handleInputItems, getcampainsByStatus, getBene } = useContext(NewRegisterStep2Context);
     const [modalVisible, setModalVisible] = useState(false);
-
     const toggleModalVisibility = () => {
         setModalVisible(!modalVisible);
     };
-    const multipleFunction = () => {
-        toggleModalVisibility();
-        navigation.navigate('CeateReportScreen');
-    }
+    
+    useEffect(() => {
+        getcampainsByStatus()
+        getBene(state.data?.campaignSelection?.id)
+    }, [state.data]);
 
     return (
         <View>
             <Button
-                titleStyle={[tw`text-base`, { color: '#133C60' }]}
-                buttonStyle={[tw` mr-2  rounded-md `, styles.items]}
+                titleStyle={[tw`text-base px-1`, { color: '#133C60' }]}
                 iconPosition={'top'}
                 icon={{
                     name: 'plus',
@@ -39,6 +34,7 @@ const ModalProg = () => {
                     size: 15,
                     color: '#133C60',
                 }}
+                buttonStyle={[tw` mr-2 rounded-md mt-1 `, styles.items]}
                 title="Beneficio"
                 onPress={() => toggleModalVisibility()}
             />
@@ -54,13 +50,15 @@ const ModalProg = () => {
                         <View style={tw`flex-col items-start p-5`}>
                             <Text style={[tw` text-sm mb-1 font-bold `, { color: '#133C60' }]}>Selecciona la Campaña</Text>
                             <DropdownSelect
-                                data={camp}
+                                data={state.campains}
                                 type={'Selecciona la Campaña'}
+                                fun={(item) => handleInputChangeCamp(item, 'campaignSelection')}
                             />
-                            <Text style={[tw` text-sm my-1 font-bold`, { color: '#133C60' }]}>Selecciona el Programa Educativo</Text>
+                            <Text style={[tw` text-sm my-1 font-bold`, { color: '#133C60' }]}>Selecciona el Beneficio</Text>
                             <DropdownSelect
-                                data={camp}
-                                type={'Selecciona el Programa Educativo'}
+                                data={state.dataBene}
+                                type={'Selecciona el Beneficio'}
+                                fun={(item) => handleInputChangeProg(item, 'benefit')}
                             />
                         </View>
                         <View style={tw`flex-row justify-between`}>
@@ -73,6 +71,7 @@ const ModalProg = () => {
                                 title="Aceptar"
                                 buttonStyle={{ marginLeft: 50, backgroundColor: '#002443', marginBottom: 15 }}
                                 onPress={() => {
+                                    handleInputItems(state.data, 'diplomantType')
                                     toggleModalVisibility()
                                 }}
                             />
@@ -84,6 +83,7 @@ const ModalProg = () => {
         </View>
     )
 }
+
 
 export default ModalProg
 const styles = StyleSheet.create({

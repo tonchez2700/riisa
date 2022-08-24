@@ -21,7 +21,6 @@ const EntryList = ({ data, TotalCost }) => {
                                         <Text style={[tw` text-sm w-9/12 pl-2`]}>{item.benefit.title}:</Text>
                                         <Text style={[tw` text-sm  pl-2 mr-2 mb-1`]}>${item.benefit.cost}</Text>
                                     </View>
-                                    <Icon type='font-awesome-5' name='trash' size={18} color='red' style={tw`mr-2 mb-2`} />
                                 </View>
                             </View>
                             :

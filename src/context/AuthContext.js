@@ -103,8 +103,6 @@ const signout = (dispatch) => {
 const tryAuth = async (email, password, dispatch) => {
 
     const response = await httpClient.post(`auth/login?email=${email}&password=${password}`)
-    console.log(email);
-    console.log(response);
     if (response.status) {
         const user = {
             token: response.token,

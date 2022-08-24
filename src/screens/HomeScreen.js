@@ -28,7 +28,7 @@ const HomeScreen = () => {
                     icon='list'
                     color='#F1B44C'
                     fontFamily='font-awesome-5'
-                    navigateScreen='VisitorCreateScreen' />
+                    navigateScreen='NewRegisterStep3' />
             </ScrollView>
         </View>
     )

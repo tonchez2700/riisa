@@ -10,9 +10,14 @@ const initialState = {
     error: false,
     message: "",
     fetchingData: false,
-    dataStudent: [],
+    campains: [],
+    dataDiplomant: [],
+    cost: '',
+    TotalCost: 0,
     dataProgram: [],
-    data: [],
+    dataBene: [],
+    dataItems: [],
+    data: '',
     countries: [
         'Egypt',
         'Canada',
@@ -46,20 +51,55 @@ const NewRegisterStep2Reducer = (state = initialState, action) => {
                 message: action.payload.message,
                 fetchingData: false
             }
-        case 'SET_INPUT':
-            let typedata = action.payload.typedata
+        case 'SET_CAMP':
+            let DataCamp = action.payload.typeData
             return {
                 ...state,
-                dataProgram: {
-                    ...state.dataProgram,
-                    [typedata]: action.payload.value
-                }
-
+                data: {
+                    ...state.data,
+                    [DataCamp]: action.payload.value,
+                    type: action.payload.value.type
+                },
             }
-        case 'SET_ITEMS':
+        case 'SET_PROG':
+            let DataProg = action.payload.typeData
+            let newCost = action.payload.value.cost
+            if (state.TotalCost != '')
+                newCost = state.TotalCost + newCost
             return {
                 ...state,
-                data: [action.payload.value]
+                data: {
+                    ...state.data,
+                    [DataProg]: action.payload.value,
+                    type: action.payload.value.type
+                },
+                TotalCost: newCost
+            }
+        case 'SET_DATA_ITEMS':
+            let typeItem = action.payload.type
+            return {
+                ...state,
+                dataItems: [
+                    ...state.dataItems,
+                    typeItem = action.payload.value
+                ],
+                data: '',
+            }
+        case 'SET_DATA_CAMPAINS':
+            return {
+                ...state,
+                campains: action.payload.listcampain
+            }
+        case 'SET_DATA_PROGRAM':
+            return {
+                ...state,
+                dataProgram: action.payload.listProgram
+            }
+
+        case 'SET_DATA_BENE':
+            return {
+                ...state,
+                dataBene: action.payload.listBene
             }
         default:
             return state
@@ -74,23 +114,95 @@ const clearState = (dispatch) => {
 }
 
 
-const getStudentbyEmail = (dispatch) => {
+const getcampainsByStatus = (dispatch) => {
+    return async () => {
+        try {
+            dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
+            const user = JSON.parse(await AsyncStorage.getItem('user'));
+            const token = user.token
+            const response = await httpClient
+                .get(`campains?campain_status_id=1`, {
+                    'Authorization': `Bearer ${token}`,
+                }
+                );
+            if (response != '') {
+                const listcampain = response.map(item => ({
+                    id: item.id,
+                    title: item.name,
+                }))
+                dispatch({
+                    type: 'SET_DATA_CAMPAINS',
+                    payload: { listcampain }
+                });
+            }
+        } catch (error) {
+            dispatch({
+                type: 'SET_REQUEST_ERROR',
+                payload: {
+                    error: true,
+                    message: 'Por el momento el servicio no está disponible, inténtelo mas tarde.'
+                }
+            });
+        }
+    }
+
+}
+const getprogram = (dispatch) => {
     return async (id) => {
         try {
             dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
             const user = JSON.parse(await AsyncStorage.getItem('user'));
             const token = user.token
             const response = await httpClient
-                .get(`campains?campain_status_id=${id}`, {
-                    'Authorization': token,
+                .get(`groups?diplomat_type_id=1&campain_id=${id}`, {
+                    'Authorization': `Bearer ${token}`,
                 }
                 );
             if (response != '') {
+                const listProgram = response.map(item => ({
+                    id: item.diplomat.id,
+                    type: item.diplomat.diplomat_type_id,
+                    title: item.diplomat.name,
+                    cost: item.cost
+                }))
                 dispatch({
-                    type: 'SET_DATA_STUDENT',
-                    payload: {
-                        result: response
-                    }
+                    type: 'SET_DATA_PROGRAM',
+                    payload: { listProgram }
+                });
+            }
+        } catch (error) {
+            dispatch({
+                type: 'SET_REQUEST_ERROR',
+                payload: {
+                    error: true,
+                    message: 'Por el momento el servicio no está disponible, inténtelo mas tarde.'
+                }
+            });
+        }
+    }
+
+}
+const getBene = (dispatch) => {
+    return async (id) => {
+        try {
+            dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
+            const user = JSON.parse(await AsyncStorage.getItem('user'));
+            const token = user.token
+            const response = await httpClient
+                .get(`groups?diplomat_type_id=2&campain_id=${id}`, {
+                    'Authorization': `Bearer ${token}`,
+                }
+                );
+            if (response != '') {
+                const listBene = response.map(item => ({
+                    id: item.diplomat.id,
+                    type: item.diplomat.diplomat_type_id,
+                    title: item.diplomat.name,
+                    cost: item.cost
+                }))
+                dispatch({
+                    type: 'SET_DATA_BENE',
+                    payload: { listBene }
                 });
             }
         } catch (error) {
@@ -106,24 +218,61 @@ const getStudentbyEmail = (dispatch) => {
 
 }
 
-
-const handleInputChange = (dispatch) => {
-    return async (value, typedata) => {
-
+const handleInputChangeCamp = (dispatch) => {
+    return async (value, typeData) => {
         dispatch({
-            type: 'SET_INPUT',
-            payload: { value, typedata }
+            type: 'SET_CAMP',
+            payload: { value, typeData }
+        })
+    }
+}
+const handleInputChangeProg = (dispatch) => {
+    return async (value, typeData) => {
+        dispatch({
+            type: 'SET_PROG',
+            payload: { value, typeData }
         })
     }
 }
 
 const handleInputItems = (dispatch) => {
-    return async (value) => {
-
+    return async (value, type) => {
         dispatch({
-            type: 'SET_ITEMS',
-            payload: { value }
+            type: 'SET_DATA_ITEMS',
+            payload: { value, type }
         })
+    }
+}
+
+const store = (dispatch) => {
+    return async (data,cost,user) => {
+
+        const dataPlan = {
+            data,
+            cost,
+            user
+        }
+        if (data != '') {
+            Alert.alert(
+                "Correcto",
+                'Plan de estudio agregado correctamente.',
+                [{
+                    text: "Aceptar",
+                    onPress: rootNavigation.navigate('NewRegisterStep3', dataPlan)
+                }]
+            )
+        } else {
+            Alert.alert(
+                "Falta agregar campo",
+                'Agerga un plan de estudio ',
+                [{
+                    text: "Aceptar"
+
+                }]
+            )
+        }
+
+
     }
 }
 
@@ -131,9 +280,14 @@ export const { Context, Provider } = createDataContext(
     NewRegisterStep2Reducer,
     {
         clearState,
-        getStudentbyEmail,
-        handleInputChange,
+        getcampainsByStatus,
+        getprogram,
+        getBene,
+        handleInputChangeCamp,
+        handleInputChangeProg,
         handleInputItems,
+        store,
+
 
     },
     initialState

@@ -3,8 +3,6 @@ import { Text, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import tw from 'tailwind-react-native-classnames'
 import StepIndicator from 'react-native-step-indicator';
-import { Icon } from 'react-native-elements'
-import { View } from 'react-native-web';
 
 const StepStatus = () => {
 

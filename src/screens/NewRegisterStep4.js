@@ -2,6 +2,8 @@ import React, { useContext, useState, useEffect } from 'react'
 import { ScrollView, StyleSheet, Alert, View, Text, ActivityIndicator } from 'react-native'
 import { useNavigation, } from '@react-navigation/native';
 import { Input, Button } from 'react-native-elements'
+import EntryList from '../components/EntryListFinal';
+import EntryPayment from '../components/EntryPayment';
 import DateRange from '../components/DateRange';
 import StepStatus from '../components/StepStatus';
 import ModalPayment from '../components/Modal/ModalPayment';
@@ -10,25 +12,11 @@ import DropdownSelect from '../components/DropdownSelect';
 import tw from 'tailwind-react-native-classnames'
 import moment from 'moment'
 
-const NewRegisterStep4 = () => {
+const NewRegisterStep4 = ({ route }) => {
 
     const navigation = useNavigation();
-    const countries = [
-        'Egypt',
-        'Canada',
-        'Australia',
-        'Ireland',
-        'Brazil',
-        'England',
-        'Dubai',
-        'France',
-        'Germany',
-        'Saudi Arabia',
-        'Argentina',
-        'India',
-    ];
-
-
+    const { params } = route
+    console.log(params);
     const getContent = () => {
         return (
             <ScrollView
@@ -39,7 +27,7 @@ const NewRegisterStep4 = () => {
                     <StepStatus />
                 </View>
                 <Text style={[tw`text-lg`]}>Datos generales</Text>
-                <View  style={[tw`my-2`]}>
+                <View style={[tw`my-2`]}>
                     <Text style={[tw` text-xs`, { color: 'gray' }]}>Nombre: <Text style={[tw` text-xs font-medium`, { color: 'black' }]}>Miguel Zuniga</Text></Text>
                     <Text style={[tw` text-xs`, { color: 'gray' }]}>Email: <Text style={[tw` text-xs font-medium`, { color: 'black' }]}>miguel@zunit.mx</Text></Text>
                     <Text style={[tw` text-xs`, { color: 'gray' }]}>Telefono: <Text style={[tw` text-xs font-medium`, { color: 'black' }]}>8121213828</Text></Text>
@@ -48,18 +36,26 @@ const NewRegisterStep4 = () => {
                     <Text style={[tw` text-xs`, { color: 'gray' }]}>Fecha de nacimiento: <Text style={[tw` text-xs font-medium`, { color: 'black' }]}>12\12\2012</Text></Text>
                 </View>
 
-                <Text style={[tw`text-xl my-2 py-4`,{borderColor: '#2D5DA0', borderTopWidth : 1.5}]}>Programas Educativos</Text>
-
-                <View style={tw`flex-row items-start my-2`}>
+                <Text style={[tw`text-xl my-1 py-4`, { borderColor: '#2D5DA0', borderTopWidth: 1.5 }]}>Programas Educativos</Text>
+                <View style={tw`flex-row items-start`}>
                     <Text style={[tw` text-sm w-9/12 text-white pl-2`, styles.itemsT]}>Items:</Text>
                     <Text style={[tw` text-sm w-60 text-white pl-2`, styles.itemsT]}>Monto</Text>
                 </View>
 
+                <EntryList
+                    data={params?.data.data}
+                    TotalCost={params?.data.cost}
+                />
                 <Text style={tw`text-xl my-2`}>Desglose de Pagos</Text>
                 <View style={tw`flex-row items-start my-2`}>
-                    <Text style={[tw` text-sm w-9/12 text-white pl-2`, styles.itemsT]}>Items:</Text>
-                    <Text style={[tw` text-sm w-60 text-white pl-2`, styles.itemsT]}>Monto</Text>
+                    <Text style={[tw`  text-sm  w-5/12 text-white pl-2`, styles.itemsT]}>Fecha</Text>
+                    <Text style={[tw`  text-sm  w-5/12 text-white pl-2`, styles.itemsT]}>Tipo</Text>
+                    <Text style={[tw`  text-sm  w-1/3  text-white pl-2`, styles.itemsT]}>Monto</Text>
                 </View>
+                <EntryPayment
+                    data={params?.data.payment}
+                    TotalCost={params?.data.cost}
+                />
                 <View style={tw`flex-row my-10 justify-around items-center `}>
                     <Button
                         titleStyle={tw`text-base font-bold`}

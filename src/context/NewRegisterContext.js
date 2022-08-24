@@ -12,27 +12,10 @@ const initialState = {
     fetchingData: false,
     dataFrom: '',
     data: [],
-    countries: [
-        { city: 'City1', value: 'City1' },
-        { city: 'City2', value: 'City2' },
-        { city: 'City3', value: 'City3' },
-        { city: 'City4', value: 'City4' },
-        { city: 'City5', value: 'City5' },
-        { city: 'City6', value: 'City6' },
-        { city: 'City7', value: 'City7' },
-        { city: 'City8', value: 'City8' },
-    ],
-    jobs: [
-        { city: 'Job1', value: 'Job1' },
-        { city: 'Job2', value: 'Job2' },
-        { city: 'Job3', value: 'Job3' },
-        { city: 'Job4', value: 'Job4' },
-    ],
-    genders: [
-        { city: 'Masculino', value: 'Masculino' },
-        { city: 'Femenino', value: 'Femenino' },
-    ],
-
+    cities: [],
+    jobs: [],
+    genders: [],
+    media_origins: [],
 }
 
 const NewRegisterReducer = (state = initialState, action) => {
@@ -50,6 +33,14 @@ const NewRegisterReducer = (state = initialState, action) => {
                 error: true,
                 message: action.payload.message,
                 fetchingData: false
+            }
+        case 'SET_CATALOG':
+            return {
+                ...state,
+                cities: action.payload.data.cities,
+                genders: action.payload.data.genders,
+                jobs: action.payload.data.jobs,
+                media_origins: action.payload.data.media_origins,
             }
         case 'SET_DATA_STUDENT':
             let typedata = action.payload.typedata
@@ -90,7 +81,63 @@ const clearState = (dispatch) => {
         dispatch({ type: 'CLEAR_STATE' });
     }
 }
+const getCatalog = (dispatch) => {
+    return async () => {
+        try {
+            const user = JSON.parse(await AsyncStorage.getItem('user'));
+            const token = user.token
+            const cities = await httpClient
+                .get(`cities`, {
+                    'Authorization': `Bearer ${token}`,
+                }
+                );
+            const genders = await httpClient
+                .get(`genders`, {
+                    'Authorization': `Bearer ${token}`,
+                }
+                );
+            const jobs = await httpClient
+                .get(`jobs`, {
+                    'Authorization': `Bearer ${token}`,
+                }
+                );
+            const media_origins = await httpClient
+                .get(`media_origins`, {
+                    'Authorization': `Bearer ${token}`,
+                }
+                );
+            const data = {
+                genders,
+                jobs,
+                media_origins,
+                cities
+            }
+            if (data != '') {
+                dispatch({
+                    type: 'SET_CATALOG',
+                    payload: { data }
+                });
+            } else {
+                dispatch({
+                    type: 'SET_REQUEST_ERROR',
+                    payload: {
+                        error: true,
+                        message: 'Por el momento el servicio no está disponible, inténtelo mas tarde.'
+                    }
+                });
+            }
+        } catch (error) {
+            dispatch({
+                type: 'SET_REQUEST_ERROR',
+                payload: {
+                    error: true,
+                    message: 'Por el momento el servicio no está disponible, inténtelo mas tarde.'
+                }
+            });
+        }
+    }
 
+}
 
 const getStudentbyEmail = (dispatch) => {
     return async (email) => {
@@ -130,6 +177,41 @@ const getStudentbyEmail = (dispatch) => {
 
 }
 
+const store = (dispatch) => {
+    return async (data) => {
+
+        console.log(data);
+        dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
+        const user = JSON.parse(await AsyncStorage.getItem('user'));
+        const token = user.token
+        const response = await httpClient.post(
+            'students', data,
+            { 'Authorization': `Bearer ${token}` }
+        );
+        console.log(response);
+        if (response.status) {
+            Alert.alert(
+                "Correcto",
+                'Invitación cargada correctamente.',
+                [{
+                    text: "Aceptar",
+                    onPress: rootNavigation.navigate('NewRegisterStep2', response.data)
+                }]
+            )
+        } else {
+            Alert.alert(
+                "Error",
+                'Hubo un error al crear el registro',
+                [{
+                    text: "Aceptar"
+
+                }]
+            )
+        }
+
+
+    }
+}
 
 const handleInputChange = (dispatch) => {
     return async (value, typedata) => {
@@ -148,6 +230,8 @@ export const { Context, Provider } = createDataContext(
         clearState,
         getStudentbyEmail,
         handleInputChange,
+        getCatalog,
+        store
 
     },
     initialState

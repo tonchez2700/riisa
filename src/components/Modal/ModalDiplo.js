@@ -11,23 +11,16 @@ const { width } = Dimensions.get("window");
 
 const ModalDiplo = (data) => {
 
-    const camp = [
-        'campana 1',
-        'campana 2',
-        'campana 3',
-    ];
     const navigation = useNavigation();
-    const { state, handleInputChange, handleInputItems } = useContext(NewRegisterStep2Context);
-
+    const { state, clearState, handleInputChangeCamp, handleInputChangeProg, handleInputItems, getcampainsByStatus, getprogram } = useContext(NewRegisterStep2Context);
     const [modalVisible, setModalVisible] = useState(false);
-
     const toggleModalVisibility = () => {
         setModalVisible(!modalVisible);
     };
-
-    const multipleFunction = () => {
-        toggleModalVisibility();
-    }
+    useEffect(() => {
+        getcampainsByStatus()
+        getprogram(state.data?.campaignSelection?.id)
+    }, [state.data]);
 
     return (
         <View>
@@ -40,7 +33,7 @@ const ModalDiplo = (data) => {
                     size: 15,
                     color: '#133C60',
                 }}
-                buttonStyle={[tw` mr-2 rounded-md `, styles.items]}
+                buttonStyle={[tw` mr-2 rounded-md mt-1 `, styles.items]}
                 title="Diplomado"
                 onPress={() => toggleModalVisibility()}
             />
@@ -56,15 +49,15 @@ const ModalDiplo = (data) => {
                         <View style={tw`flex-col items-start p-5`}>
                             <Text style={[tw` text-sm mb-1 font-bold `, { color: '#133C60' }]}>Selecciona la Campaña</Text>
                             <DropdownSelect
-                                data={camp}
+                                data={state.campains}
                                 type={'Selecciona la Campaña'}
-                                fun={(item) => handleInputChange(item, 'campaign')}
+                                fun={(item) => handleInputChangeCamp(item, 'campaignSelection')}
                             />
                             <Text style={[tw` text-sm my-1 font-bold`, { color: '#133C60' }]}>Selecciona el Programa Educativo</Text>
                             <DropdownSelect
-                                data={camp}
+                                data={state.dataProgram}
                                 type={'Selecciona el Programa Educativo'}
-                                fun={(item) => handleInputChange(item, 'educationalProgram')}
+                                fun={(item) => handleInputChangeProg(item, 'educationalProgram')}
                             />
                         </View>
                         <View style={tw`flex-row justify-between`}>
@@ -77,7 +70,7 @@ const ModalDiplo = (data) => {
                                 title="Aceptar"
                                 buttonStyle={{ marginLeft: 50, backgroundColor: '#002443', marginBottom: 15 }}
                                 onPress={() => {
-                                    handleInputItems(state.dataProgram)
+                                    handleInputItems(state.data, 'diplomantType')
                                     toggleModalVisibility()
                                 }}
                             />

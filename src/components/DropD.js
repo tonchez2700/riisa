@@ -11,7 +11,6 @@ const { width } = Dimensions.get('window');
 
 const DropD = ({ data, type, value, fun }) => {
     const navigation = useNavigation();
-    //console.log(fun);
     return (
 
         <Dropdown
@@ -21,12 +20,12 @@ const DropD = ({ data, type, value, fun }) => {
             placeholderStyle={{ color: 'gray' }}
             selectedTextStyle={{ color: 'black' }}
             placeholder={type}
-            valueField="value"
-            labelField="city"
+            valueField="name"
+            labelField="name"
             value={value}
             data={data}
             onChange={item => {
-                fun(item.city)
+                fun(item.name)
             }}
         />
     )

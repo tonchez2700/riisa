@@ -11,7 +11,6 @@ const { width } = Dimensions.get('window');
 const DropdownSelect = ({ data, type, fun }) => {
 
     const navigation = useNavigation();
-    //console.log(fun);
     return (
 
         <SelectDropdown
@@ -19,15 +18,14 @@ const DropdownSelect = ({ data, type, fun }) => {
             defaultValueByIndex={2}
             onSelect={(selectedItem, index) => {
                 fun(selectedItem)
-                //console.log(selectedItem, index);
             }}
             defaultButtonText={type}
             buttonTextAfterSelection={(selectedItem, index) => {
-                return selectedItem;
-            }}
-            rowTextForSelection={(item, index) => {
-                return item;
-            }}
+                return selectedItem.title;
+              }}
+              rowTextForSelection={(item, index) => {
+                return item.title;
+              }}
             buttonStyle={styles.dropdown1BtnStyle}
             buttonTextStyle={styles.dropdown1BtnTxtStyle}
             renderDropdownIcon={isOpened => {

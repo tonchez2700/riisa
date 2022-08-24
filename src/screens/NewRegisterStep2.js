@@ -13,13 +13,12 @@ import DropdownSelect from '../components/DropdownSelect';
 import tw from 'tailwind-react-native-classnames'
 import moment from 'moment'
 
-const NewRegisterStep2 = ({route}) => {
+const NewRegisterStep2 = ({ route }) => {
 
     const navigation = useNavigation();
 
-    const { state, handleInputChange } = useContext(NewRegisterStep2Context);
+    const { state, clearState, store } = useContext(NewRegisterStep2Context);
     const { params } = route
-    console.log(params);
     const [remoteDataSet, setRemoteDataSet] = useState(null)
 
     const getContent = () => {
@@ -32,8 +31,8 @@ const NewRegisterStep2 = ({route}) => {
                     <StepStatus />
                 </View>
                 <View>
-                    <Text style={[tw` text-sm`, { color: 'gray' }]}>Nombre: <Text style={[tw` text-sm`, { color: 'black' }]}>{params.name} {params.paternal_surname} {params.maternal_surname}</Text></Text>
-                    <Text style={[tw` text-sm`, { color: 'gray' }]}>Email: <Text style={[tw` text-sm`, { color: 'black' }]}>{params.email}</Text></Text>
+                    <Text style={[tw` text-sm`, { color: 'gray' }]}>Nombre: <Text style={[tw` text-sm`, { color: 'black' }]}>{params.user.name} {params.user.paternal_surname} {params.user.maternal_surname}</Text></Text>
+                    <Text style={[tw` text-sm`, { color: 'gray' }]}>Email: <Text style={[tw` text-sm`, { color: 'black' }]}>{params.user.email}</Text></Text>
                     <Text style={[tw` text-sm`, { color: 'gray' }]}>Telefono: <Text style={[tw` text-sm`, { color: 'black' }]}>{params.phone}</Text></Text>
                 </View>
                 <Text style={tw`text-xl my-5`}>Programa Educativo</Text>
@@ -42,7 +41,7 @@ const NewRegisterStep2 = ({route}) => {
                 <View style={tw`flex-row justify-around`}>
                     <ModalDiplo />
                     <ModalProg />
-                    <ModalApostille />
+                    {/* <ModalApostille /> */}
                 </View>
                 <View style={tw`flex-row items-start mt-8`}>
                     <Text style={[tw` text-sm w-9/12 text-white pl-2`, styles.itemsT]}>Items:</Text>
@@ -50,19 +49,23 @@ const NewRegisterStep2 = ({route}) => {
                 </View>
 
                 <EntryList
-                    data={state.data} />
+                    data={state.dataItems} 
+                    TotalCost={state.TotalCost}
+                    />
 
                 <View style={tw`flex-row my-10 justify-around items-center `}>
                     <Button
                         titleStyle={tw`text-base font-bold`}
                         buttonStyle={[tw` mr-2 w-32 rounded-full `, { backgroundColor: '#868686' }]}
                         title="Cancelar"
-                    //onPress={() => toggleModalVisibility()}
+                        onPress={() =>{
+                            console.log(state.data);
+                            console.log(state.dataItems)}}
                     /><Button
                         titleStyle={tw`text-base font-bold `}
                         buttonStyle={[tw`mr-2 w-32 rounded-full  `, { backgroundColor: '#2D5DA0' }]}
                         title="Siguiente"
-                        onPress={() => navigation.navigate('NewRegisterStep3')}
+                        onPress={() => store(state.dataItems , state.TotalCost,params.user )}
                     />
 
                 </View>

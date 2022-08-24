@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, } from 'react-native'
 import { Input, Button, Icon } from 'react-native-elements';
+import { Context as NewRegisterStep3Context } from '../../context/NewRegisterStep3Context';
 import DateRange from '../DateRange';
 import { useNavigation } from '@react-navigation/native';
 import DropdownSelect from '../DropdownSelect';
@@ -11,22 +12,14 @@ const { width } = Dimensions.get("window");
 
 const ModalPayment = () => {
 
-    const camp = [
-        'campana 1',
-        'campana 2',
-        'campana 3',
-    ];
 
     const navigation = useNavigation();
+    const { state, clearState, handleInputChange, handleInputChangePayment } = useContext(NewRegisterStep3Context);
     const [modalVisible, setModalVisible] = useState(false);
 
     const toggleModalVisibility = () => {
         setModalVisible(!modalVisible);
     };
-    const multipleFunction = () => {
-        toggleModalVisibility();
-        navigation.navigate('CeateReportScreen');
-    }
 
     return (
         <View>
@@ -52,22 +45,21 @@ const ModalPayment = () => {
                 onDismiss={() => toggleModalVisibility()}>
                 <View style={styles.viewWrapper}>
                     <View style={styles.modalView}>
-                        <View style={tw`flex-col items-start p-3`}>
+                        <View style={tw`flex-col items-start p-3 w-full`}>
                             <Text style={[tw` text-sm mb-1 font-bold `, { color: '#133C60' }]}>Selecciona la Campaña</Text>
                             <DateRange
                                 titleDate="Fecha"
-                            // onChangeDate={(date) => {
-                            //     handleInputChange(date, 'date')
-                            // }}
-                            // onChangeTime={(time) => {
-                            //     handleInputChange(time, 'time')
-                            // }}
+                                onChangeDate={(date) => {
+                                    handleInputChange(date, 'promess_date')
+                                }}
                             />
                             <Text style={[tw` text-sm  font-bold`, { color: '#133C60' }]}>Monto</Text>
                             <Input
-                                inputStyle={tw`text-left`}
-                                disabled={true}
-                                // value={state.data[0].initial_date}
+                                inputStyle={tw`text-center`}
+                                keyboardType={'number-pad'}
+                                placeholder={'$8,000'}
+                                onChangeText={(value) => handleInputChange(value, 'amount')}
+                                value={state.data?.payment}
                                 labelStyle={{ color: '#133C60' }}
                                 multiline={false}
                             />
@@ -82,7 +74,7 @@ const ModalPayment = () => {
                                 titleStyle={tw`text-xs font-bold `}
                                 buttonStyle={[tw`mr-2 rounded-full  `, { backgroundColor: '#2D5DA0' }]}
                                 title="Siguiente"
-                            //onPress={() => navigation.navigate('NewRegisterStep2')}
+                                onPress={() => { handleInputChangePayment(state.data), toggleModalVisibility() }}
                             />
 
                         </View>
