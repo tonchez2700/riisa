@@ -9,6 +9,7 @@ import moment from 'moment';
 const initialState = {
     error: false,
     message: "",
+    finalState: false,
     fetchingData: false,
     campains: [],
     dataPayment: [],
@@ -24,6 +25,11 @@ const NewRegisterStep3Reducer = (state = initialState, action) => {
         case 'CLEAR_STATE':
             return {
                 ...initialState,
+            }
+        case 'CLEAR_STATE_ALL':
+            return {
+                ...state,
+                finalState: action.payload.state,
             }
         case 'FETCHING_DATA':
             return { ...state, fetchingData: action.payload.fetchingData }
@@ -183,6 +189,7 @@ const storeFinal = (dispatch) => {
         console.log(response);
         if (response.status) {
             dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: false } });
+            dispatch({ type: 'CLEAR_STATE_ALL', payload: { state: true } });
             Alert.alert(
                 "Correcto",
                 'Registro creado correctamente.',
@@ -192,6 +199,7 @@ const storeFinal = (dispatch) => {
                 }]
             )
         } else {
+            dispatch({ type: 'CLEAR_STATE_ALL', payload: { state: false } });
             Alert.alert(
                 "Ocurrio un problema",
                 "Servicio no disponible",
@@ -205,20 +213,39 @@ const storeFinal = (dispatch) => {
 
 const handleInputChangePayment = (dispatch) => {
     return async (data) => {
-        dispatch({
-            type: 'ADD_PAYMENT',
-            payload: {
-                data: {
-                    ...data,
-                    reg_payment_type_id: 1,
-                    is_paid: 0,
-                    is_taxable: 1
+        const validated = validateData(data)
+        if (!validated.error) {
+            dispatch({
+                type: 'ADD_PAYMENT',
+                payload: {
+                    data: {
+                        ...data,
+                        reg_payment_type_id: 1,
+                        is_paid: 0,
+                        is_taxable: 1
+                    }
                 }
-            }
-        })
+            })
+        } else {
+            Alert.alert(
+                "Ha ocurrido un error",
+                validated.message,
+                [{
+                    text: "Aceptar",
+                }]
+            )
+        }
+
     }
 }
-
+const validateData = (data) => {
+    let result = { error: false }
+    if (!data.promess_date)
+        return { ...result, error: true, message: 'Falta seleccionar Fecha de pago' }
+    if (!data.amount)
+        return { ...result, error: true, message: 'Falta seleccionar Cantidad a pagar' }
+    return result
+}
 
 export const { Context, Provider } = createDataContext(
     NewRegisterStep3Reducer,

@@ -5,22 +5,23 @@ import { Input, Button } from 'react-native-elements'
 import { Context as NewRegisterStep2Context } from '../context/NewRegisterStep2Context';
 import EntryList from '../components/EntryList';
 import StepStatus from '../components/StepStatus';
-import ModalApostille from '../components/Modal/ModalApostille';
 import ModalDiplo from '../components/Modal/ModalDiplo';
 import ModalProg from '../components/Modal/ModalProg';
 import HeadTitleScreen from '../components/Forms/HeadTitleScreen';
-import DropdownSelect from '../components/DropdownSelect';
 import tw from 'tailwind-react-native-classnames'
 import moment from 'moment'
 
 const NewRegisterStep2 = ({ route }) => {
 
     const navigation = useNavigation();
-
     const { state, clearState, store } = useContext(NewRegisterStep2Context);
     const { params } = route
     const [remoteDataSet, setRemoteDataSet] = useState(null)
 
+
+    useEffect(() => {
+        clearState()
+    }, []);
     const getContent = () => {
         return (
             <ScrollView
@@ -59,16 +60,14 @@ const NewRegisterStep2 = ({ route }) => {
                         buttonStyle={[tw` mr-2 w-32 rounded-full `, { backgroundColor: '#868686' }]}
                         title="Cancelar"
                         onPress={() => {
-                            console.log(state.data);
-                            console.log(state.dataItems)
+                            navigation.navigate('HomeScreen')
                         }}
                     /><Button
                         titleStyle={tw`text-base font-bold `}
                         buttonStyle={[tw`mr-2 w-32 rounded-full  `, { backgroundColor: '#2D5DA0' }]}
                         title="Siguiente"
-                        onPress={() => store(state.dataItems, state.TotalCost, params.user,params.id)}
+                        onPress={() => store(state.dataItems, state.TotalCost, params.user, params.id)}
                     />
-
                 </View>
             </ScrollView>
         );

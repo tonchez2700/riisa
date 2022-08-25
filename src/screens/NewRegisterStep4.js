@@ -12,9 +12,9 @@ import tw from 'tailwind-react-native-classnames'
 
 const NewRegisterStep4 = ({ route }) => {
 
+    const navigation = useNavigation();
     const { params } = route
-    const { state,storeFinal } = useContext(NewRegisterStep3Context);
-    console.log(params);
+    const { state, storeFinal } = useContext(NewRegisterStep3Context);
     const getContent = () => {
         return (
             <ScrollView
@@ -59,12 +59,12 @@ const NewRegisterStep4 = ({ route }) => {
                         titleStyle={tw`text-base font-bold`}
                         buttonStyle={[tw` mr-2 w-32 rounded-full `, { backgroundColor: '#868686' }]}
                         title="Cancelar"
-                    onPress={() => console.log(params)}
+                        onPress={() => navigation.navigate('HomeScreen')}
                     /><Button
                         titleStyle={tw`text-base font-bold `}
                         buttonStyle={[tw`mr-2 w-32 rounded-full  `, { backgroundColor: '#2D5DA0' }]}
                         title="Confirmar"
-                    onPress={() => storeFinal(params)}
+                        onPress={() => storeFinal(params)}
                     />
 
                 </View>

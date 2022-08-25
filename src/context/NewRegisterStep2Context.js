@@ -18,20 +18,6 @@ const initialState = {
     dataBene: [],
     dataItems: [],
     data: '',
-    countries: [
-        'Egypt',
-        'Canada',
-        'Australia',
-        'Ireland',
-        'Brazil',
-        'England',
-        'Dubai',
-        'France',
-        'Germany',
-        'Saudi Arabia',
-        'Argentina',
-        'India',
-    ],
 
 }
 
@@ -237,10 +223,28 @@ const handleInputChangeProg = (dispatch) => {
 
 const handleInputItems = (dispatch) => {
     return async (value, type) => {
-        dispatch({
-            type: 'SET_DATA_ITEMS',
-            payload: { value, type }
-        })
+        let validated;
+
+        if (value.reg_product_type_id == 1) {
+            validated = validateDiplo(value)
+        } else {
+            validated = validateBenefit(value)
+        }
+
+        if (!validated.error) {
+            dispatch({
+                type: 'SET_DATA_ITEMS',
+                payload: { value, type }
+            })
+        } else {
+            Alert.alert(
+                "Ha ocurrido un error",
+                validated.message,
+                [{
+                    text: "Aceptar",
+                }]
+            )
+        }
     }
 }
 
@@ -275,6 +279,23 @@ const store = (dispatch) => {
 
 
     }
+}
+
+const validateDiplo = (data) => {
+    let result = { error: false }
+    if (!data.campaignSelection)
+        return { ...result, error: true, message: 'Falta seleccionar una Campaña.' }
+    if (!data.educationalProgram)
+        return { ...result, error: true, message: 'Falta seleccionar Programa Educativo' }
+    return result
+}
+const validateBenefit = (data) => {
+    let result = { error: false }
+    if (!data.campaignSelection)
+        return { ...result, error: true, message: 'Falta seleccionar una Campaña.' }
+    if (!data.benefit)
+        return { ...result, error: true, message: 'Falta seleccionar Programa Educativo' }
+    return result
 }
 
 export const { Context, Provider } = createDataContext(

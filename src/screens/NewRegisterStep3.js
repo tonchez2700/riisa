@@ -15,7 +15,10 @@ const NewRegisterStep3 = ({ route }) => {
     const navigation = useNavigation();
     const { state, clearState, store } = useContext(NewRegisterStep3Context);
     const { params } = route
-    const pepe = 5000
+
+    useEffect(() => {
+        clearState()
+    }, []);
     const getContent = () => {
         return (
             <ScrollView
@@ -49,14 +52,14 @@ const NewRegisterStep3 = ({ route }) => {
                         titleStyle={tw`text-base font-bold`}
                         buttonStyle={[tw` mr-2 w-32 rounded-full `, { backgroundColor: '#868686' }]}
                         title="Cancelar"
-                        //onPress={() => toggleModalVisibility()}
+                        onPress={() => navigation.navigate('HomeScreen')}
                     /><Button
                         titleStyle={tw`text-base font-bold `}
                         buttonStyle={[tw`mr-2 w-32 rounded-full  `, { backgroundColor: '#2D5DA0' }]}
                         title="Siguiente"
                         onPress={() => {
- 
-                                store(params,state.dataPayment,params?.cost,state.TotalCost)
+
+                            store(params, state.dataPayment, params?.cost, state.TotalCost)
                         }}
                     />
 

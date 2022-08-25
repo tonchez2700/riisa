@@ -49,15 +49,16 @@ const ModalPayment = () => {
                             <Text style={[tw` text-sm mb-1 font-bold `, { color: '#133C60' }]}>Selecciona la Campaña</Text>
                             <DateRange
                                 titleDate="Fecha"
+                                placeholder='Fecha de pago'
                                 onChangeDate={(date) => {
                                     handleInputChange(date, 'promess_date')
                                 }}
                             />
                             <Text style={[tw` text-sm  font-bold`, { color: '#133C60' }]}>Monto</Text>
                             <Input
-                                inputStyle={tw`text-center`}
                                 keyboardType={'number-pad'}
                                 placeholder={'$8,000'}
+                                inputContainerStyle={tw` pl-1 `}
                                 onChangeText={(value) => handleInputChange(value, 'amount')}
                                 value={state.data?.payment}
                                 labelStyle={{ color: '#133C60' }}

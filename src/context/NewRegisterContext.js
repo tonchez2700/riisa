@@ -181,28 +181,43 @@ const store = (dispatch) => {
     return async (data) => {
 
         dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
-        const user = JSON.parse(await AsyncStorage.getItem('user'));
-        const token = user.token
-        const response = await httpClient.post(
-            'students', data,
-            { 'Authorization': `Bearer ${token}` }
-        );
-        console.log(data);
-        if (response.status) {
-            dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: false } });
-            Alert.alert(
-                "Correcto",
-                'Registro creado correctamente.',
-                [{
-                    text: "Aceptar",
-                    onPress: rootNavigation.navigate('NewRegisterStep2', response.data)
-                }]
-            )
+
+
+        const validated = validateData(data)
+        if (!validated.error) {
+            const user = JSON.parse(await AsyncStorage.getItem('user'));
+            const token = user.token
+            const response = await httpClient.post(
+                'students', data,
+                { 'Authorization': `Bearer ${token}` }
+            );
+            console.log(data);
+            if (response.status) {
+                dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: false } });
+                Alert.alert(
+                    "Correcto",
+                    'Registro creado correctamente.',
+                    [{
+                        text: "Aceptar",
+                        onPress: rootNavigation.navigate('NewRegisterStep2', response.data)
+                    }]
+                )
+            } else {
+                dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: false } });
+                Alert.alert(
+                    "Error",
+                    response.message,
+                    [{
+                        text: "Aceptar"
+
+                    }]
+                )
+            }
+
         } else {
-            dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: false } });
             Alert.alert(
                 "Error",
-                response.message,
+                validated.message,
                 [{
                     text: "Aceptar"
 
@@ -210,8 +225,34 @@ const store = (dispatch) => {
             )
         }
 
-
     }
+}
+
+const validateData = (data) => {
+    let result = { error: false }
+    if (!data.email)
+        return { ...result, error: true, message: 'El Email es requerido.' }
+    if (!data.phone)
+        return { ...result, error: true, message: 'El Teléfono es requerido.' }
+    if (!data.name)
+        return { ...result, error: true, message: 'El Nombre es requerido.' }
+    if (!data.paternal_surname)
+        return { ...result, error: true, message: 'El Apellido paterno es requerido.' }
+    if (!data.maternal_surname)
+        return { ...result, error: true, message: 'El Apellido materno es requerido.' }
+    if (!data.city)
+        return { ...result, error: true, message: 'El Cuidad es requerido.' }
+    if (!data.birthdate)
+        return { ...result, error: true, message: 'El Fecha es requerido es requerido.' }
+    if (!data.gender)
+        return { ...result, error: true, message: 'El Género es requerido.' }
+    if (!data.job)
+        return { ...result, error: true, message: 'El Ocupación es requerido.' }
+    if (!data.media_origin)
+        return { ...result, error: true, message: 'El Medio de origen es requerido.' }
+
+
+    return result
 }
 
 const handleInputChange = (dispatch) => {

@@ -14,10 +14,11 @@ import moment from 'moment'
 const NewRegister = () => {
 
     const navigation = useNavigation();
-    const { state, handleInputChange, getStudentbyEmail, getCatalog, store } = useContext(NewRegisterContext);
+    const { state, clearState, handleInputChange, getStudentbyEmail, getCatalog, store } = useContext(NewRegisterContext);
 
     useEffect(() => {
         getCatalog()
+        clearState()
     }, []);
     const getContent = () => {
         return (
@@ -87,6 +88,7 @@ const NewRegister = () => {
                 <Text style={[tw` text-base my-5 font-bold`, { color: '#133C60' }]}>Fecha de nacimiento<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
                 <DateRange
                     titleDate="Fecha de nacimiento"
+                    placeholder={'Fecha de nacimiento'}
                     onChangeDate={(date) => {
                         handleInputChange(date, 'birthdate')
                     }}
@@ -94,14 +96,14 @@ const NewRegister = () => {
                 <Text style={[tw` text-base my-1 font-bold`, { color: '#133C60' }]}>Género<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
                 <DropD
                     data={state.genders}
-                    type={'Genero'}
+                    type={'Género'}
                     value={state.dataFrom?.gender}
                     fun={(item) => handleInputChange(item, 'gender')}
                 />
                 <Text style={[tw` text-base my-2 font-bold`, { color: '#133C60' }]}>Ocupación<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
                 <DropD
                     data={state.jobs}
-                    type={'Ocupacion'}
+                    type={'Ocupación'}
                     value={state.dataFrom?.job}
                     fun={(item) => handleInputChange(item, 'job')}
                 />
@@ -118,8 +120,7 @@ const NewRegister = () => {
                         buttonStyle={[tw` mr-2 w-32 rounded-full `, { backgroundColor: '#868686' }]}
                         title="Cancelar"
                         onPress={() => {
-                            console.log(state.dataFrom)
-                            console.log(state.gender);
+                            navigation.navigate('HomeScreen')
                         }
                         }
                     /><Button

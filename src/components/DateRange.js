@@ -5,7 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import useDatePicker from './../hooks/useDatePicker'
 import tw from 'tailwind-react-native-classnames';
 
-const DateRange = ({ onChangeDate, onChangeTime }) => {
+const DateRange = ({ onChangeDate, onChangeTime, placeholder }) => {
     const { state, handleVisibility, handleOnChangePicker } = useDatePicker()
 
     const onChangePicker = (event, selectedDate) => {
@@ -28,8 +28,7 @@ const DateRange = ({ onChangeDate, onChangeTime }) => {
                         </TouchableOpacity>
                     }
                     editable={false}
-                    placeholder={'Fecha de nacimiento'}
-                    inputStyle={tw`text-center`}
+                    placeholder={placeholder}
                     labelStyle={{ color: '#133C60' }}
                     value={state.date ? state.date.toString() : null}
                 />
@@ -37,7 +36,7 @@ const DateRange = ({ onChangeDate, onChangeTime }) => {
             {state.isVisible && (
                 <DateTimePicker
                     testID="tmpDate"
-                    dateFormat="year month"
+                    dateFormat="year month day"
                     value={state.tmpDate}
                     mode={state.mode}
                     is24Hour={true}
