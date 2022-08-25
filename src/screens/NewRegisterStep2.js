@@ -31,9 +31,9 @@ const NewRegisterStep2 = ({ route }) => {
                     <StepStatus />
                 </View>
                 <View>
-                    <Text style={[tw` text-sm`, { color: 'gray' }]}>Nombre: <Text style={[tw` text-sm`, { color: 'black' }]}>{params.user.name} {params.user.paternal_surname} {params.user.maternal_surname}</Text></Text>
-                    <Text style={[tw` text-sm`, { color: 'gray' }]}>Email: <Text style={[tw` text-sm`, { color: 'black' }]}>{params.user.email}</Text></Text>
-                    <Text style={[tw` text-sm`, { color: 'gray' }]}>Telefono: <Text style={[tw` text-sm`, { color: 'black' }]}>{params.phone}</Text></Text>
+                    <Text style={[tw` text-sm`, { color: 'gray' }]}>Nombre: <Text style={[tw` text-sm`, { color: 'black' }]}>{params?.user.name} {params?.user.paternal_surname} {params?.user.maternal_surname}</Text></Text>
+                    <Text style={[tw` text-sm`, { color: 'gray' }]}>Email: <Text style={[tw` text-sm`, { color: 'black' }]}>{params?.user.email}</Text></Text>
+                    <Text style={[tw` text-sm`, { color: 'gray' }]}>Telefono: <Text style={[tw` text-sm`, { color: 'black' }]}>{params?.phone}</Text></Text>
                 </View>
                 <Text style={tw`text-xl my-5`}>Programa Educativo</Text>
                 <Text style={[tw` text-sm font-bold`, { color: '#133C60' }]}>Items</Text>
@@ -49,23 +49,24 @@ const NewRegisterStep2 = ({ route }) => {
                 </View>
 
                 <EntryList
-                    data={state.dataItems} 
+                    data={state.dataItems}
                     TotalCost={state.TotalCost}
-                    />
+                />
 
                 <View style={tw`flex-row my-10 justify-around items-center `}>
                     <Button
                         titleStyle={tw`text-base font-bold`}
                         buttonStyle={[tw` mr-2 w-32 rounded-full `, { backgroundColor: '#868686' }]}
                         title="Cancelar"
-                        onPress={() =>{
+                        onPress={() => {
                             console.log(state.data);
-                            console.log(state.dataItems)}}
+                            console.log(state.dataItems)
+                        }}
                     /><Button
                         titleStyle={tw`text-base font-bold `}
                         buttonStyle={[tw`mr-2 w-32 rounded-full  `, { backgroundColor: '#2D5DA0' }]}
                         title="Siguiente"
-                        onPress={() => store(state.dataItems , state.TotalCost,params.user )}
+                        onPress={() => store(state.dataItems, state.TotalCost, params.user,params.id)}
                     />
 
                 </View>

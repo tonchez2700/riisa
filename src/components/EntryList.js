@@ -6,13 +6,14 @@ import { useNavigation } from '@react-navigation/native';
 
 const EntryList = ({ data, TotalCost }) => {
     const navigation = useNavigation();
+   
     return (
 
         <View>
             {
                 data.map((item) =>
                     <View key={item.campaignSelection.id}>
-                        {item.type == 2
+                        {item.reg_product_type_id == 2
                             ?
                             <View style={[tw`flex-col items-start pb-1`, { borderBottomWidth: .8 }]}>
                                 <Text style={tw`text-xs pl-2`}>BENEFICIO-{item.campaignSelection.title}</Text>
@@ -37,10 +38,16 @@ const EntryList = ({ data, TotalCost }) => {
                             </View>}
                     </View>
                 )}
-            <View style={tw`items-end`}>
-                <Text style={[tw`text-sm w-9/12 pl-2 text-right`]}>Total: ${TotalCost}</Text>
+            {
+                TotalCost != ''
+                    ?
+                    <View style={tw`items-end`}>
+                        <Text style={[tw`text-sm w-9/12 pl-2 text-right`]}>Total: ${TotalCost}</Text>
 
-            </View>
+                    </View>
+                    :
+                    null
+            }
         </View>
     )
 }

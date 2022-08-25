@@ -58,7 +58,7 @@ const NewRegisterStep2Reducer = (state = initialState, action) => {
                 data: {
                     ...state.data,
                     [DataCamp]: action.payload.value,
-                    type: action.payload.value.type
+                    reg_product_type_id: action.payload.value.type
                 },
             }
         case 'SET_PROG':
@@ -71,7 +71,7 @@ const NewRegisterStep2Reducer = (state = initialState, action) => {
                 data: {
                     ...state.data,
                     [DataProg]: action.payload.value,
-                    type: action.payload.value.type
+                    reg_product_type_id: action.payload.value.reg_product_type_id
                 },
                 TotalCost: newCost
             }
@@ -160,8 +160,8 @@ const getprogram = (dispatch) => {
                 );
             if (response != '') {
                 const listProgram = response.map(item => ({
-                    id: item.diplomat.id,
-                    type: item.diplomat.diplomat_type_id,
+                    group_id: item.diplomat.id,
+                    reg_product_type_id: item.diplomat.diplomat_type_id,
                     title: item.diplomat.name,
                     cost: item.cost
                 }))
@@ -195,8 +195,8 @@ const getBene = (dispatch) => {
                 );
             if (response != '') {
                 const listBene = response.map(item => ({
-                    id: item.diplomat.id,
-                    type: item.diplomat.diplomat_type_id,
+                    group_id: item.diplomat.id,
+                    reg_product_type_id: item.diplomat.diplomat_type_id,
                     title: item.diplomat.name,
                     cost: item.cost
                 }))
@@ -245,9 +245,10 @@ const handleInputItems = (dispatch) => {
 }
 
 const store = (dispatch) => {
-    return async (data,cost,user) => {
+    return async (data, cost, user, id) => {
 
         const dataPlan = {
+            student_id: id,
             data,
             cost,
             user

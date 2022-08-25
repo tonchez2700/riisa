@@ -37,11 +37,11 @@ const DateRange = ({ onChangeDate, onChangeTime }) => {
             {state.isVisible && (
                 <DateTimePicker
                     testID="tmpDate"
-                    dateFormat="year month day"
+                    dateFormat="year month"
                     value={state.tmpDate}
                     mode={state.mode}
                     is24Hour={true}
-                    display="default"
+                    display="spinner"
                     onChange={onChangePicker}
                 />
             )}

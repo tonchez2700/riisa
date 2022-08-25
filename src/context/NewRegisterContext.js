@@ -180,7 +180,6 @@ const getStudentbyEmail = (dispatch) => {
 const store = (dispatch) => {
     return async (data) => {
 
-        console.log(data);
         dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
         const user = JSON.parse(await AsyncStorage.getItem('user'));
         const token = user.token
@@ -188,20 +187,22 @@ const store = (dispatch) => {
             'students', data,
             { 'Authorization': `Bearer ${token}` }
         );
-        console.log(response);
+        console.log(data);
         if (response.status) {
+            dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: false } });
             Alert.alert(
                 "Correcto",
-                'Invitación cargada correctamente.',
+                'Registro creado correctamente.',
                 [{
                     text: "Aceptar",
                     onPress: rootNavigation.navigate('NewRegisterStep2', response.data)
                 }]
             )
         } else {
+            dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: false } });
             Alert.alert(
                 "Error",
-                'Hubo un error al crear el registro',
+                response.message,
                 [{
                     text: "Aceptar"
 

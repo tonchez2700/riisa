@@ -113,11 +113,17 @@ const handleInputChange = (dispatch) => {
 }
 
 const store = (dispatch) => {
-    return async (data, payment, paymentDe, TotalCost) => {
+    return async (data, payments, paymentDe, TotalCost) => {
 
         const dataTotal = {
-            data,
-            payment
+            student_id: data.student_id,
+            rfc: "XAXX010101000",
+            user: data.user,
+            rows: data.data,
+            subtotal: data.cost,
+            total: data.cost,
+            discount: 0,
+            payments
         }
         if ((paymentDe - TotalCost) == 0) {
             Alert.alert(
@@ -132,6 +138,63 @@ const store = (dispatch) => {
             Alert.alert(
                 "Saldo Pendien",
                 "Hay saldo pendiente por definir fecha de pago",
+                [{
+                    text: "Aceptar"
+                }]
+            )
+        }
+    }
+}
+const storeFinal = (dispatch) => {
+    return async (dataTotal) => {
+        const rows = []
+        dataTotal.rows.forEach(element => {
+            if (element.reg_product_type_id == 1) {
+                rows.push({
+                    reg_product_type_id: element.educationalProgram.reg_product_type_id,
+                    group_id: element.educationalProgram.group_id
+                })
+            } else {
+                rows.push({
+                    reg_product_type_id: element.benefit.reg_product_type_id,
+                    group_id: element.benefit.group_id
+                })
+            }
+        });
+        console.log(rows);
+        const data = {
+            rfc: dataTotal.rfc,
+            student_id: dataTotal.student_id,
+            subtotal: dataTotal.subtotal,
+            discount: dataTotal.discount,
+            total: dataTotal.total,
+            is_taxable: 1,
+            rows: rows,
+            payments: dataTotal.payments
+        }
+        dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
+        const user = JSON.parse(await AsyncStorage.getItem('user'));
+        const token = user.token
+        console.log(data);
+        const response = await httpClient.post(
+            'sellings', data,
+            { 'Authorization': `Bearer ${token}` }
+        );
+        console.log(response);
+        if (response.status) {
+            dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: false } });
+            Alert.alert(
+                "Correcto",
+                'Registro creado correctamente.',
+                [{
+                    text: "Aceptar",
+                    onPress: rootNavigation.navigate('HomeScreen')
+                }]
+            )
+        } else {
+            Alert.alert(
+                "Ocurrio un problema",
+                "Servicio no disponible",
                 [{
                     text: "Aceptar"
                 }]
@@ -165,6 +228,7 @@ export const { Context, Provider } = createDataContext(
         handleInputChange,
         handleInputChangePayment,
         store,
+        storeFinal,
 
 
     },

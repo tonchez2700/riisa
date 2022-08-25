@@ -9,7 +9,6 @@ import HeadTitleScreen from '../components/Forms/HeadTitleScreen';
 import DropD from '../components/DropD';
 import DropdownSelect from '../components/DropdownSelect';
 import tw from 'tailwind-react-native-classnames'
-
 import moment from 'moment'
 
 const NewRegister = () => {
@@ -30,7 +29,7 @@ const NewRegister = () => {
                     <StepStatus />
                 </View>
                 <Text style={tw`text-lg mb-5`}>Datos del Estudiante</Text>
-                <Text style={[tw` text-base mb-1 font-bold`, { color: '#133C60' }]}>Email</Text>
+                <Text style={[tw` text-base mb-1 font-bold`, { color: '#133C60' }]}>Email<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
                 <Input
                     rightIcon={
                         <TouchableOpacity
@@ -49,35 +48,35 @@ const NewRegister = () => {
                     value={state.dataFrom?.email}
                     labelStyle={{ color: '#133C60' }}
                 />
-                <Text style={[tw` text-base mb-1 font-bold`, { color: '#133C60' }]}>Teléfono</Text>
+                <Text style={[tw` text-base mb-1 font-bold`, { color: '#133C60' }]}>Teléfono<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
                 <Input
                     inputStyle={tw`text-left`}
                     onChangeText={(value) => handleInputChange(value, 'phone')}
                     value={state.dataFrom?.phone}
                     labelStyle={{ color: '#133C60' }}
                 />
-                <Text style={[tw` text-base mb-1 font-bold`, { color: '#133C60' }]}>Nombre(s)</Text>
+                <Text style={[tw` text-base mb-1 font-bold`, { color: '#133C60' }]}>Nombre(s)<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
                 <Input
                     inputStyle={tw`text-left`}
                     onChangeText={(value) => handleInputChange(value, 'name')}
                     value={state.dataFrom?.name}
                     labelStyle={{ color: '#133C60' }}
                 />
-                <Text style={[tw` text-base mb-1 font-bold`, { color: '#133C60' }]}>Apedillo(P)</Text>
+                <Text style={[tw` text-base mb-1 font-bold`, { color: '#133C60' }]}>Apedillo(P)<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
                 <Input
                     inputStyle={tw`text-left`}
                     onChangeText={(value) => handleInputChange(value, 'paternal_surname')}
                     value={state.dataFrom?.paternal_surname}
                     labelStyle={{ color: '#133C60' }}
                 />
-                <Text style={[tw` text-base mb-1 font-bold`, { color: '#133C60' }]}>Apedillo(M)</Text>
+                <Text style={[tw` text-base mb-1 font-bold`, { color: '#133C60' }]}>Apedillo(M)<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
                 <Input
                     inputStyle={tw`text-left`}
                     onChangeText={(value) => handleInputChange(value, 'maternal_surname')}
                     value={state.dataFrom?.maternal_surname}
                     labelStyle={{ color: '#133C60' }}
                 />
-                <Text style={[tw` text-base mb-1 font-bold`, { color: '#133C60' }]}>Cuidad</Text>
+                <Text style={[tw` text-base mb-1 font-bold`, { color: '#133C60' }]}>Cuidad<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
                 <DropD
                     data={state.cities}
                     type={'Cuidad'}
@@ -85,28 +84,28 @@ const NewRegister = () => {
                     fun={(item) =>
                         handleInputChange(item, 'city')}
                 />
-                <Text style={[tw` text-base my-5 font-bold`, { color: '#133C60' }]}>Fecha de nacimiento</Text>
+                <Text style={[tw` text-base my-5 font-bold`, { color: '#133C60' }]}>Fecha de nacimiento<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
                 <DateRange
                     titleDate="Fecha de nacimiento"
                     onChangeDate={(date) => {
                         handleInputChange(date, 'birthdate')
                     }}
                 />
-                <Text style={[tw` text-base my-1 font-bold`, { color: '#133C60' }]}>Género</Text>
+                <Text style={[tw` text-base my-1 font-bold`, { color: '#133C60' }]}>Género<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
                 <DropD
                     data={state.genders}
                     type={'Genero'}
                     value={state.dataFrom?.gender}
                     fun={(item) => handleInputChange(item, 'gender')}
                 />
-                <Text style={[tw` text-base my-2 font-bold`, { color: '#133C60' }]}>Ocupación</Text>
+                <Text style={[tw` text-base my-2 font-bold`, { color: '#133C60' }]}>Ocupación<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
                 <DropD
                     data={state.jobs}
                     type={'Ocupacion'}
                     value={state.dataFrom?.job}
                     fun={(item) => handleInputChange(item, 'job')}
                 />
-                <Text style={[tw` text-base my-2 font-bold`, { color: '#133C60' }]}>Medio de Origen</Text>
+                <Text style={[tw` text-base my-2 font-bold`, { color: '#133C60' }]}>Medio de Origen<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
                 <DropD
                     data={state.media_origins}
                     type={'Medio de Origen'}
@@ -125,6 +124,7 @@ const NewRegister = () => {
                         }
                     /><Button
                         titleStyle={tw`text-base font-bold `}
+                        loading={state.fetchingData ? true : false}
                         buttonStyle={[tw`mr-2 w-32 rounded-full  `, { backgroundColor: '#2D5DA0' }]}
                         title="Siguiente"
                         onPress={() => store(state.dataFrom)}
