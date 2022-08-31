@@ -20,12 +20,12 @@ const DropD = ({ data, type, value, fun }) => {
             placeholderStyle={{ color: 'gray' }}
             selectedTextStyle={{ color: 'black' }}
             placeholder={type}
-            valueField="name"
+            valueField="id"
             labelField="name"
             value={value}
             data={data}
             onChange={item => {
-                fun(item.name)
+                fun(item.id)
             }}
         />
     )

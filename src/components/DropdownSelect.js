@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: '#FFF',
         borderBottomWidth: 1,
-        borderColor: '#444',
+        borderColor: 'gray',
     },
     dropdown1BtnTxtStyle: { color: '#444', textAlign: 'left' },
     dropdown1DropdownStyle: { backgroundColor: '#EFEFEF' },

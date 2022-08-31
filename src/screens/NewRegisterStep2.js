@@ -14,22 +14,27 @@ import moment from 'moment'
 const NewRegisterStep2 = ({ route }) => {
 
     const navigation = useNavigation();
-    const { state, clearState, store } = useContext(NewRegisterStep2Context);
+    const { state, clearState, store, getTotalCost,
+        getCostFinal, handleDiscountChange, handleDeleteEntryItem } = useContext(NewRegisterStep2Context);
     const { params } = route
     const [remoteDataSet, setRemoteDataSet] = useState(null)
 
-
+    console.log(state.TotalCost);
     useEffect(() => {
-        clearState()
-    }, []);
+        getTotalCost(state.dataItems)
+
+    }, [state.dataProgram]);
     const getContent = () => {
         return (
+
             <ScrollView
                 showsVerticalScrollIndicator={false}>
 
                 <HeadTitleScreen title='Nuevo Registro' />
                 <View style={tw`mb-7`}>
-                    <StepStatus />
+                    <StepStatus
+                        number={1}
+                    />
                 </View>
                 <View>
                     <Text style={[tw` text-sm`, { color: 'gray' }]}>Nombre: <Text style={[tw` text-sm`, { color: 'black' }]}>{params?.user.name} {params?.user.paternal_surname} {params?.user.maternal_surname}</Text></Text>
@@ -45,14 +50,17 @@ const NewRegisterStep2 = ({ route }) => {
                     {/* <ModalApostille /> */}
                 </View>
                 <View style={tw`flex-row items-start mt-8`}>
-                    <Text style={[tw` text-sm w-9/12 text-white pl-2`, styles.itemsT]}>Items:</Text>
-                    <Text style={[tw` text-sm w-60 text-white pl-2`, styles.itemsT]}>Monto</Text>
+                    <Text style={[tw` text-sm w-8/12 text-white pl-2`, styles.itemsT]}>Items:</Text>
+                    <Text style={[tw` text-sm w-60 pl-2`, styles.itemsT]}>Monto</Text>
                 </View>
-
                 <EntryList
                     data={state.dataItems}
-                    TotalCost={state.TotalCost}
-                />
+                    TotalCost={state.finalCost}
+                    value={state.discout}
+                    listDiscount={state.listDiscount}
+                    discount={state.discout}
+                    fun={(item) => handleDiscountChange(item)}
+                    deleteItem={(item) => handleDeleteEntryItem(item)} />
 
                 <View style={tw`flex-row my-10 justify-around items-center `}>
                     <Button
@@ -66,7 +74,7 @@ const NewRegisterStep2 = ({ route }) => {
                         titleStyle={tw`text-base font-bold `}
                         buttonStyle={[tw`mr-2 w-32 rounded-full  `, { backgroundColor: '#2D5DA0' }]}
                         title="Siguiente"
-                        onPress={() => store(state.dataItems, state.TotalCost, params.user, params.id)}
+                        onPress={() => store(state.dataItems, state.finalCost, params.user, params.id)}
                     />
                 </View>
             </ScrollView>

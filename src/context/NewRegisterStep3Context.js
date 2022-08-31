@@ -12,10 +12,14 @@ const initialState = {
     finalState: false,
     fetchingData: false,
     campains: [],
+    notes: '',
+    taxable: false,
+    is_taxable: 0,
     dataPayment: [],
     cost: '',
     TotalCost: 0,
     data: '',
+    paymentTypes: [],
 
 }
 
@@ -49,6 +53,22 @@ const NewRegisterStep3Reducer = (state = initialState, action) => {
                     [typeData]: action.payload.value
                 }
             }
+        case 'SET_NOTES':
+            return {
+                ...state,
+                notes: action.payload.value
+            }
+        case 'SET_TAXABLE':
+            return {
+                ...state,
+                is_taxable: action.payload.modo,
+                taxable: action.payload.state
+            }
+        case 'SET_PAYTMENTSTYPE':
+            return {
+                ...state,
+                paymentTypes: action.payload.listPayments
+            }
         case 'ADD_PAYMENT':
             let amount = 0;
             let newData = [action.payload.data];
@@ -73,6 +93,47 @@ const clearState = (dispatch) => {
     }
 }
 
+
+const getPaymentsType = (dispatch) => {
+    return async () => {
+        try {
+            const user = JSON.parse(await AsyncStorage.getItem('user'));
+            const token = user.token
+            const response = await httpClient
+                .get(`payment_types`, {
+                    'Authorization': `Bearer ${token}`,
+                }
+                );
+            if (response != '') {
+                const listPayments = response.map(item => ({
+                    id: item.id,
+                    title: item.name,
+                }))
+                dispatch({
+                    type: 'SET_PAYTMENTSTYPE',
+                    payload: { listPayments }
+                });
+            } else {
+                dispatch({
+                    type: 'SET_REQUEST_ERROR',
+                    payload: {
+                        error: true,
+                        message: 'Por el momento el servicio no está disponible, inténtelo mas tarde.'
+                    }
+                });
+            }
+        } catch (error) {
+            dispatch({
+                type: 'SET_REQUEST_ERROR',
+                payload: {
+                    error: true,
+                    message: 'Por el momento el servicio no está disponible, inténtelo mas tarde.'
+                }
+            });
+        }
+    }
+
+}
 
 const getcampainsByStatus = (dispatch) => {
     return async () => {
@@ -108,6 +169,25 @@ const getcampainsByStatus = (dispatch) => {
 
 }
 
+const handleSwitchChange = (dispatch) => {
+    return async (state, value) => {
+        console.log(value);
+        if (state) {
+            const modo = 1
+            dispatch({
+                type: 'SET_TAXABLE',
+                payload: { modo, state }
+            })
+        } else {
+            const modo = 0
+            dispatch({
+                type: 'SET_TAXABLE',
+                payload: { modo, state }
+            })
+        }
+
+    }
+}
 
 const handleInputChange = (dispatch) => {
     return async (value, typeData) => {
@@ -117,10 +197,28 @@ const handleInputChange = (dispatch) => {
         })
     }
 }
+const handleNotesChange = (dispatch) => {
+    return async (value) => {
+        dispatch({
+            type: 'SET_NOTES',
+            payload: { value }
+        })
+    }
+}
 
 const store = (dispatch) => {
-    return async (data, payments, paymentDe, TotalCost) => {
+    return async (data, paymentslist, paymentDe, TotalCost, is_taxable) => {
 
+        const payments = []
+        paymentslist.forEach(element => {
+            payments.push({
+                amount: element.amount,
+                promess_date: element.promess_date,
+                is_taxable: is_taxable,
+                is_paid: element.is_paid,
+                reg_payment_type_id: element.reg_payment_type_id,
+            })
+        });
         const dataTotal = {
             student_id: data.student_id,
             rfc: "XAXX010101000",
@@ -128,6 +226,7 @@ const store = (dispatch) => {
             rows: data.data,
             subtotal: data.cost,
             total: data.cost,
+            is_taxable: is_taxable,
             discount: 0,
             payments
         }
@@ -167,14 +266,13 @@ const storeFinal = (dispatch) => {
                 })
             }
         });
-        console.log(rows);
         const data = {
             rfc: dataTotal.rfc,
             student_id: dataTotal.student_id,
             subtotal: dataTotal.subtotal,
             discount: dataTotal.discount,
             total: dataTotal.total,
-            is_taxable: 1,
+            is_taxable: dataTotal.is_taxable,
             rows: rows,
             payments: dataTotal.payments
         }
@@ -212,24 +310,35 @@ const storeFinal = (dispatch) => {
 }
 
 const handleInputChangePayment = (dispatch) => {
-    return async (data) => {
-        const validated = validateData(data)
-        if (!validated.error) {
-            dispatch({
-                type: 'ADD_PAYMENT',
-                payload: {
-                    data: {
-                        ...data,
-                        reg_payment_type_id: 1,
-                        is_paid: 0,
-                        is_taxable: 1
+    return async (data, paymentPen) => {
+
+        console.log(data.amount);
+        if (paymentPen >= data.amount) {
+            const validated = validateData(data)
+            if (!validated.error) {
+                dispatch({
+                    type: 'ADD_PAYMENT',
+                    payload: {
+                        data: {
+                            ...data,
+                            is_paid: 0,
+                            is_taxable: 1
+                        }
                     }
-                }
-            })
+                })
+            } else {
+                Alert.alert(
+                    "Ha ocurrido un error",
+                    validated.message,
+                    [{
+                        text: "Aceptar",
+                    }]
+                )
+            }
         } else {
             Alert.alert(
                 "Ha ocurrido un error",
-                validated.message,
+                "El pago sobre pasa el saldo pendiente",
                 [{
                     text: "Aceptar",
                 }]
@@ -252,8 +361,11 @@ export const { Context, Provider } = createDataContext(
     {
         clearState,
         getcampainsByStatus,
+        getPaymentsType,
         handleInputChange,
+        handleNotesChange,
         handleInputChangePayment,
+        handleSwitchChange,
         store,
         storeFinal,
 

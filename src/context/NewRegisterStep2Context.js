@@ -6,18 +6,36 @@ import * as rootNavigation from '../helpers/rootNavigation';
 import { INVITED_ENTRY_TYPE, PROVIDER_ENTRY_TYPE, SERVICE_ENTRY_TYPE } from '../config/defines';
 import moment from 'moment';
 
+
 const initialState = {
     error: false,
     message: "",
     fetchingData: false,
     campains: [],
     dataDiplomant: [],
+    count: 0,
     cost: '',
+    subTotalCost: 0,
     TotalCost: 0,
+    finalCost: 0,
+    discout: 0,
     dataProgram: [],
     dataBene: [],
     dataItems: [],
     data: '',
+    listDiscount: [
+        { label: '0%', value: 0 },
+        { label: '5%', value: 5 },
+        { label: '10%', value: 10 },
+        { label: '15%', value: 15 },
+        { label: '20%', value: 20 },
+        { label: '25%', value: 25 },
+        { label: '30%', value: 30 },
+        { label: '35%', value: 35 },
+        { label: '40%', value: 40 },
+        { label: '45%', value: 45 },
+        { label: '50%', value: 50 },
+    ]
 
 }
 
@@ -37,6 +55,21 @@ const NewRegisterStep2Reducer = (state = initialState, action) => {
                 message: action.payload.message,
                 fetchingData: false
             }
+        case 'DELETE_ENTRY_TYPE_ITEM':
+            let cost = 0
+            let dataItems = state.dataItems.filter((item) => item.count !== action.payload.count);
+            dataItems.map((item) => {
+                if (item.reg_product_type_id == 1) {
+                    cost = cost + item.educationalProgram.cost
+                } else {
+                    cost = cost + item.benefit.cost
+                }
+            })
+            return {
+                ...state,
+                dataItems,
+                finalCost: cost
+            }
         case 'SET_CAMP':
             let DataCamp = action.payload.typeData
             return {
@@ -48,18 +81,17 @@ const NewRegisterStep2Reducer = (state = initialState, action) => {
                 },
             }
         case 'SET_PROG':
+            let count = state.count + 1
             let DataProg = action.payload.typeData
-            let newCost = action.payload.value.cost
-            if (state.TotalCost != '')
-                newCost = state.TotalCost + newCost
             return {
                 ...state,
+                count: count,
                 data: {
                     ...state.data,
+                    count: count,
                     [DataProg]: action.payload.value,
-                    reg_product_type_id: action.payload.value.reg_product_type_id
+                    reg_product_type_id: action.payload.value.reg_product_type_id,
                 },
-                TotalCost: newCost
             }
         case 'SET_DATA_ITEMS':
             let typeItem = action.payload.type
@@ -76,12 +108,27 @@ const NewRegisterStep2Reducer = (state = initialState, action) => {
                 ...state,
                 campains: action.payload.listcampain
             }
+        case 'SET_FINAL_COST':
+            return {
+                ...state,
+                finalCost: action.payload.final
+            }
+        case 'SET_TOTAL_COST':
+            return {
+                ...state,
+                subTotalCost: action.payload.totalCost,
+                finalCost: action.payload.totalCost
+            }
+        case 'SET_DISCOUNT':
+            return {
+                ...state,
+                discout: action.payload.value
+            }
         case 'SET_DATA_PROGRAM':
             return {
                 ...state,
                 dataProgram: action.payload.listProgram
             }
-
         case 'SET_DATA_BENE':
             return {
                 ...state,
@@ -221,6 +268,16 @@ const handleInputChangeProg = (dispatch) => {
     }
 }
 
+const getCostFinal = (dispatch) => {
+    return async (total, discount) => {
+        let result = (total * discount) / 100
+        let final = total - result
+        dispatch({
+            type: 'SET_FINAL_COST',
+            payload: { final }
+        })
+    }
+}
 const handleInputItems = (dispatch) => {
     return async (value, type) => {
         let validated;
@@ -281,6 +338,31 @@ const store = (dispatch) => {
     }
 }
 
+const getTotalCost = (dispatch) => {
+    return async (value) => {
+        let totalCost = 0
+        value.forEach(element => {
+            if (element.reg_product_type_id == 1) {
+                totalCost = totalCost + element.educationalProgram.cost
+            } else {
+                totalCost = totalCost + element.benefit.cost
+            }
+
+        });
+        dispatch({
+            type: 'SET_TOTAL_COST',
+            payload: { totalCost }
+        })
+    }
+}
+const handleDiscountChange = (dispatch) => {
+    return async (value) => {
+        dispatch({
+            type: 'SET_DISCOUNT',
+            payload: { value }
+        })
+    }
+}
 const validateDiplo = (data) => {
     let result = { error: false }
     if (!data.campaignSelection)
@@ -298,6 +380,12 @@ const validateBenefit = (data) => {
     return result
 }
 
+const handleDeleteEntryItem = (dispatch) => {
+    return async (count) => {
+        dispatch({ type: 'DELETE_ENTRY_TYPE_ITEM', payload: { count } });
+    }
+}
+
 export const { Context, Provider } = createDataContext(
     NewRegisterStep2Reducer,
     {
@@ -305,8 +393,12 @@ export const { Context, Provider } = createDataContext(
         getcampainsByStatus,
         getprogram,
         getBene,
+        getTotalCost,
         handleInputChangeCamp,
+        handleDeleteEntryItem,
         handleInputChangeProg,
+        handleDiscountChange,
+        getCostFinal,
         handleInputItems,
         store,
 

@@ -28,6 +28,9 @@ const DateRange = ({ onChangeDate, onChangeTime, placeholder }) => {
                         </TouchableOpacity>
                     }
                     editable={false}
+                    inputContainerStyle={{
+                        borderBottomColor: 'gray'
+                    }}
                     placeholder={placeholder}
                     labelStyle={{ color: '#133C60' }}
                     value={state.date ? state.date.toString() : null}

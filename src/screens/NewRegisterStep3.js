@@ -13,12 +13,11 @@ import moment from 'moment'
 const NewRegisterStep3 = ({ route }) => {
 
     const navigation = useNavigation();
-    const { state, clearState, store } = useContext(NewRegisterStep3Context);
+    const { state, clearState, handleSwitchChange, store } = useContext(NewRegisterStep3Context);
     const { params } = route
-
-    useEffect(() => {
-        clearState()
-    }, []);
+    // useEffect(() => {
+    //     clearState()
+    // }, []);
     const getContent = () => {
         return (
             <ScrollView
@@ -26,7 +25,9 @@ const NewRegisterStep3 = ({ route }) => {
 
                 <HeadTitleScreen title='Nuevo Registro' />
                 <View style={tw`mb-7`}>
-                    <StepStatus />
+                    <StepStatus
+                        number={2}
+                    />
                 </View>
                 <View>
                     <Text style={[tw` text-sm`, { color: 'gray' }]}>Nombre: <Text style={[tw` text-sm`, { color: 'black' }]}>{params?.user.name} {params?.user.paternal_surname} {params?.user.maternal_surname}</Text></Text>
@@ -36,7 +37,9 @@ const NewRegisterStep3 = ({ route }) => {
                 <Text style={tw`text-xl my-4`}>Desglose de Pagos</Text>
 
                 <View style={tw`flex-row`}>
-                    <ModalPayment />
+                    <ModalPayment
+                        paymentPen={(params?.cost - state.TotalCost)}
+                    />
                 </View>
                 <Text style={[tw` text-sm font-medium text-right`, { color: 'black' }]}>Saldo Pendiente: <Text style={[tw` text-base font-bold`, { color: '#FF7A00' }]}>${(params?.cost - state.TotalCost)}</Text></Text>
                 <View style={tw`flex-row items-start my-2`}>
@@ -46,7 +49,10 @@ const NewRegisterStep3 = ({ route }) => {
                 </View>
                 <EntryPayment
                     data={state.dataPayment}
-                    TotalCost={state.TotalCost} />
+                    TotalCost={state.finalCost}
+                    taxable={state.is_taxable}
+                    fun={(item) => handleSwitchChange(item, state.is_taxable)}
+                />
                 <View style={tw`flex-row my-10 justify-around items-center `}>
                     <Button
                         titleStyle={tw`text-base font-bold`}
@@ -58,8 +64,7 @@ const NewRegisterStep3 = ({ route }) => {
                         buttonStyle={[tw`mr-2 w-32 rounded-full  `, { backgroundColor: '#2D5DA0' }]}
                         title="Siguiente"
                         onPress={() => {
-
-                            store(params, state.dataPayment, params?.cost, state.TotalCost)
+                            store(params, state.dataPayment, params?.cost, state.TotalCost, state.is_taxable)
                         }}
                     />
 

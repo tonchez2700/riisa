@@ -63,11 +63,11 @@ const NewRegisterReducer = (state = initialState, action) => {
                     name: action.payload.response[0].user.name,
                     paternal_surname: action.payload.response[0].user.paternal_surname,
                     maternal_surname: action.payload.response[0].user.maternal_surname,
-                    city: action.payload.response[0].city.name,
-                    birthdate: action.payload.response[0].birthdate,
-                    gender: action.payload.response[0].gender.name,
-                    job: action.payload.response[0].job.name,
-                    media_origin: action.payload.response[0].media_origin.name,
+                    city_id: action.payload.response[0].city_id,
+                    birthdate_id: moment(action.payload.response[0].birthdate, 'YYYY-MM-DD').format('YYYY-MM-DD'),
+                    gender_id: action.payload.response[0].gender_id,
+                    job_id: action.payload.response[0].job_id,
+                    media_origin_id: action.payload.response[0].media_origin_id,
                 }
             }
         default:
@@ -191,7 +191,6 @@ const store = (dispatch) => {
                 'students', data,
                 { 'Authorization': `Bearer ${token}` }
             );
-            console.log(data);
             if (response.status) {
                 dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: false } });
                 Alert.alert(
@@ -240,15 +239,15 @@ const validateData = (data) => {
         return { ...result, error: true, message: 'El Apellido paterno es requerido.' }
     if (!data.maternal_surname)
         return { ...result, error: true, message: 'El Apellido materno es requerido.' }
-    if (!data.city)
+    if (!data.city_id)
         return { ...result, error: true, message: 'El Cuidad es requerido.' }
     if (!data.birthdate)
         return { ...result, error: true, message: 'El Fecha es requerido es requerido.' }
-    if (!data.gender)
+    if (!data.gender_id)
         return { ...result, error: true, message: 'El Género es requerido.' }
-    if (!data.job)
+    if (!data.job_id)
         return { ...result, error: true, message: 'El Ocupación es requerido.' }
-    if (!data.media_origin)
+    if (!data.media_origin_id)
         return { ...result, error: true, message: 'El Medio de origen es requerido.' }
 
 

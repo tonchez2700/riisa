@@ -4,13 +4,10 @@ import tw from 'tailwind-react-native-classnames'
 import { Icon, Switch } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native';
 
-const EntryPayment = ({ data, TotalCost, taxable, fun }) => {
+const EntryPaymentFinal = ({ data, TotalCost }) => {
     const navigation = useNavigation();
     const [isEnabled, setIsEnabled] = useState(false);
-    const toggleSwitch = () => {
-        setIsEnabled(previousState => !previousState)
-        fun(isEnabled)
-    }
+    console.log(data);
 
     return (
 
@@ -28,21 +25,11 @@ const EntryPayment = ({ data, TotalCost, taxable, fun }) => {
             {
                 true
                     ?
-                    <View style={tw`flex-row justify-between`}>
-                        <View style={tw`flex-col items-center mt-2`}>
-                            <Text style={[tw`text-sm `]}>Requiere Factura</Text>
-                            <Switch
-                                trackColor={{ false: "#767577", true: "#81b0ff" }}
-                                thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-                                onValueChange={toggleSwitch}
-                                value={isEnabled}
-                            />
-                        </View>
-                        <View style={tw`items-end flex-col`}>
-                            <Text style={[tw`text-sm  text-right`]}>Subtotal: ${TotalCost}</Text>
-                            <Text style={[tw`text-sm  text-right`]}>IVA: $0</Text>
-                            <Text style={[tw`text-sm  text-right`]}>Total: ${TotalCost}</Text>
-                        </View>
+                    <View style={tw`flex-col items-end`}>
+                        <Text style={[tw`text-sm  text-right`]}>Subtotal: ${TotalCost}</Text>
+                        <Text style={[tw`text-sm  text-right`]}>IVA: $0</Text>
+                        <Text style={[tw`text-sm  text-right`]}>Total: ${TotalCost}</Text>
+
                     </View>
                     :
                     null
@@ -51,6 +38,6 @@ const EntryPayment = ({ data, TotalCost, taxable, fun }) => {
     )
 }
 
-export default EntryPayment
+export default EntryPaymentFinal
 
 const styles = StyleSheet.create({})

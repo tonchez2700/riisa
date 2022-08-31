@@ -4,8 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import tw from 'tailwind-react-native-classnames'
 import StepIndicator from 'react-native-step-indicator';
 
-const StepStatus = () => {
-
+const StepStatus = ({number}) => {
     const navigation = useNavigation();
 
     const labels = ["Creacion", " Aprovacion", "Final"]
@@ -38,7 +37,7 @@ const StepStatus = () => {
             <StepIndicator
                 customStyles={customStyles}
                 stepCount={4}
-                currentPosition={0}
+                currentPosition={number}
             />
         
     )

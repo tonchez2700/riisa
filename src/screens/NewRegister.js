@@ -27,7 +27,9 @@ const NewRegister = () => {
 
                 <HeadTitleScreen title='Nuevo Registro' />
                 <View style={tw`mb-7`}>
-                    <StepStatus />
+                    <StepStatus
+                        number={0}
+                    />
                 </View>
                 <Text style={tw`text-lg mb-5`}>Datos del Estudiante</Text>
                 <Text style={[tw` text-base mb-1 font-bold`, { color: '#133C60' }]}>Email<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
@@ -81,38 +83,38 @@ const NewRegister = () => {
                 <DropD
                     data={state.cities}
                     type={'Cuidad'}
-                    value={state.dataFrom?.city}
+                    value={state.dataFrom?.city_id}
                     fun={(item) =>
-                        handleInputChange(item, 'city')}
+                        handleInputChange(item, 'city_id')}
                 />
                 <Text style={[tw` text-base my-5 font-bold`, { color: '#133C60' }]}>Fecha de nacimiento<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
                 <DateRange
                     titleDate="Fecha de nacimiento"
                     placeholder={'Fecha de nacimiento'}
                     onChangeDate={(date) => {
-                        handleInputChange(date, 'birthdate')
+                        handleInputChange(moment(date, 'YYYY-MM-DD').format('YYYY-MM-DD'), 'birthdate')
                     }}
                 />
                 <Text style={[tw` text-base my-1 font-bold`, { color: '#133C60' }]}>Género<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
                 <DropD
                     data={state.genders}
                     type={'Género'}
-                    value={state.dataFrom?.gender}
-                    fun={(item) => handleInputChange(item, 'gender')}
+                    value={state.dataFrom?.gender_id}
+                    fun={(item) => handleInputChange(item, 'gender_id')}
                 />
                 <Text style={[tw` text-base my-2 font-bold`, { color: '#133C60' }]}>Ocupación<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
                 <DropD
                     data={state.jobs}
                     type={'Ocupación'}
-                    value={state.dataFrom?.job}
-                    fun={(item) => handleInputChange(item, 'job')}
+                    value={state.dataFrom?.job_id}
+                    fun={(item) => handleInputChange(item, 'job_id')}
                 />
                 <Text style={[tw` text-base my-2 font-bold`, { color: '#133C60' }]}>Medio de Origen<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
                 <DropD
                     data={state.media_origins}
                     type={'Medio de Origen'}
-                    value={state.dataFrom?.media_origin}
-                    fun={(item) => handleInputChange(item, 'media_origin')}
+                    value={state.dataFrom?.media_origin_id}
+                    fun={(item) => handleInputChange(item, 'media_origin_id')}
                 />
                 <View style={tw`flex-row my-10 justify-around items-center `}>
                     <Button

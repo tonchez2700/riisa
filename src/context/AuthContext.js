@@ -103,9 +103,16 @@ const signout = (dispatch) => {
 const tryAuth = async (email, password, dispatch) => {
 
     const response = await httpClient.post(`auth/login?email=${email}&password=${password}`)
-    if (response.status) {
+
+
+
+    const today = moment(new Date(), 'YYYY-MM-DD ').format('YYYY-MM-DD , h:mm:ss');
+    const expirationTime = moment(response.token_expiration, 'YYYY-MM-DD ').format('YYYY-MM-DD , h:mm:ss')
+
+    if (expirationTime > today) {
         const user = {
             token: response.token,
+            token_expiration: response.token_expiration
         }
         await AsyncStorage.setItem('user', JSON.stringify(user))
         dispatch({ type: 'SIGNIN', payload: { user } });

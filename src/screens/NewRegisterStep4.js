@@ -4,7 +4,7 @@ import { useNavigation, } from '@react-navigation/native';
 import { Input, Button } from 'react-native-elements'
 import { Context as NewRegisterStep3Context } from '../context/NewRegisterStep3Context';
 import EntryListFinal from '../components/EntryListFinal';
-import EntryPayment from '../components/EntryPayment';
+import EntryPaymentFinal from '../components/EntryPaymentFinal';
 import StepStatus from '../components/StepStatus';
 import HeadTitleScreen from '../components/Forms/HeadTitleScreen';
 import tw from 'tailwind-react-native-classnames'
@@ -14,7 +14,8 @@ const NewRegisterStep4 = ({ route }) => {
 
     const navigation = useNavigation();
     const { params } = route
-    const { state, storeFinal } = useContext(NewRegisterStep3Context);
+    const { state, storeFinal,handleNotesChange } = useContext(NewRegisterStep3Context);
+console.log(params);
     const getContent = () => {
         return (
             <ScrollView
@@ -22,7 +23,9 @@ const NewRegisterStep4 = ({ route }) => {
 
                 <HeadTitleScreen title='Nuevo Registro' />
                 <View style={tw`mb-4`}>
-                    <StepStatus />
+                    <StepStatus
+                        number={3}
+                    />
                 </View>
 
                 <Text style={[tw`text-lg`]}>Datos generales</Text>
@@ -49,10 +52,27 @@ const NewRegisterStep4 = ({ route }) => {
                         <Text style={[tw`  text-sm  w-5/12 text-white pl-2`, styles.itemsT]}>Tipo</Text>
                         <Text style={[tw`  text-sm  w-1/3  text-white pl-2`, styles.itemsT]}>Monto</Text>
                     </View>
-                    <EntryPayment
+                    <EntryPaymentFinal
                         data={params?.payments}
                         TotalCost={params?.total}
                     />
+                    <Text style={[tw`text-base`]}>Notas adicionales</Text>
+                    <Input
+                        inputStyle={[tw`text-left `, {
+                            backgroundColor: 'white',
+                            padding: 9,
+                            borderBottomColor: 'gray',
+                            paddingLeft: 20,
+                            borderRadius: 5,
+                            backgroundColor: 'white',
+                            borderBottomColor: 'white'
+                        }]}
+                        onChangeText={(value) => handleNotesChange(value, 'notes')}
+                        containerStyle={[tw`text-left border-0 border-white `, { borderWidth: 10 }]}
+                        value={state.notes}
+                        labelStyle={{ color: '#133C60' }}
+                    />
+
                 </View>
                 <View style={tw`flex-row my-10 justify-around items-center `}>
                     <Button
@@ -64,7 +84,7 @@ const NewRegisterStep4 = ({ route }) => {
                         titleStyle={tw`text-base font-bold `}
                         buttonStyle={[tw`mr-2 w-32 rounded-full  `, { backgroundColor: '#2D5DA0' }]}
                         title="Confirmar"
-                        onPress={() => storeFinal(params)}
+                        onPress={() => storeFinal(params,notes)}
                     />
 
                 </View>
