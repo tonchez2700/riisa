@@ -15,7 +15,7 @@ const NewRegisterStep4 = ({ route }) => {
     const navigation = useNavigation();
     const { params } = route
     const { state, storeFinal, handleNotesChange } = useContext(NewRegisterStep3Context);
-  
+
     const getContent = () => {
         return (
             <ScrollView
@@ -81,6 +81,7 @@ const NewRegisterStep4 = ({ route }) => {
                         title="Cancelar"
                         onPress={() => navigation.navigate('HomeScreen')}
                     /><Button
+                        loading={state.fetchingData ? true : false}
                         titleStyle={tw`text-base font-bold `}
                         buttonStyle={[tw`mr-2 w-32 rounded-full  `, { backgroundColor: '#2D5DA0' }]}
                         title="Confirmar"
