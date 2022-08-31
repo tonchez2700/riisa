@@ -15,15 +15,19 @@ const NewRegisterStep2 = ({ route }) => {
 
     const navigation = useNavigation();
     const { state, clearState, store, getTotalCost,
-        getCostFinal, handleDiscountChange, handleDeleteEntryItem } = useContext(NewRegisterStep2Context);
+         handleDiscountChange, handleDeleteEntryItem } = useContext(NewRegisterStep2Context);
     const { params } = route
     const [remoteDataSet, setRemoteDataSet] = useState(null)
 
-    console.log(state.TotalCost);
     useEffect(() => {
         getTotalCost(state.dataItems)
 
-    }, [state.dataProgram]);
+    }, [state.dataProgram,state.discount,state.TotalCost]);
+
+    useEffect(() => {
+        clearState()
+    }, []);
+
     const getContent = () => {
         return (
 

@@ -14,8 +14,8 @@ const NewRegisterStep4 = ({ route }) => {
 
     const navigation = useNavigation();
     const { params } = route
-    const { state, storeFinal,handleNotesChange } = useContext(NewRegisterStep3Context);
-console.log(params);
+    const { state, storeFinal, handleNotesChange } = useContext(NewRegisterStep3Context);
+  
     const getContent = () => {
         return (
             <ScrollView
@@ -84,7 +84,7 @@ console.log(params);
                         titleStyle={tw`text-base font-bold `}
                         buttonStyle={[tw`mr-2 w-32 rounded-full  `, { backgroundColor: '#2D5DA0' }]}
                         title="Confirmar"
-                        onPress={() => storeFinal(params,notes)}
+                        onPress={() => storeFinal(params, state.notes)}
                     />
 
                 </View>

@@ -227,7 +227,7 @@ const store = (dispatch) => {
             subtotal: data.cost,
             total: data.cost,
             is_taxable: is_taxable,
-            discount: 0,
+            discount: data.discount,
             payments
         }
         if ((paymentDe - TotalCost) == 0) {
@@ -251,7 +251,7 @@ const store = (dispatch) => {
     }
 }
 const storeFinal = (dispatch) => {
-    return async (dataTotal) => {
+    return async (dataTotal, notes) => {
         const rows = []
         dataTotal.rows.forEach(element => {
             if (element.reg_product_type_id == 1) {
@@ -267,6 +267,7 @@ const storeFinal = (dispatch) => {
             }
         });
         const data = {
+            notes: notes,
             rfc: dataTotal.rfc,
             student_id: dataTotal.student_id,
             subtotal: dataTotal.subtotal,
@@ -302,7 +303,8 @@ const storeFinal = (dispatch) => {
                 "Ocurrio un problema",
                 "Servicio no disponible",
                 [{
-                    text: "Aceptar"
+                    text: "Aceptar",
+                    onPress: rootNavigation.navigate('HomeScreen')
                 }]
             )
         }

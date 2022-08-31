@@ -15,9 +15,10 @@ const NewRegisterStep3 = ({ route }) => {
     const navigation = useNavigation();
     const { state, clearState, handleSwitchChange, store } = useContext(NewRegisterStep3Context);
     const { params } = route
-    // useEffect(() => {
-    //     clearState()
-    // }, []);
+    useEffect(() => {
+        clearState()
+    }, []);
+    console.log(state.finalCost);
     const getContent = () => {
         return (
             <ScrollView
@@ -49,7 +50,7 @@ const NewRegisterStep3 = ({ route }) => {
                 </View>
                 <EntryPayment
                     data={state.dataPayment}
-                    TotalCost={state.finalCost}
+                    TotalCost={state.TotalCost}
                     taxable={state.is_taxable}
                     fun={(item) => handleSwitchChange(item, state.is_taxable)}
                 />

@@ -5,6 +5,7 @@ import { Icon, Switch } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native';
 
 const EntryPayment = ({ data, TotalCost, taxable, fun }) => {
+    console.log(TotalCost);
     const navigation = useNavigation();
     const [isEnabled, setIsEnabled] = useState(false);
     const toggleSwitch = () => {
@@ -26,7 +27,7 @@ const EntryPayment = ({ data, TotalCost, taxable, fun }) => {
                     </View>
                 )}
             {
-                true
+                TotalCost != 0
                     ?
                     <View style={tw`flex-row justify-between`}>
                         <View style={tw`flex-col items-center mt-2`}>

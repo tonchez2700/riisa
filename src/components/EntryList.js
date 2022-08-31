@@ -52,8 +52,8 @@ const EntryList = ({ data, TotalCost, fun, listDiscount, discount, value, delete
                     </View>
                 )}
             {
-                // TotalCost != ''
-                true
+                TotalCost != 0
+
                     ?
                     <View style={tw`flex-row justify-between mt-2`}>
 
