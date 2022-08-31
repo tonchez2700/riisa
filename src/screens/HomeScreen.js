@@ -23,12 +23,12 @@ const HomeScreen = () => {
                     color='#34C38F'
                     fontFamily='font-awesome-5'
                     navigateScreen='NewRegister' />
-                <MenuItem
+                {/* <MenuItem
                     title='Lista de Registro'
                     icon='list'
                     color='#F1B44C'
                     fontFamily='font-awesome-5'
-                    navigateScreen='NewRegisterStep2' />
+                    navigateScreen='NewRegisterStep2' /> */}
             </ScrollView>
         </View>
     )
