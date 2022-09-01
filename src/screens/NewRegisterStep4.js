@@ -34,7 +34,7 @@ const NewRegisterStep4 = ({ route }) => {
                     <Text style={[tw` text-sm`, { color: 'gray' }]}>Email: <Text style={[tw` text-sm`, { color: 'black' }]}>{params?.user.email}</Text></Text>
                     <Text style={[tw` text-xs`, { color: 'gray' }]}>Monto Total: <Text style={[tw` text-sm font-medium`, { color: 'black' }]}>${params?.total}</Text></Text>
                 </View>
-                <View style={{ borderColor: '#2D5DA0', borderTopWidth: 1.5 }}>
+                <View style={{ borderColor: '#2D5DA0', borderTopWidth: 3, marginTop: 10 }}>
                     <Text style={[tw`text-xl my-2`]}>Programas Educativos</Text>
                     <View style={tw`flex-row items-start`}>
                         <Text style={[tw` text-sm w-9/12 text-white pl-2`, styles.itemsT]}>Items:</Text>
@@ -45,7 +45,7 @@ const NewRegisterStep4 = ({ route }) => {
                         TotalCost={params?.total}
                     />
                 </View>
-                <View style={{ borderColor: '#2D5DA0', borderTopWidth: 1.5, marginTop: 10 }}>
+                <View style={{ borderColor: '#2D5DA0', borderTopWidth: 3, marginTop: 30 }}>
                     <Text style={tw`text-xl my-2`}>Desglose de Pagos</Text>
                     <View style={tw`flex-row items-start my-2`}>
                         <Text style={[tw`  text-sm  w-5/12 text-white pl-2`, styles.itemsT]}>Fecha</Text>
@@ -56,24 +56,25 @@ const NewRegisterStep4 = ({ route }) => {
                         data={params?.payments}
                         TotalCost={params?.total}
                     />
-                    <Text style={[tw`text-base`]}>Notas adicionales</Text>
-                    <Input
-                        inputStyle={[tw`text-left `, {
-                            backgroundColor: 'white',
-                            padding: 9,
-                            borderBottomColor: 'gray',
-                            paddingLeft: 20,
-                            borderRadius: 5,
-                            backgroundColor: 'white',
-                            borderBottomColor: 'white'
-                        }]}
-                        onChangeText={(value) => handleNotesChange(value, 'notes')}
-                        containerStyle={[tw`text-left border-0 border-white `, { borderWidth: 10 }]}
-                        value={state.notes}
-                        labelStyle={{ color: '#133C60' }}
-                    />
+
 
                 </View>
+                <Text style={[tw`text-base mt-3`]}>Notas adicionales</Text>
+                <Input
+                    inputStyle={[tw`text-left `, {
+                        backgroundColor: 'white',
+                        padding: 9,
+                        borderBottomColor: 'gray',
+                        paddingLeft: 20,
+                        borderRadius: 5,
+                        backgroundColor: 'white',
+                        borderBottomColor: 'white'
+                    }]}
+                    onChangeText={(value) => handleNotesChange(value, 'notes')}
+                    containerStyle={[tw`text-left border-0 border-white `, { borderWidth: 10 }]}
+                    value={state.notes}
+                    labelStyle={{ color: '#133C60' }}
+                />
                 <View style={tw`flex-row my-10 justify-around items-center `}>
                     <Button
                         titleStyle={tw`text-base font-bold`}

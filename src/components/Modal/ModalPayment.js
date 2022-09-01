@@ -91,7 +91,7 @@ const ModalPayment = ({ paymentPen }) => {
                                 titleStyle={tw`text-xs font-bold `}
                                 buttonStyle={[tw`mr-2 rounded-full  `, { backgroundColor: '#2D5DA0' }]}
                                 title="Siguiente"
-                                onPress={() => { handleInputChangePayment(state.data,paymentPen), toggleModalVisibility() }}
+                                onPress={() => { handleInputChangePayment(state.data,paymentPen,state.count), toggleModalVisibility() }}
                             />
 
                         </View>

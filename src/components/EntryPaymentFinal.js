@@ -14,7 +14,7 @@ const EntryPaymentFinal = ({ data, TotalCost }) => {
         <View>
             {
                 data.map((item) =>
-                    <View>
+                    <View key={item.count}>
                         <View style={[tw`flex-row items-start py-2`, { borderBottomWidth: 1 }]}>
                             <Text style={[tw` text-sm w-5/12 pl-2`]}>{item.promess_date}</Text>
                             <Text style={[tw` text-sm  w-5/12 mr-2 mb-1`]}>Pago Inicial</Text>

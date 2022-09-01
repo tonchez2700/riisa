@@ -15,10 +15,9 @@ const NewRegisterStep3 = ({ route }) => {
     const navigation = useNavigation();
     const { state, clearState, handleSwitchChange, store } = useContext(NewRegisterStep3Context);
     const { params } = route
-    useEffect(() => {
-        clearState()
-    }, []);
-    console.log(state.finalCost);
+     useEffect(() => {
+         clearState()
+     }, []);
     const getContent = () => {
         return (
             <ScrollView

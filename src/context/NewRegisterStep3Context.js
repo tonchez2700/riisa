@@ -13,6 +13,7 @@ const initialState = {
     fetchingData: false,
     campains: [],
     notes: '',
+    count: 1,
     taxable: false,
     is_taxable: 0,
     dataPayment: [],
@@ -72,12 +73,14 @@ const NewRegisterStep3Reducer = (state = initialState, action) => {
         case 'ADD_PAYMENT':
             let amount = 0;
             let newData = [action.payload.data];
+            const aux = parseInt(state.count + 1)
             newData.forEach(element => {
                 amount = state.TotalCost + parseInt(element.amount)
             });
             newData = [...state.dataPayment, action.payload.data];
             return {
                 ...state,
+                count: aux,
                 dataPayment: newData,
                 TotalCost: amount
             }
@@ -217,6 +220,7 @@ const store = (dispatch) => {
                 is_taxable: is_taxable,
                 is_paid: element.is_paid,
                 reg_payment_type_id: element.reg_payment_type_id,
+                count: element.count
             })
         });
         const dataTotal = {
@@ -312,9 +316,7 @@ const storeFinal = (dispatch) => {
 }
 
 const handleInputChangePayment = (dispatch) => {
-    return async (data, paymentPen) => {
-
-        console.log(data.amount);
+    return async (data, paymentPen, count) => {
         if (paymentPen >= data.amount) {
             const validated = validateData(data)
             if (!validated.error) {
@@ -323,6 +325,7 @@ const handleInputChangePayment = (dispatch) => {
                     payload: {
                         data: {
                             ...data,
+                            count,
                             is_paid: 0,
                             is_taxable: 1
                         }

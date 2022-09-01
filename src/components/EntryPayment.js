@@ -5,7 +5,7 @@ import { Icon, Switch } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native';
 
 const EntryPayment = ({ data, TotalCost, taxable, fun }) => {
-    console.log(TotalCost);
+
     const navigation = useNavigation();
     const [isEnabled, setIsEnabled] = useState(false);
     const toggleSwitch = () => {
@@ -18,7 +18,7 @@ const EntryPayment = ({ data, TotalCost, taxable, fun }) => {
         <View>
             {
                 data.map((item) =>
-                    <View>
+                    <View key={item.count}>
                         <View style={[tw`flex-row items-start py-2`, { borderBottomWidth: 1 }]}>
                             <Text style={[tw` text-sm w-5/12 pl-2`]}>{item.promess_date}</Text>
                             <Text style={[tw` text-sm  w-5/12 mr-2 mb-1`]}>Pago Inicial</Text>
@@ -39,9 +39,9 @@ const EntryPayment = ({ data, TotalCost, taxable, fun }) => {
                                 value={isEnabled}
                             />
                         </View>
-                        <View style={tw`items-end flex-col`}>
+                        <View style={tw`items-end flex-col mt-2`}>
                             <Text style={[tw`text-sm  text-right`]}>Subtotal: ${TotalCost}</Text>
-                            <Text style={[tw`text-sm  text-right`]}>IVA: $0</Text>
+                            {/* <Text style={[tw`text-sm  text-right`]}>IVA: $0</Text> */}
                             <Text style={[tw`text-sm  text-right`]}>Total: ${TotalCost}</Text>
                         </View>
                     </View>

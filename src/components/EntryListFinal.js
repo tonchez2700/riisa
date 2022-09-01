@@ -11,7 +11,7 @@ const EntryListFinal = ({ data, TotalCost }) => {
         <View>
             {
                 data.map((item) =>
-                    <View key={item.campaignSelection.id}>
+                    <View key={item.count}>
                         {item.reg_product_type_id == 2
                             ?
                             <View style={[tw`flex-col items-start pb-1`, { borderBottomWidth: .8 }]}>
