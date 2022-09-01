@@ -12,6 +12,7 @@ const initialState = {
     fetchingData: false,
     dataFrom: '',
     data: [],
+    listEmail: [],
     cities: [],
     jobs: [],
     genders: [],
@@ -56,18 +57,14 @@ const NewRegisterReducer = (state = initialState, action) => {
             return {
                 ...state,
                 fetchingData: false,
+                listEmail: action.payload.listEmail
+            }
+        case 'SET_SELECT_STUDENT':
+            return {
+                ...state,
+                fetchingData: false,
                 dataFrom: {
-                    ...state.dataFrom,
-                    email: action.payload.response[0].user.email,
-                    phone: action.payload.response[0].phone,
-                    name: action.payload.response[0].user.name,
-                    paternal_surname: action.payload.response[0].user.paternal_surname,
-                    maternal_surname: action.payload.response[0].user.maternal_surname,
-                    city_id: action.payload.response[0].city_id,
-                    birthdate_id: moment(action.payload.response[0].birthdate, 'YYYY-MM-DD').format('YYYY-MM-DD'),
-                    gender_id: action.payload.response[0].gender_id,
-                    job_id: action.payload.response[0].job_id,
-                    media_origin_id: action.payload.response[0].media_origin_id,
+                    ...action.payload.value
                 }
             }
         default:
@@ -139,7 +136,7 @@ const getCatalog = (dispatch) => {
 
 }
 
-const getStudentbyEmail = (dispatch) => {
+const handleEmailChange = (dispatch) => {
     return async (email) => {
         try {
             dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
@@ -151,9 +148,22 @@ const getStudentbyEmail = (dispatch) => {
                 }
                 );
             if (response != '') {
+                const listEmail = response.map(item => ({
+                    id: item.id,
+                    title: item.user.email,
+                    phone: item.phone,
+                    name: item.user.name,
+                    paternal_surname: item.user.paternal_surname,
+                    maternal_surname: item.user.maternal_surname,
+                    city_id: item.city_id,
+                    birthdate: item.birthdate,
+                    gender_id: item.gender_id,
+                    job_id: item.job_id,
+                    media_origin_id: item.media_origin_id,
+                }))
                 dispatch({
                     type: 'SET_FROM_STUDENT',
-                    payload: { response }
+                    payload: { listEmail }
                 });
             } else {
                 dispatch({
@@ -264,12 +274,22 @@ const handleInputChange = (dispatch) => {
     }
 }
 
+const selectStudenEmail = (dispatch) => {
+    return async (value) => {
+        console.log(value);
+        dispatch({
+            type: 'SET_SELECT_STUDENT',
+            payload: { value }
+        })
+    }
+}
 
 export const { Context, Provider } = createDataContext(
     NewRegisterReducer,
     {
         clearState,
-        getStudentbyEmail,
+        handleEmailChange,
+        selectStudenEmail,
         handleInputChange,
         getCatalog,
         store
