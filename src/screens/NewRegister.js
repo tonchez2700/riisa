@@ -23,8 +23,8 @@ const NewRegister = () => {
         getCatalog,
         store } = useContext(NewRegisterContext);
     useEffect(() => {
+        clearState()
         getCatalog()
-        // clearState()
     }, []);
 
     // console.log(state.dataFrom);

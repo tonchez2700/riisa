@@ -44,6 +44,7 @@ const NewRegisterStep2Reducer = (state = initialState, action) => {
     switch (action.type) {
         case 'CLEAR_STATE':
             return {
+                campains: state.campains,
                 ...initialState,
             }
         case 'FETCHING_DATA':
