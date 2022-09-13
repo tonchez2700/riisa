@@ -15,17 +15,21 @@ const DropdownSelect = ({ data, type, fun }) => {
 
         <SelectDropdown
             data={data}
+
             defaultValueByIndex={2}
             onSelect={(selectedItem, index) => {
                 fun(selectedItem)
             }}
             defaultButtonText={type}
+            renderCustomizedRowChild={(item, index) => {
+                return <Text numberOfLines={5} style={[{ marginTop: 1, marginLeft: 2, color: 'black' }]}>{item.title}</Text>
+            }}
             buttonTextAfterSelection={(selectedItem, index) => {
-                return selectedItem.title;
-              }}
-              rowTextForSelection={(item, index) => {
-                return item.title;
-              }}
+                return <Text style={{ color: 'black' }}>{selectedItem.title}</Text>
+            }}
+            // rowTextForSelection={(item, index) => {
+            //     return <Text numberOfLines={2} style={[{ color: 'black', flex: 1, flexWrap: 'wrap' }]}>{item.title}</Text>
+            // }}
             buttonStyle={styles.dropdown1BtnStyle}
             buttonTextStyle={styles.dropdown1BtnTxtStyle}
             renderDropdownIcon={isOpened => {

@@ -3,7 +3,6 @@ import createDataContext from './createDataContext'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import httpClient from '../services/httpClient'
 import * as rootNavigation from '../helpers/rootNavigation';
-import { INVITED_ENTRY_TYPE, PROVIDER_ENTRY_TYPE, SERVICE_ENTRY_TYPE } from '../config/defines';
 import moment from 'moment';
 
 
@@ -146,7 +145,6 @@ const clearState = (dispatch) => {
         dispatch({ type: 'CLEAR_STATE' });
     }
 }
-
 
 const getcampainsByStatus = (dispatch) => {
     return async () => {

@@ -26,9 +26,6 @@ const NewRegister = () => {
         clearState()
         getCatalog()
     }, []);
-
-    // console.log(state.dataFrom);
-    console.log(state.dataFrom);
     return (
 
         <ScrollView
@@ -46,24 +43,7 @@ const NewRegister = () => {
             </View>
             <Text style={tw`text-lg mb-5`}>Datos del Estudiante</Text>
             <Text style={[tw` text-base mb-1 font-bold`, { color: '#133C60' }]}>Email<Text style={[tw` text-sm`, { color: 'red' }]}>*</Text></Text>
-            {/* <Input
-    rightIcon={
-        <TouchableOpacity
-            onPress={() => getStudentbyEmail(state.dataFrom.email)}>
-            {state.fetchingData
-                ?
-                <ActivityIndicator size="small" color="#0000ff" />
-                :
-                <Icon type='font-awesome' name='search' size={25} color='#133C60' style={{
-                    marginRight: 15
-                }} />}
-        </TouchableOpacity>
-    }
-    inputStyle={tw`text-left`}
-    onChangeText={(value) => handleInputChange(value, 'email')}
-    value={state.dataFrom?.email}
-    labelStyle={{ color: '#133C60' }}
-/> */}
+
             <View style={{ marginBottom: 25, marginLeft: 10 }}>
                 <AutocompleteDropdown
                     emptyResultText={"No se pudo encontrar el Nombre"}
