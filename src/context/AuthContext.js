@@ -102,26 +102,29 @@ const signout = (dispatch) => {
 
 const tryAuth = async (email, password, dispatch) => {
 
-    const response = await httpClient.post(`auth/login?email=${email}&password=${password}`)
-    const today = moment(new Date(), 'YYYY-MM-DD ').format('YYYY-MM-DD , h:mm:ss');
-    const expirationTime = moment(response.token_expiration, 'YYYY-MM-DD ').format('YYYY-MM-DD , h:mm:ss')
-    console.log(response.token_expiration);
-    console.log(today);
-    console.log(expirationTime);
-    if (expirationTime > today) {
-        const user = {
-            token: response.token,
-            token_expiration: response.token_expiration
+    try {
+        const response = await httpClient.post(`auth/login?email=${email}&password=${password}`)
+        if (!response.status) {
+            dispatch({
+                type: 'SET_RESPONSE_ERROR',
+                payload: {
+                    error: true,
+                    message: 'Los accesos son incorrectos, favor de verificarlos.'
+                }
+            });
+            rootNavigation.navigate('AuthScreen')
+        } else {
+            const user = { ...response.user, token: `${response.token_type} ${response.token}`, expires_at: response.expires_at }
+            await AsyncStorage.setItem('user', JSON.stringify(user))
+            dispatch({ type: 'SIGNIN', payload: { user } });
+            rootNavigation.navigate('WrapperInnerScreens')
         }
-        await AsyncStorage.setItem('user', JSON.stringify(user))
-        dispatch({ type: 'SIGNIN', payload: { user } });
-        rootNavigation.navigate('WrapperInnerScreens')
-    } else {
+    } catch (error) {
         dispatch({
             type: 'SET_RESPONSE_ERROR',
             payload: {
                 error: true,
-                message: 'Los accesos son incorrectos, favor de verificarlos.'
+                message: 'Ha ocurrido un error, por favor inténtelo de nuevo más tarde.'
             }
         });
         rootNavigation.navigate('AuthScreen')

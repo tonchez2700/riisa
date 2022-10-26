@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "feelink",
-    "slug": "feelink",
-    "version": "3.0.0",
+    "name": "riisa-pruebas",
+    "slug": "riisa-pruebas",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -20,12 +20,11 @@
       "supportsTablet": true
     },
     "android": {
-      "versionCode": 3,
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
-      },
-      "package": "com.tonchez2700.feelink"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
