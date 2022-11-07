@@ -5,7 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import useDatePicker from './../hooks/useDatePicker'
 import tw from 'tailwind-react-native-classnames';
 
-const DateRange = ({ onChangeDate, onChangeTime, placeholder }) => {
+const DateRange = ({ titleDate, titleTime, onChangeDate, onChangeTime }) => {
     const { state, handleVisibility, handleOnChangePicker } = useDatePicker()
 
     const onChangePicker = (event, selectedDate) => {
@@ -13,29 +13,37 @@ const DateRange = ({ onChangeDate, onChangeTime, placeholder }) => {
     }
 
     useEffect(() => {
-        onChangeDate(state.date)
-    }, [state.date]);
-
+        onChangeTime(state.time)
+    }, [state.time]);
 
 
     return (
         <View>
-            <View style={tw`flex-row`}>
-                <Input
-                    rightIcon={
-                        <TouchableOpacity onPress={() => handleVisibility('date')}>
-                            <Icon type='font-awesome' name='calendar' size={25} color='black' />
-                        </TouchableOpacity>
-                    }
-                    editable={false}
-                    inputContainerStyle={{
-                        borderBottomColor: 'gray'
-                    }}
-                    placeholder={placeholder}
-                    labelStyle={{ color: '#133C60' }}
-                    value={state.date ? state.date.toString() : null}
-                />
-            </View>
+
+            <TouchableOpacity onPress={() => handleVisibility('time')}>
+                <View >
+                    <Input
+                        rightIcon={
+                            <TouchableOpacity onPress={() => handleVisibility('time')}>
+                                <Icon type='font-awesome' name='clock-o' size={25} color='black' />
+                            </TouchableOpacity>
+                        }
+                        inputStyle={{fontSize: 20}}
+                        inputContainerStyle={{
+                            borderBottomColor: 'white',
+                            borderRadius: 5,
+                            height: '4%',
+
+                        }}
+                        placeholder="Hora de salida"
+                        editable={false}
+                        containerStyle={styles.containerInput}
+                        label={titleTime}
+                        labelStyle={{ color: '#005691',marginBottom: 10, }}
+                        value={state.time ? state.time.toString() : null}
+                    />
+                </View>
+            </TouchableOpacity>
             {state.isVisible && (
                 <DateTimePicker
                     testID="tmpDate"
@@ -53,4 +61,11 @@ const DateRange = ({ onChangeDate, onChangeTime, placeholder }) => {
 
 export default DateRange
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+
+    containerInput: {
+        paddingLeft: 20,
+        backgroundColor: 'white',
+        borderRadius: 5,
+    },
+})

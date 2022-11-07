@@ -104,6 +104,7 @@ const tryAuth = async (email, password, dispatch) => {
 
     try {
         const response = await httpClient.post(`auth/login?email=${email}&password=${password}`)
+        
         if (!response.status) {
             dispatch({
                 type: 'SET_RESPONSE_ERROR',

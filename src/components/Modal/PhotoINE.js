@@ -47,7 +47,7 @@ const ToolsReducer = (state = initialState, action) => {
     }
 }
 
-const PhotoTools = ({ onTakePicture, onCameraStart }) => {
+const PhotoINE = ({ onTakePicture, onCameraStart }) => {
     const [state, dispatch] = useReducer(ToolsReducer, initialState);
     const absoluteFillObjectCamera = state.isVisibleCamera ? { ...StyleSheet.absoluteFillObject } : null
     const cameraRef = useRef()
@@ -114,6 +114,7 @@ const PhotoTools = ({ onTakePicture, onCameraStart }) => {
     }
 
     return (
+
         <View>
             <TouchableOpacity onPress={() => isVisibleCamera()}>
                 <View style={[styles.viewInput]}>
@@ -130,13 +131,12 @@ const PhotoTools = ({ onTakePicture, onCameraStart }) => {
                         }}
                         inputStyle={{ fontSize: 20 }}
                         containerStyle={styles.containerInput}
-                        placeholder={'Placas'}
-                        label={'Placas'}
+                        placeholder={'INE'}
+                        label={'INE'}
                         labelStyle={{ color: '#005691', marginBottom: 10, }}
                     />
                 </View>
             </TouchableOpacity>
-
             <View style={styles.container}>
 
 
@@ -177,7 +177,7 @@ const PhotoTools = ({ onTakePicture, onCameraStart }) => {
     );
 }
 
-export default PhotoTools
+export default PhotoINE
 
 const styles = StyleSheet.create({
     container: {
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObjectCamera,
     },
     viewInput: {
-        marginVertical: 5,
+        marginBottom: 5,
         marginHorizontal: 3,
         backgroundColor: 'white',
         borderRadius: 5,

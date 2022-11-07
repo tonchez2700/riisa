@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "riisa-pruebas",
-    "slug": "riisa-pruebas",
+    "name": "riisa",
+    "slug": "riisa",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
