@@ -6,28 +6,23 @@ import {
 import { Context as RegisterContext } from '../context/RegisterContext';
 import { useNavigation, } from '@react-navigation/native';
 import { Input, Button, Icon } from 'react-native-elements';
-import Carousel from 'react-native-snap-carousel';
-import PhotoTools from '../components/Modal/PhotoTools'
-import PhotoINE from '../components/Modal/PhotoINE';
-import PhotoCar from '../components/Modal/PhotoCar';
+import { CheckOutSchema } from '../config/schemas';
+import useHandleOnChangeTextInput from '../hooks/useHandleOnChangeTextInput'
 import tw from 'tailwind-react-native-classnames'
-import moment from 'moment'
 import DateRange from '../components/DateRange';
 
-const CheckOutScreen = () => {
-    const [flexWrapper, setFlexWrapper] = useState(true);
-    const navigation = useNavigation();
-    const { state,
-        clearState,
-        onChangeImagen,
-        getImagensOutTools } = useContext(RegisterContext);
+const CheckOutScreen = (props) => {
+    const { route: { params: { id } } } = props
 
+    const { state,
+        clearState, storeOut } = useContext(RegisterContext);
+    const [inputState, handleInputChange] = useHandleOnChangeTextInput(CheckOutSchema)
 
     return (
 
         <ScrollView
             nestedScrollEnabled
-            style={{ flex: 1, backgroundColor: '#F5F5F5' }}
+            style={{ flex: 1, backgroundColor: '#ECECEC'}}
             keyboardDismissMode="on-drag"
             keyboardShouldPersistTaps="handled"
             contentInsetAdjustmentBehavior="automatic">
@@ -37,40 +32,33 @@ const CheckOutScreen = () => {
                     <DateRange
                         titleTime="Hora de salida"
                         onChangeTime={(time) => {
-                            // handleInputChange(time, 'time')
+                            handleInputChange(time, 'time')
                         }}
                     />
                 </View>
                 <View style={[styles.viewInput]}>
                     <Input
-                        inputStyle={{fontSize: 20}}
+                        inputStyle={{ fontSize: 20 }}
                         inputContainerStyle={{
                             borderBottomColor: 'white',
                             borderRadius: 5,
                             marginTop: 5,
                             height: '4%',
                         }}
+                        onChangeText={(value) => handleInputChange(value, 'Ticket')}
                         containerStyle={styles.containerInput}
+                        keyboardType='number-pad'
                         label={'No. Ticket'}
                         labelStyle={{ color: '#005691', marginBottom: 10, }}
                         placeholder="No. Ticket"
-                    // value={}
+                        value={inputState.Ticket}
                     />
                 </View>
-                {/* <View>
-                    <Input
-                        rightIcon={<Icon type='font-awesome-5' name='search' size={25} color='black' />}
-                        inputStyle={tw`ml-3 text-sm`}
-                        inputContainerStyle={tw`border pl-2 rounded-md`}
-
-                        labelStyle={{ color: '#133C60' }}
-                        placeholder="BUSCAR ORDEN DE COMPRA"
-                    // value={}
-                    />
-                </View> */}
                 <Button
                     title={'Aceptar'}
+                    disabled={inputState.Ticket != '' ? false : true}
                     style={{ alignItems: 'flex-end', justifyContent: "flex-end" }}
+                    onPress={() => storeOut(id, inputState)}
                 />
             </View>
 

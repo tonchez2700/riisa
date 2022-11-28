@@ -1,6 +1,11 @@
 import * as Yup from 'yup';
 
 
+export const CheckOutSchema = {
+    Ticket: '',
+    Time: '',
+};
+
 export const IncidentSchema = {
     latitud: '',
     longitud: '',

@@ -136,56 +136,7 @@ const getCatalog = (dispatch) => {
 
 }
 
-const handleEmailChange = (dispatch) => {
-    return async (email) => {
-        try {
-            dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
-            const user = JSON.parse(await AsyncStorage.getItem('user'));
-            const token = user.token
-            const response = await httpClient
-                .get(`students?email=${email}`, {
-                    'Authorization': `Bearer ${token}`,
-                }
-                );
-            if (response != '') {
-                const listEmail = response.map(item => ({
-                    id: item.id,
-                    title: item.user.email,
-                    phone: item.phone,
-                    name: item.user.name,
-                    paternal_surname: item.user.paternal_surname,
-                    maternal_surname: item.user.maternal_surname,
-                    city_id: item.city_id,
-                    birthdate: item.birthdate,
-                    gender_id: item.gender_id,
-                    job_id: item.job_id,
-                    media_origin_id: item.media_origin_id,
-                }))
-                dispatch({
-                    type: 'SET_FROM_STUDENT',
-                    payload: { listEmail }
-                });
-            } else {
-                dispatch({
-                    type: 'SET_REQUEST_ERROR',
-                    payload: {
-                        error: true,
-                        message: 'Por el momento el servicio no está disponible, inténtelo mas tarde.'
-                    }
-                });
-            }
-        } catch (error) {
-            dispatch({
-                type: 'SET_REQUEST_ERROR',
-                payload: {
-                    error: true,
-                    message: 'Por el momento el servicio no está disponible, inténtelo mas tarde.'
-                }
-            });
-        }
-    }
 
-}
 
 const store = (dispatch) => {
     return async (data) => {
@@ -237,32 +188,7 @@ const store = (dispatch) => {
     }
 }
 
-const validateData = (data) => {
-    let result = { error: false }
-    if (!data.email)
-        return { ...result, error: true, message: 'El Email es requerido.' }
-    if (!data.phone)
-        return { ...result, error: true, message: 'El Teléfono es requerido.' }
-    if (!data.name)
-        return { ...result, error: true, message: 'El Nombre es requerido.' }
-    if (!data.paternal_surname)
-        return { ...result, error: true, message: 'El Apellido paterno es requerido.' }
-    if (!data.maternal_surname)
-        return { ...result, error: true, message: 'El Apellido materno es requerido.' }
-    if (!data.city_id)
-        return { ...result, error: true, message: 'El Cuidad es requerido.' }
-    if (!data.birthdate)
-        return { ...result, error: true, message: 'El Fecha es requerido es requerido.' }
-    if (!data.gender_id)
-        return { ...result, error: true, message: 'El Género es requerido.' }
-    if (!data.job_id)
-        return { ...result, error: true, message: 'El Ocupación es requerido.' }
-    if (!data.media_origin_id)
-        return { ...result, error: true, message: 'El Medio de origen es requerido.' }
 
-
-    return result
-}
 
 const handleInputChange = (dispatch) => {
     return async (value, typedata) => {
@@ -276,7 +202,6 @@ const handleInputChange = (dispatch) => {
 
 const selectStudenEmail = (dispatch) => {
     return async (value) => {
-        console.log(value);
         dispatch({
             type: 'SET_SELECT_STUDENT',
             payload: { value }

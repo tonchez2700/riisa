@@ -8,8 +8,9 @@ import moment from 'moment';
 
 const initialState = {
     error: false,
-    message: "",
+    message: null,
     fetchingData: false,
+    orderNum: '',
     car: [],
     ine: [],
     plate: [],
@@ -37,7 +38,13 @@ const RegisterReducer = (state = initialState, action) => {
             return {
                 ...state,
                 fetchingData: false,
-                data: action.payload.response
+                data: [action.payload.response[0]]
+            }
+        case 'SET_ORDER_NUMBER':
+            let type = action.payload.typedata
+            return {
+                ...state,
+                [type]: action.payload.value
             }
         case 'SET_IMAGEN_VALUE':
             let typedata = action.payload.type
@@ -64,12 +71,12 @@ const clearState = (dispatch) => {
 }
 
 const setFetchingList = (dispatch) => {
-    return async () => {
+    return async (orderNum) => {
         try {
 
             const user = JSON.parse(await AsyncStorage.getItem('user'));
             const token = user.token
-            const response = await httpClient.get(`buybuyingorders`, { 'Authorization': token });
+            const response = await httpClient.get(`buybuyingorders?folio=${orderNum}`, { 'Authorization': token });
             dispatch({
                 type: 'SET_FETCHING_DATA',
                 payload: { response }
@@ -90,8 +97,7 @@ const onChangeImagen = (dispatch) => {
     return async (type, value) => {
         let img;
         value.forEach(element => {
-            //img = `data:image/jpeg;base64,${element.source}`;
-            img = `${element.preview}`
+            img = `data:image/jpeg;base64,${element.source}`;
         });
         dispatch({
             type: 'SET_IMAGEN_VALUE',
@@ -109,7 +115,6 @@ const getImagensOutTools = (dispatch) => {
             car,
             ine
         ]
-        console.log(ImagenList);
         dispatch({
             type: 'SET_IMAGENS_URLS',
             payload: {
@@ -120,21 +125,129 @@ const getImagensOutTools = (dispatch) => {
 }
 
 const store = (dispatch) => {
-    return async (imagenes, data) => {
-
-        let ImagenList = [
-            plate,
-            car,
-            ine
-        ]
-        console.log(ImagenList);
-        dispatch({
-            type: 'SET_IMAGENS_URLS',
-            payload: {
-                ImagenList
+    return async (plate, car, ine, id) => {
+        dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
+        let data = {
+            folio: id,
+            pictures: {
+                tags: [{ file: plate }],
+                trucks: [{ file: car }],
+                ines: [{ file: ine }],
             }
-        });
+        }
+        const validated = validateData(plate, car, ine)
+        console.log(validated);
+        if (!validated.error) {
+            const user = JSON.parse(await AsyncStorage.getItem('user'));
+            const token = user.token
+            const response = await httpClient.post(
+                `comings`,
+                data,
+                { 'Authorization': token });
+               
+            if (response.status) {
+                dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: false } });
+                Alert.alert(
+                    "Correcto",
+                    "Entrada creada correctamente.",
+                    [{
+                        text: "Aceptar",
+                        onPress: () => rootNavigation.navigate('HomeScreen')
+                    }]
+                )
+            } else {
+                Alert.alert(
+                    "Error",
+                    "Hubo un problema a generar la salida",
+                    [{
+                        text: "Aceptar",
+                    }]
+                )
+            }
+        } else {
+            Alert.alert(
+                "Error",
+                validated.message,
+                [{
+                    text: "Aceptar",
+                }]
+            )
+        }
+
     }
+}
+
+const storeOut = (dispatch) => {
+    return async (id, dataFrom) => {
+        const data = {
+            ticket: dataFrom.Ticket,
+            notes: 'pato'
+        }
+        const user = JSON.parse(await AsyncStorage.getItem('user'));
+        const token = user.token
+        const response = await httpClient.put(
+            `comings/${id}`,
+            data,
+            { 'Authorization': token });
+        if (response.status) {
+            Alert.alert(
+                "Correcto",
+                "Salida correctamente.",
+                [{
+                    text: "Aceptar",
+                    onPress: () => rootNavigation.navigate('HomeScreen')
+                }]
+            )
+        } else {
+            Alert.alert(
+                "Error",
+                "Hubo un problema a generar la salida",
+                [{
+                    text: "Aceptar",
+                }]
+            )
+        }
+    }
+}
+
+const handleInputChange = (dispatch) => {
+    return async (value, typedata) => {
+        dispatch({
+            type: 'SET_ORDER_NUMBER',
+            payload: { value, typedata }
+        })
+    }
+}
+
+const ViewComing = (dispatch) => {
+    return async (id) => {
+        const user = JSON.parse(await AsyncStorage.getItem('user'));
+        const token = user.token
+        const response = await httpClient.get(`comings/${id}`, { 'Authorization': token });
+        if (response != '') {
+            rootNavigation.navigate('ViewComingScreen',response)
+        } else {
+            Alert.alert(
+                "Error",
+                "Hubo un problema a generar la salida",
+                [{
+                    text: "Aceptar",
+                }]
+            )
+        }
+    }
+}
+
+const validateData = (plate, car, ine) => {
+    let result = { error: false }
+    if (!plate)
+        return { ...result, error: true, message: 'Fotografía de la Placa es requerido.' }
+    if (!car)
+        return { ...result, error: true, message: 'Fotografía del Camión es requerido.' }
+    if (!ine)
+        return { ...result, error: true, message: 'Fotografía del INE es requerido.' }
+
+    return result
 }
 
 
@@ -144,7 +257,12 @@ export const { Context, Provider } = createDataContext(
         clearState,
         setFetchingList,
         onChangeImagen,
-        getImagensOutTools
+        storeOut,
+        getImagensOutTools,
+        handleInputChange,
+        store,
+        ViewComing,
+
     },
     initialState
 );

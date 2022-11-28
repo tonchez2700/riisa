@@ -1,1 +1,1 @@
-export const apiUrlBase = 'https://portal.feelink.com.mx/api'
+export const apiUrlBase = 'http://10.1.2.207/dev-suppliers/api'

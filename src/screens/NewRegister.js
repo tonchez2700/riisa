@@ -13,14 +13,14 @@ import PhotoCar from '../components/Modal/PhotoCar';
 import tw from 'tailwind-react-native-classnames'
 import moment from 'moment'
 
-const NewRegister = () => {
+const NewRegister = (props) => {
     const [flexWrapper, setFlexWrapper] = useState(true);
     const navigation = useNavigation();
     const { state,
         clearState,
         onChangeImagen,
+        store,
         getImagensOutTools } = useContext(RegisterContext);
-
 
     useEffect(() => {
         getImagensOutTools(state.plate, state.car, state.ine)
@@ -34,7 +34,7 @@ const NewRegister = () => {
                     accessible={true}
                     style={tw`h-60`}
                     resizeMode="contain"
-                    source={{ uri: `${item}`}}
+                    source={{ uri: `${item}` }}
                 />
             </View>
         );
@@ -44,7 +44,7 @@ const NewRegister = () => {
 
         <ScrollView
             nestedScrollEnabled
-            style={{ flex: 1, backgroundColor: '#F5F5F5' }}
+            style={{ flex: 1, backgroundColor: '#ECECEC' }}
             keyboardDismissMode="on-drag"
             keyboardShouldPersistTaps="handled"
             contentInsetAdjustmentBehavior="automatic">
@@ -82,7 +82,7 @@ const NewRegister = () => {
                     />
 
                 </View>
-               
+
                 <Carousel
                     data={state.dataImagen}
                     sliderWidth={300}
@@ -90,8 +90,8 @@ const NewRegister = () => {
                     renderItem={_renderItem}
                 />
                 <Button
-                    onPress={()=>{
-                        console.log('data')
+                    onPress={() => {
+                        store(state.plate, state.car, state.ine, props.route.params)
                     }}
                     title={'Aceptar'}
                     style={{ alignItems: 'flex-end', justifyContent: "flex-end" }}
