@@ -1,39 +1,54 @@
 import React, { useContext, useState, useEffect } from 'react'
 import {
     ScrollView, StyleSheet, Alert, View,
-    Text, TouchableOpacity, ActivityIndicator
+    Text, Image
 } from 'react-native'
 import { Context as RegisterContext } from '../context/RegisterContext';
-import { useNavigation, } from '@react-navigation/native';
 import { Input, Button, Icon } from 'react-native-elements';
 import { CheckOutSchema } from '../config/schemas';
+import PhotoTicket from '../components/Modal/PhotoTicket';
 import useHandleOnChangeTextInput from '../hooks/useHandleOnChangeTextInput'
 import tw from 'tailwind-react-native-classnames'
-import DateRange from '../components/DateRange';
+import moment from 'moment';
 
 const CheckOutScreen = (props) => {
     const { route: { params: { id } } } = props
-
+    const [flexWrapper, setFlexWrapper] = useState(true);
     const { state,
-        clearState, storeOut } = useContext(RegisterContext);
+        clearState,
+        onChangeImagen,
+        storeOut } = useContext(RegisterContext);
     const [inputState, handleInputChange] = useHandleOnChangeTextInput(CheckOutSchema)
+
+    const today = new Date();
+    const day = moment(today).format('HH:mm:ss')
 
     return (
 
         <ScrollView
             nestedScrollEnabled
-            style={{ flex: 1, backgroundColor: '#ECECEC'}}
+            style={{ flex: 1, backgroundColor: '#ECECEC' }}
             keyboardDismissMode="on-drag"
             keyboardShouldPersistTaps="handled"
             contentInsetAdjustmentBehavior="automatic">
             <View style={tw`w-full`}>
 
                 <View style={[styles.viewInput]}>
-                    <DateRange
-                        titleTime="Hora de salida"
-                        onChangeTime={(time) => {
-                            handleInputChange(time, 'time')
+                    <Input
+                        rightIcon={<Icon type='font-awesome' name='clock-o' size={25} color='#2D5DA0' />}
+                        inputStyle={{ fontSize: 20 }}
+                        inputContainerStyle={{
+                            borderBottomColor: 'white',
+                            borderRadius: 5,
+                            paddingTop: 20,
+                            height: '4%',
                         }}
+                        onChangeText={(value) => handleInputChange(value, 'Ticket')}
+                        containerStyle={styles.containerInput}
+                        keyboardType='number-pad'
+                        label={'Hora'}
+                        labelStyle={{ color: '#005691' }}
+                        value={day}
                     />
                 </View>
                 <View style={[styles.viewInput]}>
@@ -42,7 +57,7 @@ const CheckOutScreen = (props) => {
                         inputContainerStyle={{
                             borderBottomColor: 'white',
                             borderRadius: 5,
-                            marginTop: 5,
+                            paddingTop: 20,
                             height: '4%',
                         }}
                         onChangeText={(value) => handleInputChange(value, 'Ticket')}
@@ -54,11 +69,26 @@ const CheckOutScreen = (props) => {
                         value={inputState.Ticket}
                     />
                 </View>
+
+                <PhotoTicket
+                    onCameraStart={(isVisible) => {
+                        setFlexWrapper(isVisible)
+                    }}
+                    onTakePicture={(data) => {
+                        onChangeImagen('ticket', data)
+                    }}
+                />
+                <Image
+                    source={{ uri: `${state.ticket}` }}
+                    accessible={true}
+                    style={tw`h-60 my-5`}
+                    resizeMode="contain"
+                />
                 <Button
                     title={'Aceptar'}
                     disabled={inputState.Ticket != '' ? false : true}
                     style={{ alignItems: 'flex-end', justifyContent: "flex-end" }}
-                    onPress={() => storeOut(id, inputState)}
+                    onPress={() => storeOut(id, inputState, state.ticket)}
                 />
             </View>
 
@@ -71,7 +101,7 @@ export default CheckOutScreen
 const styles = StyleSheet.create({
 
     viewInput: {
-        marginVertical: 20,
+        marginVertical: 16,
         marginHorizontal: 3,
         backgroundColor: 'white',
         borderRadius: 5,

@@ -15,6 +15,7 @@ const initialState = {
     ine: [],
     plate: [],
     data: [],
+    ticket: [],
     dataImagen: []
 }
 
@@ -144,7 +145,7 @@ const store = (dispatch) => {
                 `comings`,
                 data,
                 { 'Authorization': token });
-               
+
             if (response.status) {
                 dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: false } });
                 Alert.alert(
@@ -178,10 +179,13 @@ const store = (dispatch) => {
 }
 
 const storeOut = (dispatch) => {
-    return async (id, dataFrom) => {
+    return async (id, dataFrom, Imagen) => {
         const data = {
             ticket: dataFrom.Ticket,
-            notes: 'pato'
+            notes: 'pato',
+            pictures: {
+                ticket: [{ file: Imagen }]
+            }
         }
         const user = JSON.parse(await AsyncStorage.getItem('user'));
         const token = user.token
@@ -225,7 +229,7 @@ const ViewComing = (dispatch) => {
         const token = user.token
         const response = await httpClient.get(`comings/${id}`, { 'Authorization': token });
         if (response != '') {
-            rootNavigation.navigate('ViewComingScreen',response)
+            rootNavigation.navigate('ViewComingScreen', response)
         } else {
             Alert.alert(
                 "Error",

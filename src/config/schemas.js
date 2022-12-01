@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 
 export const CheckOutSchema = {
     Ticket: '',
-    Time: '',
+    Time: new Date(),
 };
 
 export const IncidentSchema = {
