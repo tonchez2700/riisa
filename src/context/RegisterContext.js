@@ -137,7 +137,6 @@ const store = (dispatch) => {
             }
         }
         const validated = validateData(plate, car, ine)
-        console.log(validated);
         if (!validated.error) {
             const user = JSON.parse(await AsyncStorage.getItem('user'));
             const token = user.token
@@ -180,6 +179,7 @@ const store = (dispatch) => {
 
 const storeOut = (dispatch) => {
     return async (id, dataFrom, Imagen) => {
+        dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
         const data = {
             ticket: dataFrom.Ticket,
             notes: 'pato',
@@ -202,6 +202,7 @@ const storeOut = (dispatch) => {
                     onPress: () => rootNavigation.navigate('HomeScreen')
                 }]
             )
+            dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: false } });
         } else {
             Alert.alert(
                 "Error",
@@ -210,6 +211,7 @@ const storeOut = (dispatch) => {
                     text: "Aceptar",
                 }]
             )
+            dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: false } });
         }
     }
 }

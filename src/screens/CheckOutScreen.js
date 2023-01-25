@@ -86,6 +86,7 @@ const CheckOutScreen = (props) => {
                 />
                 <Button
                     title={'Aceptar'}
+                    loading={state.fetchingData ? true : false}
                     disabled={inputState.Ticket != '' ? false : true}
                     style={{ alignItems: 'flex-end', justifyContent: "flex-end" }}
                     onPress={() => storeOut(id, inputState, state.ticket)}

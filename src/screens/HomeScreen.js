@@ -20,7 +20,15 @@ const HomeScreen = () => {
         ViewComing,
         handleInputChange } = useContext(RegisterContext);
 
-        console.log(state.data[0]);
+
+    // useEffect(() => {
+    //     const unsubscribe = navigation.addListener('focus', () => {
+    //         clearState()
+
+    //     });
+    //     return unsubscribe;
+    // }, [navigation]);
+
     return (
 
         <View style={{ flex: 1, backgroundColor: '#ECECEC' }}>
@@ -46,7 +54,7 @@ const HomeScreen = () => {
                         ?
                         <View style={[tw` flex-row`, { justifyContent: 'center', width: '100%', padding: 30, backgroundColor: 'white' }]}>
                             <View style={[tw`mx-2`, { alignItems: 'flex-start', width: '50%' }]}>
-                            <Text style={{ fontWeight: 'bold' }}>Folio: <Text style={{ fontWeight: '400' }}>{state.data[0]?.folio}</Text></Text>
+                                <Text style={{ fontWeight: 'bold' }}>Folio: <Text style={{ fontWeight: '400' }}>{state.data[0]?.folio}</Text></Text>
                                 <Text style={{ fontWeight: 'bold' }}>Nombre: <Text style={{ fontWeight: '400' }}>{state.data[0]?.supplier_rom.name}</Text></Text>
                                 <Text style={{ fontWeight: 'bold' }}>Teléfono: <Text style={{ fontWeight: '400' }}>{state.data[0]?.supplier_rom.phone}</Text></Text>
                                 <Text style={{ fontWeight: 'bold' }}>Contacto: <Text style={{ fontWeight: '400' }}>{state.data[0]?.supplier_rom.contact}</Text></Text>
@@ -85,7 +93,6 @@ const HomeScreen = () => {
                     (
                         item.buy_comings.map((e) => {
                             return (
-
                                 <View key={e.id} style={[tw`flex-row`, { backgroundColor: 'white' }]}>
                                     <Text style={[styles.TextTableItems, { width: '25%' }]}>{e.id}</Text>
                                     <Text style={[styles.TextTableItems, { width: '50%' }]}>{moment(e.created_at).format('DD-MM-YYYY / hh:mm')}</Text>
