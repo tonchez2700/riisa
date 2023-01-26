@@ -36,10 +36,11 @@ const RegisterReducer = (state = initialState, action) => {
                 fetchingData: false
             }
         case 'SET_FETCHING_DATA':
+
             return {
                 ...state,
                 fetchingData: false,
-                data: [action.payload.response[0]]
+                data: [action.payload.response]
             }
         case 'SET_ORDER_NUMBER':
             let type = action.payload.typedata
@@ -74,15 +75,16 @@ const clearState = (dispatch) => {
 const setFetchingList = (dispatch) => {
     return async (orderNum) => {
         try {
-
             const user = JSON.parse(await AsyncStorage.getItem('user'));
             const token = user.token
             const response = await httpClient.get(`buybuyingorders?folio=${orderNum}`, { 'Authorization': token });
+
             dispatch({
                 type: 'SET_FETCHING_DATA',
-                payload: { response }
+                payload: { response: response[0] }
             })
         } catch (error) {
+            console.log(error);
             dispatch({
                 type: 'SET_REQUEST_ERROR',
                 payload: {
@@ -94,6 +96,33 @@ const setFetchingList = (dispatch) => {
     }
 }
 
+const setListOut = (dispatch) => {
+    return async (orderNum) => {
+        try {
+
+            const user = JSON.parse(await AsyncStorage.getItem('user'));
+            const token = user.token
+            const response = await httpClient.get(`buybuyingorders?folio=${orderNum}`, { 'Authorization': token });
+            let data = response[0].buy_comings.filter((item) => item.ticket == null);
+            console.log(data);
+            response[0].buy_comings = data;
+            console.log(response[0]);
+            dispatch({
+                type: 'SET_FETCHING_DATA',
+                payload: { response: response[0] }
+            })
+
+        } catch (error) {
+            dispatch({
+                type: 'SET_REQUEST_ERROR',
+                payload: {
+                    error: true,
+                    message: 'Por el momento el servicio no está disponible, inténtelo mas tarde.'
+                }
+            })
+        }
+    }
+}
 const onChangeImagen = (dispatch) => {
     return async (type, value) => {
         let img;
@@ -262,12 +291,14 @@ export const { Context, Provider } = createDataContext(
     {
         clearState,
         setFetchingList,
+        setListOut,
         onChangeImagen,
         storeOut,
         getImagensOutTools,
         handleInputChange,
         store,
         ViewComing,
+
 
     },
     initialState

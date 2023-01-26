@@ -16,26 +16,27 @@ const HomeScreen = () => {
     const navigation = useNavigation();
     const { state,
         clearState,
+        setListOut,
         setFetchingList,
         ViewComing,
         handleInputChange } = useContext(RegisterContext);
 
 
-    // useEffect(() => {
-    //     const unsubscribe = navigation.addListener('focus', () => {
-    //         clearState()
-
-    //     });
-    //     return unsubscribe;
-    // }, [navigation]);
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            if (state.orderNum != '') {
+                setListOut(state.orderNum)
+            }
+        });
+        return unsubscribe;
+    }, [navigation]);
 
     return (
-
         <View style={{ flex: 1, backgroundColor: '#ECECEC' }}>
-            <View style={[tw`mt-3 flex-row`, { width: '100%' }]}>
+            <View style={[tw`mt-3 flex-row`]}>
                 <Input
                     rightIcon={
-                        <TouchableOpacity onPress={() => setFetchingList(state.orderNum)}>
+                        <TouchableOpacity onPress={() => setListOut(state.orderNum)}>
                             <Icon type='font-awesome-5' name='search' size={25} color='#2D5DA0' />
                         </TouchableOpacity>
                     }
@@ -52,28 +53,57 @@ const HomeScreen = () => {
                 {
                     state.data != ''
                         ?
-                        <View style={[tw` flex-row`, { justifyContent: 'center', width: '100%', padding: 30, backgroundColor: 'white' }]}>
-                            <View style={[tw`mx-2`, { alignItems: 'flex-start', width: '50%' }]}>
-                                <Text style={{ fontWeight: 'bold' }}>Folio: <Text style={{ fontWeight: '400' }}>{state.data[0]?.folio}</Text></Text>
-                                <Text style={{ fontWeight: 'bold' }}>Nombre: <Text style={{ fontWeight: '400' }}>{state.data[0]?.supplier_rom.name}</Text></Text>
-                                <Text style={{ fontWeight: 'bold' }}>Teléfono: <Text style={{ fontWeight: '400' }}>{state.data[0]?.supplier_rom.phone}</Text></Text>
-                                <Text style={{ fontWeight: 'bold' }}>Contacto: <Text style={{ fontWeight: '400' }}>{state.data[0]?.supplier_rom.contact}</Text></Text>
-                                <Text style={{ fontWeight: 'bold' }}>RFC: <Text style={{ fontWeight: '400' }}>{state.data[0]?.supplier_rom.rfc}</Text></Text>
+                        <View style={tw`flex-col  justify-between p-5`}>
+
+                            <View style={[tw`flex-row`, { marginVertical: 1 }]}>
+                                <Text style={{ width: '30%', color: '#23233C', fontWeight: 'bold' }}>Folio:</Text>
+                                <Text style={{ textAlign: 'left', width: '70%' }}>{state.data[0]?.folio}</Text>
                             </View>
-                            <View style={[{ width: '50%' }]}>
-                                <Button
-                                    titleStyle={tw`text-base font-bold  `}
-                                    buttonStyle={[{ backgroundColor: '#2D5DA0' }]}
-                                    title="Nueva entrada"
-                                    onPress={() => navigation.navigate('NewRegister', state.data[0].folio)}
-                                />
+                            <View style={[tw`flex-row`, { marginVertical: 1 }]}>
+                                <Text style={{ width: '30%', color: '#23233C', fontWeight: 'bold' }}>Nombre:</Text>
+                                <Text style={{ textAlign: 'left', width: '70%' }}>{state.data[0]?.supplier_rom.name}</Text>
+                            </View>
+                            <View style={[tw`flex-row`, { marginVertical: 1 }]}>
+                                <Text style={{ width: '30%', color: '#23233C', fontWeight: 'bold' }}>Teléfono:</Text>
+                                <Text style={{ textAlign: 'left', width: '70%' }}>{state.data[0]?.supplier_rom.phone}</Text>
+                            </View>
+                            <View style={[tw`flex-row`, { marginVertical: 1 }]}>
+                                <Text style={{ width: '30%', color: '#23233C', fontWeight: 'bold' }}>Contacto:</Text>
+                                <Text style={{ textAlign: 'left', width: '70%' }}>{state.data[0]?.supplier_rom.contact}</Text>
+                            </View>
+                            <View style={[tw`flex-row`, { marginVertical: 1 }]}>
+                                <Text style={{ width: '30%', color: '#23233C', fontWeight: 'bold' }}>RFC:</Text>
+                                <Text style={{ textAlign: 'left', width: '70%' }}>{state.data[0]?.supplier_rom.rfc}</Text>
                             </View>
                         </View>
                         :
                         null
                 }
-
             </View>
+            {
+                state.data != ''
+                    ?
+                    <View style={[tw`flex-col p-2 `]}>
+                        <View style={[tw` justify-between flex-row `]}>
+                            <Button
+                                titleStyle={tw`text-base font-bold  `}
+                                containerStyle={{ width: '45%' }}
+                                buttonStyle={[{ backgroundColor: '#2D5DA0' }]}
+                                title="Ver Registros"
+                                onPress={() => setFetchingList(state.orderNum)}
+                            />
+                            <Button
+                                titleStyle={tw`text-base font-bold  `}
+                                containerStyle={{ width: '45%' }}
+                                buttonStyle={[{ backgroundColor: '#067A52' }]}
+                                title="Nueva Entrada"
+                                onPress={() => navigation.navigate('NewRegister', state.data[0].folio)}
+                            />
+                        </View>
+                    </View>
+                    :
+                    null
+            }
             <View style={[tw` flex-row justify-between`, { width: '100%', marginTop: 10 }]}>
                 <Text style={[styles.TextTable, { width: '25%' }]}>Folio</Text>
                 <Text style={[styles.TextTable, { width: '50%' }]}>Fecha</Text>
@@ -111,9 +141,7 @@ const HomeScreen = () => {
                                                 <TouchableOpacity onPress={() => navigation.navigate('CheckOutScreen', e)}>
                                                     <Icon type='font-awesome-5' name='arrow-circle-right' size={20} color='#EE3232' style={{ padding: 10, }} />
                                                 </TouchableOpacity>
-
                                         }
-
                                     </View>
                                 </View>
 
