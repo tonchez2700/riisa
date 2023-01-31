@@ -24,13 +24,15 @@ const HomeScreen = () => {
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            if (state.orderNum != '') {
+            if (state.orderNum != null) {
                 setListOut(state.orderNum)
-            }
+            } 
         });
         return unsubscribe;
     }, [navigation]);
 
+
+    console.log(state.orderNum);
     return (
         <View style={{ flex: 1, backgroundColor: '#ECECEC' }}>
             <View style={[tw`mt-3 flex-row`]}>

@@ -10,7 +10,7 @@ const initialState = {
     error: false,
     message: null,
     fetchingData: false,
-    orderNum: '',
+    orderNum: null,
     car: [],
     ine: [],
     plate: [],
@@ -99,14 +99,11 @@ const setFetchingList = (dispatch) => {
 const setListOut = (dispatch) => {
     return async (orderNum) => {
         try {
-
             const user = JSON.parse(await AsyncStorage.getItem('user'));
             const token = user.token
             const response = await httpClient.get(`buybuyingorders?folio=${orderNum}`, { 'Authorization': token });
             let data = response[0].buy_comings.filter((item) => item.ticket == null);
-            console.log(data);
             response[0].buy_comings = data;
-            console.log(response[0]);
             dispatch({
                 type: 'SET_FETCHING_DATA',
                 payload: { response: response[0] }
@@ -155,7 +152,7 @@ const getImagensOutTools = (dispatch) => {
 }
 
 const store = (dispatch) => {
-    return async (plate, car, ine, id) => {
+    return async (plate, car, ine, id, orderNum) => {
         dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: true } });
         let data = {
             folio: id,
@@ -175,15 +172,35 @@ const store = (dispatch) => {
                 { 'Authorization': token });
 
             if (response.status) {
-                dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: false } });
-                Alert.alert(
-                    "Correcto",
-                    "Entrada creada correctamente.",
-                    [{
-                        text: "Aceptar",
-                        onPress: () => rootNavigation.navigate('HomeScreen')
-                    }]
-                )
+                try {
+                    const response = await httpClient.get(`buybuyingorders?folio=${orderNum}`, { 'Authorization': token });
+                    let data = response[0].buy_comings.filter((item) => item.ticket == null);
+                    response[0].buy_comings = data;
+                    dispatch({
+                        type: 'SET_FETCHING_DATA',
+                        payload: { response: response[0] }
+                    })
+                    console.log(response);
+                    dispatch({ type: 'FETCHING_DATA', payload: { fetchingData: false } });
+                    Alert.alert(
+                        "Correcto",
+                        "Entrada creada correctamente.",
+                        [{
+                            text: "Aceptar",
+                            onPress: () => rootNavigation.navigate('HomeScreen')
+                        }]
+                    )
+                } catch (error) {
+                    console.log(error);
+                    dispatch({
+                        type: 'SET_REQUEST_ERROR',
+                        payload: {
+                            error: true,
+                            message: 'Por el momento el servicio no está disponible, inténtelo mas tarde.'
+                        }
+                    })
+                }
+
             } else {
                 Alert.alert(
                     "Error",

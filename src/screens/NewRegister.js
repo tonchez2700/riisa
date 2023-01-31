@@ -91,7 +91,7 @@ const NewRegister = (props) => {
                 />
                 <Button
                     onPress={() => {
-                        store(state.plate, state.car, state.ine, props.route.params)
+                        store(state.plate, state.car, state.ine, props.route.params, state.orderNum)
                     }}
                     title={'Aceptar'}
                     style={{ alignItems: 'flex-end', justifyContent: "flex-end" }}
